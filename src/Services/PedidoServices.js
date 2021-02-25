@@ -27,9 +27,11 @@ class PedidoServices {
         return new Promise(async function (resolve, reject) {
             try {
 
+                pedidoModel.codigo = Math.random() * 10
+                
+                pedidoModel.cpf = string.validateCpf(pedidoModel.cpf)
 
-                UserModel.cpf = string.validateCpf(UserModel.cpf)
-                UserModel.password = Crypto.toSha1(UserModel.password)
+                
 
                 userDal.create(UserModel)
                     .then(result => {
