@@ -45,6 +45,25 @@ class ProdutosFinaisService {
         })
     }
 
+    async update(ProdutoModel) {
+        return new Promise(async function (resolve, reject) {
+            try {
+
+                produtosFinaisDal.update(ProdutoModel)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 
 }
 
