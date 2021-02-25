@@ -1,8 +1,8 @@
 /* Imports*/
 
-const ProdutoNormalModel = require('../../Models/ProdutoNormalModel')
-const PizzaModel = require('../../Models/PizzaModel')
-const ProdutosFinaisService = require('../../Services/ProdutosFinaisService')
+const ProdutoNormalModel = require('../Models/ProdutoNormalModel')
+const PizzaModel = require('../Models/PizzaModel')
+const ProdutosFinaisService = require('../Services/ProdutosFinaisService')
 
 /**/
 
