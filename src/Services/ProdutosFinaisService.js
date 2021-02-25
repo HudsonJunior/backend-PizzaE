@@ -1,26 +1,16 @@
 /* imports */
 
-const mongoose = require('./../../Connection/connectionMongo');
-const exceptionsClass = require('./../../models/Responses/Exceptions')
-const UserResponse = require('./../../Models/Responses/UserResponse')
-const UserDal = require('./../../Daos/User/UserDal')
-const string = require('./../../Common/String')
-const Crypto = require('./../../common/Crypto')
-const Cpf = require('./../../Common/Cpf')
-const UserValue = require('./../../Values/UserValue')
-const AuthValue = require('./../../Values/AuthValue')
+const string = require('./../Common/String')
+
 /* Global variables*/
 
-const Exceptions = new exceptionsClass()
-const userDal = new UserDal()
-
-var ProdutosFinaisService
+var produtosFinaisService
 
 /* */
 
 class ProdutosFinaisService {
     constructor() {
-        ProdutosFinaisService = this
+        produtosFinaisService = this
     }
 
     async create(UserModel) {

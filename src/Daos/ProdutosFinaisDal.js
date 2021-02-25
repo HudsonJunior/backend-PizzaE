@@ -1,8 +1,7 @@
 /* Imports */
 
 const mongooseStringQuery = require('mongoose-string-query');
-const mongoose = require('./../../Connection/connectionMongo');
-const UserResponse = require('../../Models/Responses/UserResponse');
+const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('./../../models/Responses/Exceptions')
 const sucessClass = require('./../../models/Responses/Sucess')
 /* Global variables*/
