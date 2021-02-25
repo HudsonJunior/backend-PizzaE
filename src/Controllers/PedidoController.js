@@ -1,6 +1,6 @@
 /* Imports*/
 
-const PedidoModel = require('../../Models/PedidoModel.js')
+const PedidoModel = require('../Models/PedidoModel.js')
 const PedidoServices = require('../../Services/User/PedidoServices.js')
 /**/
 
