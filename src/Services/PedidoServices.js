@@ -9,6 +9,8 @@ const Crypto = require('./../../common/Crypto')
 const Cpf = require('../../Common/Cpf')
 const UserValue = require('./../../Values/UserValue')
 const AuthValue = require('./../../Values/AuthValue')
+const existeProdutos = require('../Services/ProdutosFinaisService');
+const ProdutosFinaisService = require('../Services/ProdutosFinaisService');
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
@@ -31,6 +33,13 @@ class PedidoServices {
                 
                 pedidoModel.cpf = string.validateCpf(pedidoModel.cpf)
 
+                ProdutosFinaisService.existeProdutos(pedidoModel.produtos)
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(error => {
+                    reject(error)
+                })
                 
 
                 userDal.create(UserModel)

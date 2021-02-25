@@ -45,7 +45,28 @@ class ProdutosFinaisService {
         })
     }
 
-
+    existeProdutos(produtos) {
+        return new Promise (async function (resolve, reject) {
+            try{
+                var produtoEncontrado = false
+                produtos.map( produto => {
+                    produtosFinaisDal.findOne(produto)
+                    .then(result => {
+                        resolve()
+                    })
+                    .catch(error => {
+                        produtoEncontrado = false
+                        reject(error)
+                    });
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+        
+    }
 }
+
 
 module.exports = ProdutosFinaisService
