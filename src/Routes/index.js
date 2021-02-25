@@ -1,4 +1,4 @@
 
 module.exports = function (server) {
-    require('../Controllers/User/ProdutosFinaisController')(server)
+    require('../Controllers/ProdutosFinaisController')(server)
 }
