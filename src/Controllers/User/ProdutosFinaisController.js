@@ -2,7 +2,7 @@
 
 const ProdutoNormalModel = require('../../Models/ProdutoNormalModel')
 const PizzaModel = require('../../Models/PizzaModel')
-const ProdutosFinaisService = require('../../Services/User/ProdutosFinaisService')
+const ProdutosFinaisService = require('../../Services/ProdutosFinaisService')
 
 /**/
 

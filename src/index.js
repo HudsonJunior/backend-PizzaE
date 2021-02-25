@@ -21,6 +21,6 @@ server.use(restify.plugins.gzipResponse());
 server.use(restify.plugins.bodyParser());
 
 server.listen(config.port, () => {
-    require('./routes')(server)
+    require('./Routes')(server)
     console.log(`Server listening on port ${config.port}`);
 });
