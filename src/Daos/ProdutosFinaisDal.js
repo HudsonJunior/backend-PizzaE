@@ -75,8 +75,23 @@ class ProdutosFinaisDal {
         })
     }
 
+    update(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let codigo = ProdutoModel.codigo
+
+                let obj = new Object();
+                obj.codigo = codigo
+                ProdutosFinais.update(obj, ProdutoModel).then().catch()
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     getProdutosFinaisSchema() {
-        const UserSchema = new mongoose.Schema(
+        const ProdutoSchema = new mongoose.Schema(
             {
                 codigo: {
                     type: int,
@@ -106,7 +121,7 @@ class ProdutosFinaisDal {
             },
         );
 
-        return UserSchema
+        return ProdutoSchema
     }
 }
 
