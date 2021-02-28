@@ -13,8 +13,8 @@ var ProdutosFinais = null
 
 /* */
 class ProdutosFinaisDal {
-    constructor() {
-        const ProdutosFinaisSchema = this.getProdutosFinaisSchema()
+    constructor(tipoProdruto) {
+        const ProdutosFinaisSchema = tipoProduto === 'Normal' ? this.getProdutoNormalSchema() : this.getProdutoPizzaSchema
 
         ProdutosFinaisSchema.plugin(mongooseStringQuery);
 
@@ -48,11 +48,11 @@ class ProdutosFinaisDal {
     findOne(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             let nome = ProdutoModel.nome;
-            let codigo = ProdutoModel.codigo;
+            let codigo = ProdutoModel.id;
 
             let obj = new Object()
             obj.nome = nome
-            obj.codigo = codigo
+            obj.id = codigo
 
             try {
                 ProdutosFinais.findOne(obj, function (err, data) {
@@ -78,11 +78,26 @@ class ProdutosFinaisDal {
     update(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let codigo = ProdutoModel.codigo
+                let codigo = ProdutoModel.id
 
                 let obj = new Object();
-                obj.codigo = codigo
-                ProdutosFinais.update(obj, ProdutoModel).then().catch()
+                obj.id = codigo
+                ProdutosFinais.update(obj, ProdutoModel)
+                    .then(data => {
+                        try {
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    })
             }
             catch (error) {
                 reject(error)
@@ -90,31 +105,102 @@ class ProdutosFinaisDal {
         })
     }
 
-    getProdutosFinaisSchema() {
+    delete(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let obj = new Object();
+                obj.id = ProdutoModel.id;
+
+                ProdutosFinais.deleteOne(obj, ProdutoModel)
+                    .then(data => {
+                        try {
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    getProdutoPizzaSchema() {
         const ProdutoSchema = new mongoose.Schema(
             {
-                codigo: {
-                    type: int,
-                    required: true,
-                },
                 nome: {
                     type: String,
                     required: true,
                     select: false,
                 },
-                name: {
+                valor: {
                     type: String,
                     required: true,
                 },
-                last_name: {
+                ingredientes: {
                     type: String,
                     required: true,
                 },
-                cpf: {
+                peso: {
                     type: String,
                     required: true,
                 },
-                email: {
+                ativado: {
+                    type: String,
+                    required: true,
+                },
+                valorPromocional: {
+                    type: String,
+                    required: true,
+                },
+                inicioPromo: {
+                    type: String,
+                    required: true,
+                },
+                fimPromo: {
+                    type: String,
+                    required: true,
+                }
+            },
+        );
+
+        return ProdutoSchema
+    }
+
+    getProdutoNormalSchema() {
+        const ProdutoSchema = new mongoose.Schema(
+            {
+                valor: {
+                    type: String,
+                    required: true,
+                    select: false,
+                },
+                peso: {
+                    type: String,
+                    required: true,
+                },
+                ativado: {
+                    type: String,
+                    required: true,
+                },
+                valorPromo: {
+                    type: String,
+                    required: true,
+                },
+                inicioPromo: {
+                    type: String,
+                    required: true,
+                },
+                fimPromo: {
                     type: String,
                     required: true,
                 }
