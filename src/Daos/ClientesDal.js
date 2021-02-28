@@ -45,6 +45,33 @@ class ClientesDal {
         })
     }
 
+    validatePrimaryKey(field, value){
+        return new Promise(function(resolve,reject){
+
+            let obj = new Object()
+            obj[field] = value
+
+            try{
+                Cliente.findOne(obj,function (err,data){
+                    if(err){
+                        console.log(err)
+                        reject()
+                    }
+
+                    if(!data){
+                        resolve()
+                    }
+                    else{
+                        reject()
+                    }
+                })
+            }
+            catch(error){
+                reject
+            }
+        })
+    }
+
     getClientesSchema() {
         const ClientesSchema = new mongoose.Schema(
             {
@@ -63,7 +90,7 @@ class ClientesDal {
                     required: true,
                 },
                 telefone: {
-                    type: int,
+                    type: String,
                     required: true,
                 },
                 email: {
