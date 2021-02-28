@@ -40,4 +40,61 @@ module.exports = function (server) {
             console.log(error)
         }
     })
+
+    server.get('/clientes', function (req, res, next) {
+
+        try {
+            clientesModel = new ClientesModel(data);
+
+            const cpfClientes = req.query.cpf
+
+            clientesService.get(cpfClientes)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.get('/clientes', function (req, res, next) {
+
+        try {
+
+            clientesService.get()
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
 }

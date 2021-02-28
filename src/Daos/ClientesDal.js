@@ -45,6 +45,103 @@ class ClientesDal {
         })
     }
 
+    delete(ClientesModel){
+        return new Promise(function (resolve, reject) {
+            try {
+                let obj = new Object();
+                obj.cpf = ClientesModel.cpf;
+
+                Clientes.deleteOne(obj, ClientesModel)
+                    .then(data => {
+                        try{
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    getCliente(cpfCliente){
+        return new Promise(function (resolve, reject) {
+            let obj = new Object();
+            obj.cpf = cpfCliente;
+            try {
+                Clientes.find(obj)
+                    .then(data => {
+                        try{
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    list(cpfCliente){
+        return new Promise(function (resolve, reject) {
+        
+            try {
+                Clientes.find({})
+                    .then(data => {
+                        try{
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    update(ClientesModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let cpf = ClientesModel.cpf
+                let obj = new Object();
+                obj.cpf = cpf
+                Clientes.update(obj, ClientesModel).then().catch()
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+
+
     validatePrimaryKey(field, value){
         return new Promise(function(resolve,reject){
 

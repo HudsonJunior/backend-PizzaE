@@ -44,6 +44,45 @@ class ClientesService {
         })
     }
 
+    async getCliente(cpfClientes){
+        return new Promise(async function(resolve,reject){
+            try{
+
+                clientesServiceDal.get(cpfClientes)
+                .then(result => {
+                    result.cash_token = AuthValue.cash_token
+
+                    resolve(result)
+                })
+                .catch(error =>{
+                    reject(error)
+                })
+            }
+            catch(error){
+                reject(error)
+            }
+        })
+    }
+
+    async getClienteList(){
+        return new Promise(async function(resolve,reject){
+            try{
+
+                clientesServiceDal.list()
+                .then(result => {
+
+                    resolve(result)
+                })
+                .catch(error =>{
+                    reject(error)
+                })
+            }
+            catch(error){
+                reject(error)
+            }
+        })
+    }
+
     validarClientes(clientes){
         return new Promise(function(resolve,reject){
             try{
