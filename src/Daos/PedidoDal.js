@@ -120,6 +120,10 @@ class PedidoDal {
                     type: String,
                     required: true,
                 },
+                endereco: {
+                    type: String,
+                    required: true,
+                },
                 data: {
                     type: Date,
                     required: true,
@@ -133,6 +137,14 @@ class PedidoDal {
                     required: false,
                 },
                 cpfCliente: {
+                    type: String,
+                    required: true,
+                },
+                status: {
+                    type: String,
+                    required: true,
+                },
+                valor: {
                     type: String,
                     required: true,
                 }
