@@ -77,19 +77,33 @@ class ProdutosEstoqueService {
         })
     }
 
-    async delete(EstoqueModel) {
+    async delete(EstoqueModel, codItem) {
         return new Promise(async function (resolve, reject) {
             try {
                 EstoqueModel.ativado = false;
 
                 
-                //remove item da lista
-                EstoqueModel.quantidade = EstoqueModel.quantidade - 1;
-                //chama update
+                deleteElement(EstoqueModel.itens, codItem)
+                    .then(result => {
+                        EstoqueModel.itens = result
+                        EstoqueModel.quantidade = EstoqueModel.quantidade - 1;
 
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
 
-                if(EstoqueModel.quantidade === 0){
+                if(EstoqueModel.quantidade <= 0){
                     produtosEstoqueDao.delete(EstoqueModel)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+                }else{
+                    produtosEstoqueService.update(EstoqueModel)
                     .then(result => {
                         resolve(result)
                     })
@@ -105,6 +119,17 @@ class ProdutosEstoqueService {
         })
     }
 
+    async deleteElement(list, codigo) {
+        return new Promise(async function (resolve, reject) {
+
+            list.map((item, index) => {
+                if (item.codigo == codigo) {
+                    delete item[index]
+                }
+            })
+            resolve(list)
+            }
+        )}
 }
 
 module.exports = ProdutosEstoqueService

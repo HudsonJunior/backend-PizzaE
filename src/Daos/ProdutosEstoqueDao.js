@@ -138,30 +138,10 @@ class ProdutosEstoqueDao {
                     type: int,
                     required: true,
                 },
-                valor_item: {
-                    type: float,
+                itens: {
+                    type: Object,
                     required: true,
-                },
-                peso_item: {
-                    type: float,
-                    required: true,
-                },
-                data_validade: {
-                    type: Date,
-                    required: true,
-                },
-                data_fabricacao: {
-                    type: Date,
-                    required: true,
-                },
-                data_registro: {
-                    type: Date,
-                    required: true,
-                },
-                data_promo: {
-                    type: Date,
-                    required: true,
-                },
+                }
             },
         );
     }
