@@ -19,13 +19,13 @@ class PedidoDal {
 
         PedidoSchema.plugin(mongooseStringQuery);
 
-        Pedido = mongoose.model('produtos_finais', PedidoSchema);
+        Pedido = mongoose.model('pedido', PedidoSchema);
     }
 
-    create(UserModel) {
+    create(PedidoModel) {
         return new Promise(function (resolve, reject) {
 
-            const pedido = new Pedido(UserModel)
+            const pedido = new Pedido(PedidoModel)
 
             pedido.save()
                 .then(data => {
@@ -46,38 +46,72 @@ class PedidoDal {
         })
     }
 
+    update(PedidoModel) {
+        return new Promise(function (resolve, reject) {
+            try{
+                let codigo = PedidoModel.Pedido
+
+                let obj = new Object()
+
+                obj.id = codigo
+
+                Pedido.update(obj, PedidoModel)
+                    .then(data => {
+                        try {
+                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
+                            
+                            resolve(jsonSucess)
+                        }
+                        catch(error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     getPedidoSchema() {
-        const UserSchema = new mongoose.Schema(
+        const PedidoSchema = new mongoose.Schema(
             {
-                codigo: {
-                    type: int,
-                    required: true,
+                produtos: {
+                    type: Object,
+                    required: true
                 },
-                nome: {
-                    type: String,
-                    required: true,
-                    select: false,
-                },
-                name: {
+                formaPagamento: {
                     type: String,
                     required: true,
                 },
-                last_name: {
+                formaExpedicao: {
                     type: String,
                     required: true,
                 },
-                cpf: {
+                data: {
+                    type: Date,
+                    required: true,
+                },
+                cpfNF: {
                     type: String,
                     required: true,
                 },
-                email: {
+                observacoes: {
+                    type: String,
+                    required: false,
+                },
+                cpfCliente: {
                     type: String,
                     required: true,
                 }
             },
         );
 
-        return UserSchema
+        return PedidoSchema
     }
 }
 
