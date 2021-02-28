@@ -46,7 +46,7 @@ class ProdutosFinaisService {
             }
         })
     }
-
+            
     async update(ProdutoModel) {
         return new Promise(async function (resolve, reject) {
             try {
@@ -77,6 +77,7 @@ class ProdutosFinaisService {
                 reject(error)
             }
         })
+        
     }
 
     async delete(ProdutoModel) {
@@ -99,6 +100,28 @@ class ProdutosFinaisService {
         })
     }
 
+    existemProdutos (produtos) {
+        return new Promise (async function (resolve, reject) {
+            try{
+                var produtoEncontrado = false
+                produtos.map( produto => {
+                    produtosFinaisDal.findOne(produto)
+                    .then(result => {
+                        resolve()
+                    })
+                    .catch(error => {
+                        produtoEncontrado = false
+                        reject(error)
+                    });
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 }
+
 
 module.exports = ProdutosFinaisService
