@@ -40,7 +40,7 @@ class ProdutosFinaisDal {
                 })
                 .catch(error => {
                     console.log(error)
-                    reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    reject(Exceptions.generateException(500, 'erro', 'erro'))
                 })
         })
     }
@@ -82,6 +82,7 @@ class ProdutosFinaisDal {
 
                 let obj = new Object();
                 obj.id = codigo
+
                 ProdutosFinais.update(obj, ProdutoModel)
                     .then(data => {
                         try {
@@ -96,7 +97,7 @@ class ProdutosFinaisDal {
                     })
                     .catch(error => {
                         console.log(error)
-                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                        reject(Exceptions.generateException(500, 'erro', 'erro'))
                     })
             }
             catch (error) {
