@@ -37,4 +37,33 @@ module.exports = function (server) {
             console.log(error)
         }
     })
+
+    server.get('/pedido', function (req, res, next) {
+        try {
+            const pedidoServices = new PedidoServices();
+            
+            let dataPedido = req.query.data
+
+            pedidoServices.get(dataPedido)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
 }

@@ -53,6 +53,24 @@ class PedidoServices {
         })
     }
 
+    async get(dataPedido) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                pedidoDal.get(dataPedido)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     existeCliente (cpfCliente) {
         return new Promise (async function (resolve, reject) {
             try {

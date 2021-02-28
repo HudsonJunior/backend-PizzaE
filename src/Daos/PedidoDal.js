@@ -77,6 +77,34 @@ class PedidoDal {
         })
     }
 
+    getList(dataPedido){
+        return new Promise(function (resolve, reject) {
+            let obj = new Object()
+            obj.data = dataPedido
+            try{
+                Pedido.find(obj)
+                    .then(data => {
+                        try {
+                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
+                            
+                            resolve(jsonSucess)
+                        }
+                        catch(error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+
     getPedidoSchema() {
         const PedidoSchema = new mongoose.Schema(
             {
