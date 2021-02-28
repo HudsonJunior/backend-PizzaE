@@ -11,6 +11,7 @@ const UserValue = require('./../../Values/UserValue')
 const AuthValue = require('./../../Values/AuthValue')
 const existeProdutos = require('../Services/ProdutosFinaisService');
 const ProdutosFinaisService = require('../Services/ProdutosFinaisService');
+const PedidoDal = require('../Daos/PedidoDal');
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
@@ -31,18 +32,13 @@ class PedidoServices {
 
                 pedidoModel.codigo = Math.random() * 10
                 
-                pedidoModel.cpf = string.validateCpf(pedidoModel.cpf)
+                pedidoModel.cpfCliente = string.validateCpf(pedidoModel.cpfCliente)
 
-                ProdutosFinaisService.existeProdutos(pedidoModel.produtos)
-                .then(result => {
-                    resolve(result)
-                })
-                .catch(error => {
-                    reject(error)
-                })
-                
+                pedidoModel.cpfNF = string.validateCpf(pedidoModel.cpfNF)
 
-                userDal.create(UserModel)
+                let validateExpedicao = await PedidoServices.validateExpedicao(pedidoModel.formaExpedicao, pedidoModel.cpfCliente)
+
+                pedidoDal.create(pedidoModel)
                     .then(result => {
                         resolve(result)
                     })
@@ -57,6 +53,47 @@ class PedidoServices {
         })
     }
 
+    existeCliente (cpfCliente) {
+        return new Promise (async function (resolve, reject) {
+            try {
+                
+                var clienteEncontrado = false
+                
+                clienteDal.findOne(cpfCliente)
+                
+                .then(result => {
+                    clienteEncontrado = true;
+                    resolve()
+                })
+                .catch(error => {
+                    clienteEncontrado = false;
+                    reject(error)
+                });
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    validateExpedicao (formaExpedicao, cpfCliente) {
+        return new Promise (async function (resolve, reject) {
+            try {
+                
+                if (formaExpedicao == 'entrega')
+                    existeCliente(cpfCliente)
+                    .then(result => {
+                        resolve()
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            }
+            catch (error) {
+                reject(error)
+            } 
+        })
+    }
 
 }
 
