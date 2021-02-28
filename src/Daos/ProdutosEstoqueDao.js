@@ -1,6 +1,7 @@
 /* Imports */
 
 const mongooseStringQuery = require('mongoose-string-query');
+const { resolve } = require('path');
 const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('./../../models/Responses/Exceptions')
 const sucessClass = require('./../../models/Responses/Sucess')
@@ -13,6 +14,7 @@ var ProdutosEstoque = null
 
 /* */
 class ProdutosEstoqueDao {
+
     constructor() {
         const ProdutosEstoqueSchema = this.getProdutosEstoqueSchema()
 
@@ -21,10 +23,10 @@ class ProdutosEstoqueDao {
         ProdutosEstoque = mongoose.model('produtos_estoque', ProdutosEstoqueSchema);
     }
 
-    create(UserModel) {
+    create(EstoqueModel) {
         return new Promise(function (resolve, reject) {
 
-            const produtosEstoque = new ProdutosEstoque(UserModel)
+            const produtosEstoque = new ProdutosEstoque(EstoqueModel)
 
             produtosEstoque.save()
                 .then(data => {
@@ -45,13 +47,81 @@ class ProdutosEstoqueDao {
         })
     }
 
+    findOne(EstoqueModel) {
+        return new Promise(function (resolve, reject) {
+            let nome = EstoqueModel.nome;
+            let id = EstoqueModel.id;
+
+            let obj = new Object()
+            obj.nome = nome
+            obj.id = id
+
+            try {
+                ProdutosEstoque.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+
+                    if (data) {
+                        resolve()
+                    }
+                    else {
+                        reject()
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
+
+    update(EstoqueModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let id = EstoqueModel.id
+                let obj = new Object();
+                obj.id = id
+                ProdutosEstoque.update(obj, EstoqueModel).then().catch()
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    delete(EstoqueModel){
+        return new Promise(function (resolve, reject) {
+            try {
+                let obj = new Object();
+                obj.id = EstoqueModel.id;
+
+                ProdutosEstoque.deleteOne(obj, EstoqueModel)
+                    .then(data => {
+                        try{
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     getProdutosEstoqueSchema() {
         const UserSchema = new mongoose.Schema(
             {
-                codigo: {
-                    type: int,
-                    required: true,
-                },
                 nome: {
                     type: String,
                     required: true,
