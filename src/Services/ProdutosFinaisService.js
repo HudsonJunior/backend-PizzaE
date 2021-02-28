@@ -45,7 +45,7 @@ class ProdutosFinaisService {
         })
     }
 
-    existeProdutos(produtos) {
+    existemProdutos (produtos) {
         return new Promise (async function (resolve, reject) {
             try{
                 var produtoEncontrado = false
