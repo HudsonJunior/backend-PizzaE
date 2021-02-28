@@ -22,9 +22,86 @@ module.exports = function (server) {
                 produtoModel = new PizzaModel(data);
             }
 
-            const produtoService = new ProdutosFinaisService();
+            const produtoService = new ProdutosFinaisService(data.tipo);
 
             produtoService.create(produtoModel)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.patch('/produtos-finais', function (req, res, next) {
+        try {
+            let data = JSON.parse(req.body) || {}
+
+            let produtoModel;
+
+            if (data.tipo === "Normal") {
+                produtoModel = new ProdutoNormalModel(data);
+            }
+            else {
+                produtoModel = new PizzaModel(data);
+            }
+
+            const produtoService = new ProdutosFinaisService(data.tipo);
+
+            produtoService.update(produtoModel)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.delete('/produtos-finais', function (req, res, next) {
+
+        try {
+            let data = JSON.parse(req.body) || {}
+
+            let produtoModel;
+
+            if (data.tipo === "Normal") {
+                produtoModel = new ProdutoNormalModel(data);
+            }
+            else {
+                produtoModel = new PizzaModel(data);
+            }
+
+            const produtoService = new ProdutosFinaisService(data.tipo);
+
+            produtoService.delete(produtoModel)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
