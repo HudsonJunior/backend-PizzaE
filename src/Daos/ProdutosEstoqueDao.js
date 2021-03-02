@@ -12,7 +12,7 @@ const Sucess = new sucessClass()
 
 var ProdutosEstoque = null
 
-/* */
+/* */   
 class ProdutosEstoqueDao {
 
     constructor() {
