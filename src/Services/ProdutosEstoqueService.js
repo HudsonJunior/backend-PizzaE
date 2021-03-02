@@ -130,6 +130,27 @@ class ProdutosEstoqueService {
             resolve(list)
             }
         )}
+
+    async existemProdutosEstoque (produtosEstoque) {
+            return new Promise (async function (resolve, reject) {
+                try{
+                    var produtoEstoqueEncontrado = false
+                    produtosEstoque.map( produtoEstoque => {
+                        produtosEstoqueDao.findOne(produtoEstoque)
+                        .then(result => {
+                            resolve()
+                        })
+                        .catch(error => {
+                            produtoEstoqueEncontrado = false
+                            reject(error)
+                        });
+                    })
+                }
+                catch (error) {
+                    reject(error)
+                }
+            })
+        }
 }
 
 module.exports = ProdutosEstoqueService
