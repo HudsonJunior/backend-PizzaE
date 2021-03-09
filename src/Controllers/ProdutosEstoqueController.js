@@ -74,7 +74,7 @@ module.exports = function (server) {
         }
     })
 
-    server.delete('/produtos-estoque', function (req, res, next) {
+    server.del('/produtos-estoque', function (req, res, next) {
 
         try {
             let data = JSON.parse(req.body) || {}

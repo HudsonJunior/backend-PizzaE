@@ -14,8 +14,8 @@ class ProdutosEstoqueService {
         produtosEstoqueDao = new ProdutosEstoqueDao()
     }
 
-    async create(EstoqueModel) {
-        return new Promise(async function (resolve, reject) {
+    create(EstoqueModel) {
+        return new Promise(function (resolve, reject) {
             try {
                 let produtoCadastrado = false
 
@@ -45,8 +45,8 @@ class ProdutosEstoqueService {
         })
     }
 
-    async update(EstoqueModel) {
-        return new Promise(async function (resolve, reject) {
+    update(EstoqueModel) {
+        return new Promise(function (resolve, reject) {
             try {
                 let produtoEstoque;
 
@@ -77,8 +77,8 @@ class ProdutosEstoqueService {
         })
     }
 
-    async delete(EstoqueModel, codItem) {
-        return new Promise(async function (resolve, reject) {
+    delete(EstoqueModel, codItem) {
+        return new Promise(function (resolve, reject) {
             try {
                 EstoqueModel.ativado = false;
 
@@ -119,8 +119,8 @@ class ProdutosEstoqueService {
         })
     }
 
-    async deleteElement(list, codigo) {
-        return new Promise(async function (resolve, reject) {
+    deleteElement(list, codigo) {
+        return new Promise(function (resolve, reject) {
 
             list.map((item, index) => {
                 if (item.codigo == codigo) {
@@ -132,8 +132,8 @@ class ProdutosEstoqueService {
         )
     }
 
-    async existemProdutosEstoque(produtosEstoque) {
-        return new Promise(async function (resolve, reject) {
+    existemProdutosEstoque(produtosEstoque) {
+        return new Promise(function (resolve, reject) {
             try {
                 var produtoEstoqueEncontrado = false
                 produtosEstoque.map(produtoEstoque => {

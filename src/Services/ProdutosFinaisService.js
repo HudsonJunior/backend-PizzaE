@@ -5,7 +5,7 @@ ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao')
 const exceptionsClass = require('./../Models/Responses/Exceptions')
 
 var produtosFinaisService
-var produtosFinaisDal
+var produtosFinaisDao
 const Exceptions = new exceptionsClass()
 
 /* */
@@ -13,16 +13,15 @@ const Exceptions = new exceptionsClass()
 class ProdutosFinaisService {
     constructor(tipoProduto) {
         produtosFinaisService = this
-        produtosFinaisDal = new ProdutosFinaisDao(tipoProduto)
+        produtosFinaisDao = new ProdutosFinaisDao(tipoProduto)
     }
 
-    async create(ProdutoModel) {
-
-        return new Promise(async function (resolve, reject) {
+    create(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
             try {
                 let produtoCadastrado = false;
 
-                produtosFinaisDal.findOne(ProdutoModel)
+                produtosFinaisDao.findOne(ProdutoModel)
                     .then(result => {
                         produtoCadastrado = true;
                         reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
@@ -32,7 +31,7 @@ class ProdutosFinaisService {
                     });
 
                 if (!produtoCadastrado) {
-                    produtosFinaisDal.create(ProdutoModel)
+                    produtosFinaisDao.create(ProdutoModel)
                         .then(result => {
                             resolve(result)
                         })
@@ -47,12 +46,12 @@ class ProdutosFinaisService {
         })
     }
 
-    async update(ProdutoModel) {
-        return new Promise(async function (resolve, reject) {
+    update(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
             try {
                 let produto;
 
-                produtosFinaisDal.findOne(ProdutoModel)
+                produtosFinaisDao.findOne(ProdutoModel)
                     .then(result => {
                         produto = result;
                     })
@@ -64,7 +63,7 @@ class ProdutosFinaisService {
                     reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
                 }
                 else {
-                    produtosFinaisDal.update(ProdutoModel)
+                    produtosFinaisDao.update(ProdutoModel)
                         .then(result => {
                             resolve(result)
                         })
@@ -80,12 +79,12 @@ class ProdutosFinaisService {
 
     }
 
-    async delete(ProdutoModel) {
-        return new Promise(async function (resolve, reject) {
+    delete(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
             try {
                 ProdutoModel.ativado = false;
 
-                produtosFinaisDal.delete(ProdutoModel)
+                produtosFinaisDao.delete(ProdutoModel)
                     .then(result => {
                         resolve(result)
                     })
@@ -101,11 +100,11 @@ class ProdutosFinaisService {
     }
 
     existemProdutos(produtos) {
-        return new Promise(async function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             try {
                 var produtoEncontrado = false
                 produtos.map(produto => {
-                    produtosFinaisDal.findOne(produto)
+                    produtosFinaisDao.findOne(produto)
                         .then(result => {
                             resolve()
                         })

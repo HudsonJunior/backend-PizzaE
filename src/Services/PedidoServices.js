@@ -1,7 +1,7 @@
 /* imports */
 
 const Cpf = require('./../Common/Cpf')
-const ClientesService = require('../Services/ProdutosFinaisService');
+const ClientesService = require('../Services/ClientesService');
 const PedidoDao = require('../Daos/PedidoDao');
 /* Global variables*/
 
@@ -16,8 +16,8 @@ class PedidoServices {
         pedidoServices = this
     }
 
-    async create(pedidoModel) {
-        return new Promise(async function (resolve, reject) {
+    create(pedidoModel) {
+        return new Promise(function (resolve, reject) {
             try {
 
                 pedidoModel.codigo = Math.random() * 10
@@ -43,8 +43,8 @@ class PedidoServices {
         })
     }
 
-    async get(dataPedido) {
-        return new Promise(async function (resolve, reject) {
+    get(dataPedido) {
+        return new Promise(function (resolve, reject) {
             try {
                 pedidoDao.get(dataPedido)
                     .then(result => {
@@ -62,7 +62,7 @@ class PedidoServices {
     }
 
     validateExpedicao(formaExpedicao, cpfCliente) {
-        return new Promise(async function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             try {
                 if (formaExpedicao == 'entrega')
                     clienteService.existeCliente(cpfCliente)

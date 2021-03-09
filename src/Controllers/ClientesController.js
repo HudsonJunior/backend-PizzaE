@@ -1,7 +1,7 @@
 /* Imports*/
 
-const ClientesModel = require('../../Models/ClientesModel')
-const ClientesService = require('../../Services/ProdutosFinaisService')
+const ClientesModel = require('../Models/ClientesModel')
+const ClientesService = require('../Services/ProdutosFinaisService')
 
 /**/
 
@@ -41,12 +41,12 @@ module.exports = function (server) {
         }
     })
 
-    server.get('/clientes', function (req, res, next) {
+    server.get('/clientes/:cpf', function (req, res, next) {
 
         try {
             clientesModel = new ClientesModel(data);
 
-            const cpfClientes = req.query.cpf
+            const cpfClientes = req.params.cpf
 
             clientesService.get(cpfClientes)
                 .then(jsonSuccess => {
