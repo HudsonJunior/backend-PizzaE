@@ -1,7 +1,7 @@
 /* Imports*/
 
 const PedidoModel = require('../Models/PedidoModel.js')
-const PedidoServices = require('../../Services/User/PedidoServices.js')
+const PedidoServices = require('./../Services/PedidoServices.js')
 /**/
 
 module.exports = function (server) {
@@ -41,7 +41,7 @@ module.exports = function (server) {
     server.get('/pedido', function (req, res, next) {
         try {
             const pedidoServices = new PedidoServices();
-            
+
             let dataPedido = req.query.data
 
             pedidoServices.get(dataPedido)

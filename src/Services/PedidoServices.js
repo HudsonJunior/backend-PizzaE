@@ -1,29 +1,19 @@
 /* imports */
 
-const mongoose = require('../../Connection/connectionMongo');
-const exceptionsClass = require('./../../models/Responses/Exceptions')
-const UserResponse = require('./../../Models/Responses/UserResponse')
-const UserDal = require('./../../Daos/User/UserDal')
-const string = require('../../Common/String')
-const Crypto = require('./../../common/Crypto')
-const Cpf = require('../../Common/Cpf')
-const UserValue = require('./../../Values/UserValue')
-const AuthValue = require('./../../Values/AuthValue')
-const existeProdutos = require('../Services/ProdutosFinaisService');
-const ProdutosFinaisService = require('../Services/ProdutosFinaisService');
-const PedidoDal = require('../Daos/PedidoDal');
+const Cpf = require('./../Common/Cpf')
+const ClientesService = require('../Services/ProdutosFinaisService');
+const PedidoDao = require('../Daos/PedidoDao');
 /* Global variables*/
 
-const Exceptions = new exceptionsClass()
-const userDal = new UserDal()
+var pedidoDao = new PedidoDao();
 
-var PedidoServices
-
+var pedidoServices
+var clienteService = new ClientesService()
 /* */
 
 class PedidoServices {
     constructor() {
-        PedidoServices = this
+        pedidoServices = this
     }
 
     async create(pedidoModel) {
@@ -31,14 +21,14 @@ class PedidoServices {
             try {
 
                 pedidoModel.codigo = Math.random() * 10
-                
-                pedidoModel.cpfCliente = string.validateCpf(pedidoModel.cpfCliente)
 
-                pedidoModel.cpfNF = string.validateCpf(pedidoModel.cpfNF)
+                pedidoModel.cpfCliente = Cpf.validateCpf(pedidoModel.cpfCliente)
 
-                let validateExpedicao = await PedidoServices.validateExpedicao(pedidoModel.formaExpedicao, pedidoModel.cpfCliente)
+                pedidoModel.cpfNF = Cpf.validateCpf(pedidoModel.cpfNF)
 
-                pedidoDal.create(pedidoModel)
+                let validateExpedicao = await pedidoServices.validateExpedicao(pedidoModel.formaExpedicao, pedidoModel.cpfCliente)
+
+                pedidoDao.create(pedidoModel)
                     .then(result => {
                         resolve(result)
                     })
@@ -56,7 +46,7 @@ class PedidoServices {
     async get(dataPedido) {
         return new Promise(async function (resolve, reject) {
             try {
-                pedidoDal.get(dataPedido)
+                pedidoDao.get(dataPedido)
                     .then(result => {
                         resolve(result)
                     })
@@ -71,45 +61,21 @@ class PedidoServices {
         })
     }
 
-    existeCliente (cpfCliente) {
-        return new Promise (async function (resolve, reject) {
+    validateExpedicao(formaExpedicao, cpfCliente) {
+        return new Promise(async function (resolve, reject) {
             try {
-                
-                var clienteEncontrado = false
-                
-                clienteDal.findOne(cpfCliente)
-                
-                .then(result => {
-                    clienteEncontrado = true;
-                    resolve()
-                })
-                .catch(error => {
-                    clienteEncontrado = false;
-                    reject(error)
-                });
-            }
-            catch (error) {
-                reject(error)
-            }
-        })
-    }
-
-    validateExpedicao (formaExpedicao, cpfCliente) {
-        return new Promise (async function (resolve, reject) {
-            try {
-                
                 if (formaExpedicao == 'entrega')
-                    existeCliente(cpfCliente)
-                    .then(result => {
-                        resolve()
-                    })
-                    .catch(error => {
-                        reject(error)
-                    })
+                    clienteService.existeCliente(cpfCliente)
+                        .then(result => {
+                            resolve(result)
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
             }
             catch (error) {
                 reject(error)
-            } 
+            }
         })
     }
 }

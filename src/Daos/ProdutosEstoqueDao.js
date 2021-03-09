@@ -3,8 +3,8 @@
 const mongooseStringQuery = require('mongoose-string-query');
 const { resolve } = require('path');
 const mongoose = require('../Connection/connectionMongo');
-const exceptionsClass = require('./../../models/Responses/Exceptions')
-const sucessClass = require('./../../models/Responses/Sucess')
+const exceptionsClass = require('./../Models/Responses/Exceptions')
+const sucessClass = require('./../Models/Responses/Sucess')
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
@@ -91,7 +91,7 @@ class ProdutosEstoqueDao {
         })
     }
 
-    delete(EstoqueModel){
+    delete(EstoqueModel) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
@@ -99,7 +99,7 @@ class ProdutosEstoqueDao {
 
                 ProdutosEstoque.deleteOne(obj, EstoqueModel)
                     .then(data => {
-                        try{
+                        try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
 
                             resolve(jsonSucess)

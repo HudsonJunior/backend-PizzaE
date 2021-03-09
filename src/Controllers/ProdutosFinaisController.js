@@ -7,7 +7,6 @@ const ProdutosFinaisService = require('../Services/ProdutosFinaisService')
 /**/
 
 module.exports = function (server) {
-
     server.post('/produtos-finais', function (req, res, next) {
 
         try {
@@ -47,7 +46,7 @@ module.exports = function (server) {
         }
     })
 
-    server.patch('/produtos-finais', function (req, res, next) {
+    server.put('/produtos-finais', function (req, res, next) {
         try {
             let data = JSON.parse(req.body) || {}
 
@@ -85,7 +84,7 @@ module.exports = function (server) {
         }
     })
 
-    server.delete('/produtos-finais', function (req, res, next) {
+    server.del('/produtos-finais', function (req, res, next) {
 
         try {
             let data = JSON.parse(req.body) || {}

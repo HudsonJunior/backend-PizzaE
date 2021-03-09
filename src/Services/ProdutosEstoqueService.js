@@ -12,7 +12,6 @@ class ProdutosEstoqueService {
     constructor() {
         produtosEstoqueService = this
         produtosEstoqueDao = new ProdutosEstoqueDao()
-
     }
 
     async create(EstoqueModel) {
@@ -29,6 +28,7 @@ class ProdutosEstoqueService {
                     .catch(error => {
                         reject(error)
                     });
+
                 if (!produtoCadastrado) {
                     produtosEstoqueDao.create(UserModel)
                         .then(result => {
@@ -82,7 +82,7 @@ class ProdutosEstoqueService {
             try {
                 EstoqueModel.ativado = false;
 
-                
+
                 deleteElement(EstoqueModel.itens, codItem)
                     .then(result => {
                         EstoqueModel.itens = result
@@ -94,22 +94,22 @@ class ProdutosEstoqueService {
                         reject(error)
                     })
 
-                if(EstoqueModel.quantidade <= 0){
+                if (EstoqueModel.quantidade <= 0) {
                     produtosEstoqueDao.delete(EstoqueModel)
-                    .then(result => {
-                        resolve(result)
-                    })
-                    .catch(error => {
-                        reject(error)
-                    })
-                }else{
+                        .then(result => {
+                            resolve(result)
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
+                } else {
                     produtosEstoqueService.update(EstoqueModel)
-                    .then(result => {
-                        resolve(result)
-                    })
-                    .catch(error => {
-                        reject(error)
-                    })
+                        .then(result => {
+                            resolve(result)
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
                 }
 
             }
@@ -128,15 +128,16 @@ class ProdutosEstoqueService {
                 }
             })
             resolve(list)
-            }
-        )}
+        }
+        )
+    }
 
-    async existemProdutosEstoque (produtosEstoque) {
-            return new Promise (async function (resolve, reject) {
-                try{
-                    var produtoEstoqueEncontrado = false
-                    produtosEstoque.map( produtoEstoque => {
-                        produtosEstoqueDao.findOne(produtoEstoque)
+    async existemProdutosEstoque(produtosEstoque) {
+        return new Promise(async function (resolve, reject) {
+            try {
+                var produtoEstoqueEncontrado = false
+                produtosEstoque.map(produtoEstoque => {
+                    produtosEstoqueDao.findOne(produtoEstoque)
                         .then(result => {
                             resolve()
                         })
@@ -144,13 +145,13 @@ class ProdutosEstoqueService {
                             produtoEstoqueEncontrado = false
                             reject(error)
                         });
-                    })
-                }
-                catch (error) {
-                    reject(error)
-                }
-            })
-        }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
 
 module.exports = ProdutosEstoqueService

@@ -1,6 +1,6 @@
 /* imports */
 
-ProdutosFinaisDal = require('./../Daos/ProdutosFinaisDal')
+ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao')
 /* Global variables*/
 const exceptionsClass = require('./../Models/Responses/Exceptions')
 
@@ -13,7 +13,7 @@ const Exceptions = new exceptionsClass()
 class ProdutosFinaisService {
     constructor(tipoProduto) {
         produtosFinaisService = this
-        produtosFinaisDal = ProdutosFinaisDal(tipoProduto)
+        produtosFinaisDal = new ProdutosFinaisDao(tipoProduto)
     }
 
     async create(ProdutoModel) {
@@ -46,7 +46,7 @@ class ProdutosFinaisService {
             }
         })
     }
-            
+
     async update(ProdutoModel) {
         return new Promise(async function (resolve, reject) {
             try {
@@ -77,7 +77,7 @@ class ProdutosFinaisService {
                 reject(error)
             }
         })
-        
+
     }
 
     async delete(ProdutoModel) {
@@ -100,19 +100,19 @@ class ProdutosFinaisService {
         })
     }
 
-    existemProdutos (produtos) {
-        return new Promise (async function (resolve, reject) {
-            try{
+    existemProdutos(produtos) {
+        return new Promise(async function (resolve, reject) {
+            try {
                 var produtoEncontrado = false
-                produtos.map( produto => {
+                produtos.map(produto => {
                     produtosFinaisDal.findOne(produto)
-                    .then(result => {
-                        resolve()
-                    })
-                    .catch(error => {
-                        produtoEncontrado = false
-                        reject(error)
-                    });
+                        .then(result => {
+                            resolve()
+                        })
+                        .catch(error => {
+                            produtoEncontrado = false
+                            reject(error)
+                        });
                 })
             }
             catch (error) {
