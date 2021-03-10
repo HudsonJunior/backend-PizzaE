@@ -2,8 +2,8 @@
 
 const mongooseStringQuery = require('mongoose-string-query');
 const mongoose = require('../Connection/connectionMongo');
-const exceptionsClass = require('./../../models/Responses/Exceptions')
-const sucessClass = require('./../../models/Responses/Sucess')
+const exceptionsClass = require('./../Models/Responses/Exceptions')
+const sucessClass = require('./../Models/Responses/Sucess')
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
@@ -45,7 +45,7 @@ class ClientesDal {
         })
     }
 
-    delete(ClientesModel){
+    delete(ClientesModel) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
@@ -53,7 +53,7 @@ class ClientesDal {
 
                 Clientes.deleteOne(obj, ClientesModel)
                     .then(data => {
-                        try{
+                        try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
 
                             resolve(jsonSucess)
@@ -73,14 +73,14 @@ class ClientesDal {
         })
     }
 
-    getCliente(cpfCliente){
+    getCliente(cpfCliente) {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.cpf = cpfCliente;
             try {
                 Clientes.find(obj)
                     .then(data => {
-                        try{
+                        try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
 
                             resolve(jsonSucess)
@@ -100,13 +100,13 @@ class ClientesDal {
         })
     }
 
-    list(cpfCliente){
+    list(cpfCliente) {
         return new Promise(function (resolve, reject) {
-        
+
             try {
                 Clientes.find({})
                     .then(data => {
-                        try{
+                        try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
 
                             resolve(jsonSucess)
@@ -142,28 +142,28 @@ class ClientesDal {
 
 
 
-    validatePrimaryKey(field, value){
-        return new Promise(function(resolve,reject){
+    validatePrimaryKey(field, value) {
+        return new Promise(function (resolve, reject) {
 
             let obj = new Object()
             obj[field] = value
 
-            try{
-                Cliente.findOne(obj,function (err,data){
-                    if(err){
+            try {
+                Cliente.findOne(obj, function (err, data) {
+                    if (err) {
                         console.log(err)
                         reject()
                     }
 
-                    if(!data){
+                    if (!data) {
                         resolve()
                     }
-                    else{
+                    else {
                         reject()
                     }
                 })
             }
-            catch(error){
+            catch (error) {
                 reject
             }
         })

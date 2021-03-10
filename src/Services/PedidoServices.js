@@ -16,8 +16,8 @@ class PedidoServices {
         pedidoServices = this
     }
 
-    create(pedidoModel) {
-        return new Promise(function (resolve, reject) {
+    async create(pedidoModel) {
+        return new Promise(async function (resolve, reject) {
             try {
 
                 pedidoModel.codigo = Math.random() * 10
