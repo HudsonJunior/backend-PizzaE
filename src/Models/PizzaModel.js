@@ -3,9 +3,9 @@ class PizzaModel {
 
     constructor(data) {
         this.id = data.id || 0
-        this.nome = data.valor
+        this.nome = data.nome
         this.valor = data.valor
-        this.indregientes = data.indregientes
+        this.ingredientes = data.ingredientes
         this.peso = data.peso
         this.ativado = data.ativado
         this.valor_promocional = data.valor_promocional
