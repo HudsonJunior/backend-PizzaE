@@ -47,10 +47,9 @@ class ProdutosEstoqueDao {
         })
     }
 
-    findOne(EstoqueModel) {
+    findOne(idProduto) {
         return new Promise(function (resolve, reject) {
-            let nome = EstoqueModel.nome;
-            let id = EstoqueModel.id;
+            let id = idProduto;
 
             let obj = new Object()
             obj.nome = nome
@@ -74,6 +73,39 @@ class ProdutosEstoqueDao {
                 reject(error)
             }
 
+        })
+    }
+
+    list(estoqueModel, aVencer) {
+        return new Promise(function (resolve, reject) {
+            let obj = new Object()
+            
+            if(aVencer){
+                obj.data = estoqueModel;
+            }else{
+                obj.data = {};
+            }
+
+            try {
+                ProdutosEstoque.find(obj)
+                    .then(data => {
+                        try {
+                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
+
+                            resolve(jsonSucess)
+                        }
+                        catch (error) {
+                            console.log(error)
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
         })
     }
 
@@ -120,7 +152,7 @@ class ProdutosEstoqueDao {
     }
 
     getProdutosEstoqueSchema() {
-        const UserSchema = new mongoose.Schema(
+        const ProdutosEstoqueSchema = new mongoose.Schema(
             {
                 nome: {
                     type: String,
@@ -131,19 +163,20 @@ class ProdutosEstoqueDao {
                     required: false,
                 },
                 quantidade: {
-                    type: int,
-                    required: true,
-                },
-                quantidade_minima: {
-                    type: int,
+                    type: String,
                     required: true,
                 },
                 itens: {
                     type: Object,
                     required: true,
+                },
+                quantidade_minima: {
+                    type: String,
+                    required: true,
                 }
-            },
+            }
         );
+        return ProdutosEstoqueSchema;
     }
 }
 

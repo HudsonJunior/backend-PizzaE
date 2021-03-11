@@ -10,7 +10,9 @@ module.exports = function (server) {
     server.post('/produtos-estoque', function (req, res, next) {
 
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
+
+            console.log("data ", data);
 
             let produtoEstoque;
 
@@ -43,7 +45,7 @@ module.exports = function (server) {
 
     server.patch('/produtos-estoque', function (req, res, next) {
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
 
             let estoqueModel;
 
@@ -77,7 +79,7 @@ module.exports = function (server) {
     server.del('/produtos-estoque', function (req, res, next) {
 
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
 
             let estoqueModel;
 
@@ -88,6 +90,72 @@ module.exports = function (server) {
             const estoqueService = new ProdutosEstoqueService();
 
             estoqueService.delete(estoqueModel, codItem)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.get('/produtos-estoque', function (req, res, next) {
+
+        try {
+            let data = req.body || {}
+
+            let aVencer = req.body.aVencer;
+
+            let estoqueModel;
+
+            estoqueModel = new ProdutoEstoqueModel();
+
+            const estoqueService = new ProdutosEstoqueService();
+
+            estoqueService.list(estoqueModel, aVencer)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSucess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.get('/produtos-estoque/:id', function (req, res, next) {
+
+        try {
+            estoqueModel = new ProdutosEstoqueModel(data);
+
+            const idProduto = req.params.id
+
+            .get(idProduto)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 

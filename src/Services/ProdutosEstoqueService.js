@@ -152,6 +152,42 @@ class ProdutosEstoqueService {
             }
         })
     }
+
+    list(estoqueModel, aVencer) {
+        return new Promise(function (resolve, reject) {
+            try {
+                produtosEstoqueDao.list(estoqueModel, aVencer)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    get(idProduto) {
+        return new Promise(function (resolve, reject) {
+            try {
+                produtosEstoqueDao.findOne(idProduto)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
 
 module.exports = ProdutosEstoqueService
