@@ -9,7 +9,7 @@ module.exports = function (server) {
     server.post('/pedido', function (req, res, next) {
 
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
 
             let pedidoModel = new PedidoModel(data);
 
