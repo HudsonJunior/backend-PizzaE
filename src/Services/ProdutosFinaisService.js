@@ -11,34 +11,36 @@ const Exceptions = new exceptionsClass()
 /* */
 
 class ProdutosFinaisService {
-    constructor(tipoProduto) {
+    constructor() {
         produtosFinaisService = this
-        produtosFinaisDao = new ProdutosFinaisDao(tipoProduto)
+        produtosFinaisDao = new ProdutosFinaisDao()
     }
 
     create(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let produtoCadastrado = false;
 
                 produtosFinaisDao.findOne(ProdutoModel)
                     .then(result => {
-                        produtoCadastrado = true;
-                        reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
+
+                        if (result) reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
+
+                        else {
+                            produtosFinaisDao.create(ProdutoModel)
+                                .then(result => {
+                                    resolve(result)
+                                })
+                                .catch(error => {
+                                    reject(error)
+                                })
+
+                        }
                     })
                     .catch(error => {
                         reject(error)
                     });
 
-                if (!produtoCadastrado) {
-                    produtosFinaisDao.create(ProdutoModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
+
             }
             catch (error) {
                 reject(error)
@@ -54,23 +56,30 @@ class ProdutosFinaisService {
                 produtosFinaisDao.findOne(ProdutoModel)
                     .then(result => {
                         produto = result;
+
+                        if (produto) {
+                            if (produto._id != ProdutoModel.id || produto.nome != ProdutoModel.nome) {
+                                reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
+                            }
+                            else {
+                                produtosFinaisDao.update(ProdutoModel)
+                                    .then(result => {
+                                        resolve(result)
+                                    })
+                                    .catch(error => {
+                                        reject(error)
+                                    })
+                            }
+                        }
+                        else {
+                            reject(Exceptions.generateException(400, "Produto não encontrado", "Não foi encontrado nenhum produto com esse nome ou código para alteração"))
+                        }
+
                     })
                     .catch(error => {
                         reject(error)
                     });
 
-                if (produto.id != ProdutoModel.id || produto.id != ProdutoModel.id) {
-                    reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
-                }
-                else {
-                    produtosFinaisDao.update(ProdutoModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
             }
             catch (error) {
                 reject(error)
@@ -78,6 +87,46 @@ class ProdutosFinaisService {
         })
 
     }
+
+    get(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                if (ProdutoModel.nome) {
+                    produtosFinaisDao.findOne(ProdutoModel)
+                        .then(result => {
+                            if (result)
+                                resolve(result)
+                            else {
+                                reject(Exceptions.generateException(400, "Produto não encontrado", "Não foi encontrado nenhum produto com esse nome ou código"))
+
+                            }
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
+                }
+                else {
+                    produtosFinaisDao.list()
+                        .then(result => {
+                            if (result)
+                                resolve(result)
+                            else {
+                                reject(Exceptions.generateException(400, "Produto não encontrado", "Não foi encontrado nenhum produto com esse nome ou código"))
+
+                            }
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
+                }
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 
     delete(ProdutoModel) {
         return new Promise(function (resolve, reject) {

@@ -84,7 +84,7 @@ class PedidoDal {
                 Pedido.find(obj)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
+                            const jsonSucess = Sucess.generateJsonSucess(200, data)
 
                             resolve(jsonSucess)
                         }
@@ -93,7 +93,7 @@ class PedidoDal {
                         }
                     })
                     .catch(error => {
-                        console.log(error)
+                        console.log('errou', error)
                         reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
                     })
             }
@@ -102,7 +102,6 @@ class PedidoDal {
             }
         })
     }
-
 
     getPedidoSchema() {
         const PedidoSchema = new mongoose.Schema(

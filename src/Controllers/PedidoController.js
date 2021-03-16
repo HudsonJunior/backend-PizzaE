@@ -46,19 +46,15 @@ module.exports = function (server) {
 
             pedidoServices.get(dataPedido)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
 
-                    delete jsonSucess.code
 
-                    res.json(code, jsonSuccess)
+                    res.json(200, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
-                    const code = jsonError.code
 
-                    delete jsonError.code
 
-                    res.json(code, jsonError)
+                    res.json(400, jsonError)
                     next()
                 })
         }
