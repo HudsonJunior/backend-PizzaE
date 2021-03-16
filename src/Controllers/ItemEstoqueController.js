@@ -1,7 +1,8 @@
 /* Imports*/
 
 const ProdutoEstoqueModel = require('../Models/ProdutoEstoqueModel')
-const ProdutosEstoqueService = require('../Services/ProdutosEstoqueService')
+const ItemEstoqueModel = require('../Models/ItemEstoqueModel')
+const ItemEstoqueService = require('../Services/ItemEstoqueService')
 
 /**/
 
@@ -14,13 +15,13 @@ module.exports = function (server) {
 
             console.log("data ", data);
 
-            let produtoEstoque;
+            let itemEstoque;
 
-            produtoEstoque = new ProdutoEstoqueModel(data);
+            itemEstoque = new ItemEstoqueModel(data);
 
-            const produtoService = new ProdutosEstoqueService();
+            const itemService = new ItemEstoqueService();
 
-            produtoService.create(produtoEstoque)
+            itemService.create(itemEstoque)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -47,13 +48,13 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            let estoqueModel;
+            let itemModel;
 
-            estoqueModel = new ProdutoEstoqueModel();
+            itemModel = new ItemEstoqueModel();
 
-            const produtoService = new ProdutosEstoqueService();
+            const itemService = new ItemEstoqueService();
 
-            produtoService.update(estoqueModel)
+            itemService.update(itemModel)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -81,15 +82,15 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            let estoqueModel;
+            let itemModel;
 
-            estoqueModel = new ProdutoEstoqueModel();
+            itemModel = new ItemEstoqueModel();
 
             let codItem = req.query.codigo;
 
-            const estoqueService = new ProdutosEstoqueService();
+            const itemService = new ItemEstoqueService();
 
-            estoqueService.delete(estoqueModel, codItem)
+            itemService.delete(itemModel, codItem)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -119,13 +120,13 @@ module.exports = function (server) {
 
             let aVencer = req.body.aVencer;
 
-            let estoqueModel;
+            let itemModel;
 
-            estoqueModel = new ProdutoEstoqueModel();
+            itemModel = new ItemEstoqueModel();
 
-            const estoqueService = new ProdutosEstoqueService();
+            const itemService = new ItemEstoqueService();
 
-            estoqueService.list(estoqueModel, aVencer)
+            itemService.list(itemModel, aVencer)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -151,11 +152,11 @@ module.exports = function (server) {
     server.get('/produtos-estoque/:id', function (req, res, next) {
 
         try {
-            estoqueModel = new ProdutosEstoqueModel(data);
+            itemModel = new ItemEstoqueModel(data);
 
-            const idProduto = req.params.id
+            const idItem = req.params.id
 
-            .get(idProduto)
+            .get(idItem)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 

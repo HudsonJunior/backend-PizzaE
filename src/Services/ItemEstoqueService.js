@@ -1,36 +1,36 @@
 /* imports */
-const ProdutosEstoqueDao = require('./../Daos/ProdutosEstoqueDao')
+const ItemEstoqueDao = require('../Daos/ItemEstoqueDao')
 /* Global variables*/
-const exceptionsClass = require('./../Models/Responses/Exceptions')
+const exceptionsClass = require('../Models/Responses/Exceptions')
 const Exceptions = new exceptionsClass()
 
-var produtosEstoqueService
-var produtosEstoqueDao
+var itemEstoqueService
+var itemEstoqueDao
 /* */
 
-class ProdutosEstoqueService {
+class ItemEstoqueService {
     constructor() {
-        produtosEstoqueService = this
-        produtosEstoqueDao = new ProdutosEstoqueDao()
+        itemEstoqueService = this
+        itemEstoqueDao = new ItemEstoqueDao()
     }
 
-    create(EstoqueModel) {
+    create(ItemModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let produtoCadastrado = false
+                let itemCadastrado = false
 
 
-                produtosEstoqueDao.findOne(EstoqueModel)
+                itemEstoqueDao.findOne(ItemModel)
                     .then(result => {
-                        produtoCadastrado = true;
+                        itemCadastrado = true;
                         reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
                     })
                     .catch(error => {
                         reject(error)
                     });
 
-                if (!produtoCadastrado) {
-                    produtosEstoqueDao.create(UserModel)
+                if (!itemCadastrado) {
+                    itemEstoqueDao.create(ItemModel)
                         .then(result => {
                             resolve(result)
                         })
@@ -45,24 +45,24 @@ class ProdutosEstoqueService {
         })
     }
 
-    update(EstoqueModel) {
+    update(ItemModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let produtoEstoque;
+                let itemEstoque;
 
-                produtosEstoqueDao.findOne(EstoqueModel)
+                produtosEstoqueDao.findOne(ItemModel)
                     .then(result => {
-                        produtoEstoque = result;
+                        itemEstoque = result;
                     })
                     .catch(error => {
                         reject(error)
                     });
 
-                if (produtoEstoque.id != EstoqueModel.id || produtoEstoque.nome != EstoqueModel.nome) {
+                if (itemEstoque.id != ItemModel.id || itemEstoque.nome != ItemModel.nome) {
                     reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
                 }
                 else {
-                    produtosEstoqueDao.update(EstoqueModel)
+                    itemEstoqueDao.update(ItemModel)
                         .then(result => {
                             resolve(result)
                         })
@@ -77,16 +77,16 @@ class ProdutosEstoqueService {
         })
     }
 
-    delete(EstoqueModel, codItem) {
+    delete(ItemModel, codItem) {
         return new Promise(function (resolve, reject) {
             try {
-                EstoqueModel.ativado = false;
+                ItemModel.ativado = false;
 
 
-                deleteElement(EstoqueModel.itens, codItem)
+                deleteElement(ItemModel.itens, codItem)
                     .then(result => {
-                        EstoqueModel.itens = result
-                        EstoqueModel.quantidade = EstoqueModel.quantidade - 1;
+                       // ItemModel.itens = result
+                       // ItemModel.quantidade = ItemModel.quantidade - 1;
 
                         resolve(result)
                     })
@@ -94,8 +94,8 @@ class ProdutosEstoqueService {
                         reject(error)
                     })
 
-                if (EstoqueModel.quantidade <= 0) {
-                    produtosEstoqueDao.delete(EstoqueModel)
+                if (ItemModel.quantidade <= 0) {
+                    itemEstoqueDao.delete(ItemModel)
                         .then(result => {
                             resolve(result)
                         })
@@ -103,7 +103,7 @@ class ProdutosEstoqueService {
                             reject(error)
                         })
                 } else {
-                    produtosEstoqueService.update(EstoqueModel)
+                    itemEstoqueService.update(ItemModel)
                         .then(result => {
                             resolve(result)
                         })
@@ -132,17 +132,17 @@ class ProdutosEstoqueService {
         )
     }
 
-    existemProdutosEstoque(produtosEstoque) {
+    existemItemEstoque(itemEstoque) {
         return new Promise(function (resolve, reject) {
             try {
-                var produtoEstoqueEncontrado = false
-                produtosEstoque.map(produtoEstoque => {
-                    produtosEstoqueDao.findOne(produtoEstoque)
+                var itemEstoqueEncontrado = false
+                itemEstoque.map(itemEstoque => {
+                    itemEstoqueDao.findOne(itemEstoque)
                         .then(result => {
                             resolve()
                         })
                         .catch(error => {
-                            produtoEstoqueEncontrado = false
+                            itemEstoqueEncontrado = false
                             reject(error)
                         });
                 })
@@ -153,10 +153,10 @@ class ProdutosEstoqueService {
         })
     }
 
-    list(estoqueModel, aVencer) {
+    list(itemModel, aVencer) {
         return new Promise(function (resolve, reject) {
             try {
-                produtosEstoqueDao.list(estoqueModel, aVencer)
+                itemEstoqueDao.list(itemModel, aVencer)
                     .then(result => {
                         resolve(result)
                     })
@@ -171,10 +171,10 @@ class ProdutosEstoqueService {
         })
     }
 
-    get(idProduto) {
+    get(idItem) {
         return new Promise(function (resolve, reject) {
             try {
-                produtosEstoqueDao.findOne(idProduto)
+                itemEstoqueDao.findOne(idItem)
                     .then(result => {
                         resolve(result)
                     })
@@ -190,4 +190,4 @@ class ProdutosEstoqueService {
     }
 }
 
-module.exports = ProdutosEstoqueService
+module.exports = ItemEstoqueService
