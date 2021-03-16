@@ -1,69 +1,67 @@
 /* Imports*/
 
-const PedidoModel = require('../Models/PedidoModel.js')
-const PedidoServices = require('./../Services/PedidoServices.js')
+const PedidoModel = require("../Models/PedidoModel.js");
+const PedidoService = require("../Services/PedidoService.js");
 /**/
 
 module.exports = function (server) {
-
-    server.post('/pedido', function (req, res, next) {
-
+    server.post("/pedido", function (req, res, next) {
         try {
-            let data = req.body || {}
+            let data = req.body || {};
 
             let pedidoModel = new PedidoModel(data);
 
-            const pedidoServices = new PedidoServices(data);
+            const pedidoService = new PedidoService();
 
-            pedidoServices.create(pedidoModel)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+            pedidoService
+                .create(pedidoModel)
+                .then((jsonSuccess) => {
+                    const code = jsonSuccess.code;
 
-                    delete jsonSucess.code
+                    delete jsonSucess.code;
 
-                    res.json(code, jsonSuccess)
-                    next()
+                    res.json(code, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
+    });
 
-    server.get('/pedido', function (req, res, next) {
+    server.get("/pedido", function (req, res, next) {
         try {
-            const pedidoServices = new PedidoServices();
+            const pedidoService = new PedidoService();
 
-            let dataPedido = req.query.data
+            let dataPedido = req.query.data;
 
-            pedidoServices.get(dataPedido)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+            pedidoService
+                .get(dataPedido)
+                .then((jsonSuccess) => {
+                    const code = jsonSuccess.code;
 
-                    delete jsonSucess.code
+                    delete jsonSucess.code;
 
-                    res.json(code, jsonSuccess)
-                    next()
+                    res.json(code, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
-}
+    });
+};

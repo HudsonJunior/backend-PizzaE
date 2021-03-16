@@ -1,157 +1,192 @@
 /* Imports */
 
-const mongooseStringQuery = require('mongoose-string-query');
-const mongoose = require('../Connection/connectionMongo');
-const exceptionsClass = require('../Models/Responses/Exceptions')
-const sucessClass = require('../Models/Responses/Sucess')
+const mongooseStringQuery = require("mongoose-string-query");
+const mongoose = require("../Connection/connectionMongo");
+const exceptionsClass = require("../Models/Responses/Exceptions");
+const sucessClass = require("../Models/Responses/Sucess");
+const PedidoResponse = require("../Models/Responses/PedidoResponse");
 /* Global variables*/
 
-const Exceptions = new exceptionsClass()
-const Sucess = new sucessClass()
+const Exceptions = new exceptionsClass();
+const Sucess = new sucessClass();
 
-var Pedido = null
+var Pedido = null;
+const PedidoSchema = new mongoose.Schema({
+    codigo: {
+        type: Number,
+    },
+    produtos: {
+        type: Object,
+    },
+    formaPagamento: {
+        type: String,
+    },
+    formaExpedicao: {
+        type: String,
+    },
+    endereco: {
+        type: String,
+    },
+    data: {
+        type: Date,
+    },
+    cpfCliente: {
+        type: String,
+    },
+    cpfNF: {
+        type: String,
+    },
+    observacoes: {
+        type: String,
+    },
+    statusPedido: {
+        type: String,
+    },
+    valor: {
+        type: String,
+    },
+    statusPagamento: {
+        type: String,
+    },
+});
 
+PedidoSchema.plugin(mongooseStringQuery);
+
+Pedido = mongoose.model("pedidos", PedidoSchema);
 /* */
-class PedidoDal {
-    constructor() {
-        const PedidoSchema = this.getPedidoSchema()
-
-        PedidoSchema.plugin(mongooseStringQuery);
-
-        Pedido = mongoose.model('pedido', PedidoSchema);
-    }
+class PedidoDao {
+    constructor() {}
 
     create(PedidoModel) {
         return new Promise(function (resolve, reject) {
-
-            const pedido = new Pedido(PedidoModel)
-
-            pedido.save()
-                .then(data => {
+            const pedido = new Pedido(PedidoModel);
+            console.log("pedido: ", pedido);
+            pedido
+                .save()
+                .then((data) => {
                     try {
-                        const jsonSucess = Sucess.generateUserJsonSucess(UserResponse.Codes.OkRegister, data)
+                        console.log("alo");
+                        const jsonSucess = Sucess.generateUserJsonSucess(
+                            PedidoResponse.Codes.OkRegister,
+                            data
+                        );
 
-                        resolve(jsonSucess)
+                        resolve(jsonSucess);
+                    } catch (error) {
+                        console.log(error);
                     }
-                    catch (error) {
-                        console.log(error)
-                    }
+                })
+                .catch((error) => {
+                    console.log("carambolas");
+                    console.log(error);
+                    reject(
+                        Exceptions.generateException(
+                            PedidoResponse.Codes.InternalServerError,
+                            PedidoResponse.Messages.RegisterError,
+                            PedidoResponse.Details.DbError
+                        )
+                    );
+                });
+        });
+    }
 
-                })
-                .catch(error => {
-                    console.log(error)
-                    reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
-                })
-        })
+    findOne(codigo) {
+        return new Promise(function (resolve, reject) {
+            let obj = new Object();
+            obj.id = codigo;
+
+            try {
+                console.log("aaa");
+                Pedido.findOne(obj, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        reject();
+                    }
+                    if (!data) {
+                        console.log("aaaaa");
+                        resolve();
+                    } else {
+                        console.log("bbbbb");
+                        reject();
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
 
     update(PedidoModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let codigo = PedidoModel.Pedido
+                let codigo = PedidoModel.Pedido;
 
-                let obj = new Object()
+                let obj = new Object();
 
-                obj.id = codigo
+                obj.id = codigo;
 
                 Pedido.update(obj, PedidoModel)
-                    .then(data => {
+                    .then((data) => {
                         try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
+                            const jsonSucess = Sucess.generateUserJsonSucess(
+                                200,
+                                data
+                            );
 
-                            resolve(jsonSucess)
-                        }
-                        catch (error) {
-                            console.log(error)
+                            resolve(jsonSucess);
+                        } catch (error) {
+                            console.log(error);
                         }
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
-                    })
+                    .catch((error) => {
+                        console.log(error);
+                        reject(
+                            Exceptions.generateException(
+                                PedidoResponse.Codes.InternalServerError,
+                                PedidoResponse.Messages.RegisterError,
+                                PedidoResponse.Details.DbError
+                            )
+                        );
+                    });
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
 
     getList(dataPedido) {
         return new Promise(function (resolve, reject) {
-            let obj = new Object()
-            obj.data = dataPedido
+            let obj = new Object();
+            obj.data = dataPedido;
             try {
                 Pedido.find(obj)
-                    .then(data => {
+                    .then((data) => {
                         try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
+                            const jsonSucess = Sucess.generateUserJsonSucess(
+                                200,
+                                data
+                            );
 
-                            resolve(jsonSucess)
-                        }
-                        catch (error) {
-                            console.log(error)
+                            resolve(jsonSucess);
+                        } catch (error) {
+                            console.log(error);
                         }
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
-                    })
+                    .catch((error) => {
+                        console.log(error);
+                        reject(
+                            Exceptions.generateException(
+                                PedidoResponse.Codes.InternalServerError,
+                                PedidoResponse.Messages.RegisterError,
+                                PedidoResponse.Details.DbError
+                            )
+                        );
+                    });
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
-    }
-
-
-    getPedidoSchema() {
-        const PedidoSchema = new mongoose.Schema(
-            {
-                produtos: {
-                    type: Object,
-                    required: true
-                },
-                formaPagamento: {
-                    type: String,
-                    required: true,
-                },
-                formaExpedicao: {
-                    type: String,
-                    required: true,
-                },
-                endereco: {
-                    type: String,
-                    required: true,
-                },
-                data: {
-                    type: Date,
-                    required: true,
-                },
-                cpfNF: {
-                    type: String,
-                    required: true,
-                },
-                observacoes: {
-                    type: String,
-                    required: false,
-                },
-                cpfCliente: {
-                    type: String,
-                    required: true,
-                },
-                status: {
-                    type: String,
-                    required: true,
-                },
-                valor: {
-                    type: String,
-                    required: true,
-                }
-            },
-        );
-
-        return PedidoSchema
+        });
     }
 }
 
-module.exports = PedidoDal
+module.exports = PedidoDao;
