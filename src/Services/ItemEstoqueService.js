@@ -17,27 +17,23 @@ class ItemEstoqueService {
     create(ItemModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let itemCadastrado = false
-
-
+               
                 itemEstoqueDao.findOne(ItemModel)
                     .then(result => {
-                        itemCadastrado = true;
-                        reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
+                        if(result) reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
+                        else{
+                            itemEstoqueDao.create(ItemModel)
+                            .then(result => {
+                                resolve(result)
+                            })
+                            .catch(erro => {
+                                reject(error)
+                            })
+                        }
                     })
                     .catch(error => {
                         reject(error)
                     });
-
-                if (!itemCadastrado) {
-                    itemEstoqueDao.create(ItemModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
             }
             catch (error) {
                 reject(error)
@@ -153,34 +149,35 @@ class ItemEstoqueService {
         })
     }
 
-    list(itemModel, aVencer) {
+    get(ItemModel) {
         return new Promise(function (resolve, reject) {
             try {
-                itemEstoqueDao.list(itemModel, aVencer)
-                    .then(result => {
-                        resolve(result)
+                if(ItemModel.id){
+                    itemEstoqueDao.findOne(ItemModel)
+                    .then(result=>{
+                        if(result)
+                            resolve(result)
+                        else{
+                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
+                        }
                     })
                     .catch(error => {
                         reject(error)
                     })
-
-            }
-            catch (error) {
-                reject(error)
-            }
-        })
-    }
-
-    get(idItem) {
-        return new Promise(function (resolve, reject) {
-            try {
-                itemEstoqueDao.findOne(idItem)
+                }
+                else{
+                    itemEstoqueDao.list()
                     .then(result => {
-                        resolve(result)
+                        if(result)
+                            resolve(result)
+                        else{
+                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
+                        }
                     })
                     .catch(error => {
                         reject(error)
                     })
+                }
 
             }
             catch (error) {

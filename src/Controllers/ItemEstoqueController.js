@@ -1,6 +1,5 @@
 /* Imports*/
 
-const ProdutoEstoqueModel = require('../Models/ProdutoEstoqueModel')
 const ItemEstoqueModel = require('../Models/ItemEstoqueModel')
 const ItemEstoqueService = require('../Services/ItemEstoqueService')
 
@@ -23,14 +22,16 @@ module.exports = function (server) {
 
             itemService.create(itemEstoque)
                 .then(jsonSuccess => {
+                    console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                    delete jsonSuccess.code
 
                     res.json(code, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
+                    console.log("jasao trollo", jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
@@ -116,11 +117,15 @@ module.exports = function (server) {
     server.get('/produtos-estoque', function (req, res, next) {
 
         try {
-            let data = req.body || {}
+           // let data = req.body || {}
 
             let aVencer = req.body.aVencer;
 
-            let itemModel;
+            let itemModel = {};
+
+            const itemCodigo = req.params.id || null;
+
+            itemModel.id = itemCodigo;
 
             itemModel = new ItemEstoqueModel();
 
@@ -128,40 +133,6 @@ module.exports = function (server) {
 
             itemService.list(itemModel, aVencer)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-
-                    delete jsonSucess.code
-
-                    res.json(code, jsonSuccess)
-                    next()
-                })
-                .catch(jsonError => {
-                    const code = jsonError.code
-
-                    delete jsonError.code
-
-                    res.json(code, jsonError)
-                    next()
-                })
-        }
-        catch (error) {
-            console.log(error)
-        }
-    })
-
-    server.get('/produtos-estoque/:id', function (req, res, next) {
-
-        try {
-            itemModel = new ItemEstoqueModel(data);
-
-            const idItem = req.params.id
-
-            .get(idItem)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-
-                    delete jsonSucess.code
-
                     res.json(code, jsonSuccess)
                     next()
                 })

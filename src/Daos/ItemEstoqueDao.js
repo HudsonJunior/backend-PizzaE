@@ -5,6 +5,7 @@ const { resolve } = require('path');
 const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('../Models/Responses/Exceptions')
 const sucessClass = require('../Models/Responses/Sucess')
+const R = require('ramda')
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
@@ -27,15 +28,16 @@ const ItemEstoqueSchema = new mongoose.Schema(
             required: false,
         },
         validade: {
-            type: Date,
+            type: String,
             required: false,
         },
         fabricacao: {
-            type: Date,
+            type: String,
             required: false,
         },
         registro: {
-            type: Date,
+            type: String
+            ,
             required: false,
         }
     }
@@ -58,7 +60,7 @@ class ItemEstoqueDao {
             itemEstoque.save()
                 .then(data => {
                     try {
-                        const jsonSucess = Sucess.generateUserJsonSucess(UserResponse.Codes.OkRegister, data)
+                        const jsonSucess = Sucess.generateJsonSucess(201, "Cadastro feito com sucesso")
 
                         resolve(jsonSucess)
                     }
@@ -69,14 +71,15 @@ class ItemEstoqueDao {
                 })
                 .catch(error => {
                     console.log(error)
-                    reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    reject(Exceptions.generateException(500, "Erro ao cadastrar item no estoque"))
                 })
         })
     }
 
-    findOne(idItem) {
+    findOne(ItemModel) {
         return new Promise(function (resolve, reject) {
-            let id = idItem;
+            let nome = ItemModel.nome;
+            let id = ItemModel.id;
 
             let obj = new Object()
             obj.nome = nome
@@ -88,11 +91,11 @@ class ItemEstoqueDao {
                         reject()
                     }
 
-                    if (data) {
-                        resolve()
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data)
                     }
                     else {
-                        reject()
+                        resolve(false)
                     }
                 })
             }
@@ -103,32 +106,21 @@ class ItemEstoqueDao {
         })
     }
 
-    list(itemModel, aVencer) {
+    list() {
         return new Promise(function (resolve, reject) {
-            let obj = new Object()
-            
-            if(aVencer){
-                obj.data = itemModel;
-            }else{
-                obj.data = {};
-            }
 
             try {
-                ItemEstoque.find(obj)
-                    .then(data => {
-                        try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(200, data)
-
-                            resolve(jsonSucess)
-                        }
-                        catch (error) {
-                            console.log(error)
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
-                    })
+                ItemEstoque.find({ativado : true}, function(err, data){
+                    if(err){
+                        reject()
+                    }
+                    if(data != null && !R.isEmpty(data)){
+                        resolve(data)
+                    }
+                    else{
+                        resolve(false)
+                    }
+                })
             }
             catch (error) {
                 reject(error)
