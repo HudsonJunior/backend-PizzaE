@@ -1,7 +1,9 @@
 /* imports */
 
 const string = require('./../Common/String')
+
 const ClientesDao = require('../Daos/ClientesDao')
+const { validateCpf } = require('../Common/Cpf')
 
 /* Global variables*/
 
@@ -14,10 +16,12 @@ class ClientesService {
         clientesService = this
     }
 
-    async create(ClienteModel) {
+    async create(ClientesModel) {
+        console.log("estou no service");
+        console.log(ClientesModel);
         return new Promise(async function (resolve, reject) {
             try {
-
+                /*
                 const validarClientes = await ClientesService.validarClientes(ClientesModel.cliente)
                 const validarEmail = await ClientesService.validarEmail(ClientesModel.email)
                 const validarNome = await ClientesService.validarNome(ClientesModel.nome)
@@ -25,11 +29,21 @@ class ClientesService {
                 const validarPassword = await ClientesService.validarPassword(ClientesModel.password)
                 const validarTelefone = await ClientesService.validarTelefone(ClientesModel.telefone)
                 const validarEndereco = await ClientesService.validarEndereco(ClientesModel.endereco)
+                */
+                aux1 = ClientesModel.cpf
+                cpfFlag = validateCpf(aux1)
 
-                ClientesModel.cpf = string.getOnlyNumbers(ClientesModel.cpf)
-                ClientesModel.password = await clientesService.validateNome(fullName)
+                if(!cpfFlag){
+                    console.log("Cpf inserido eh invalido")
+                    ClientesModel.cpf = "Cpf ta errado"
+                }
+                ClientesModel.password = string.validatePassword(ClientesModel.password)
+                ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
+                ClientesModel.endereco = string.validateOnlyLetters(ClientesModel.endereco)
+                ClientesModel.telefone = string.getOnlyNumbers(ClientesModel.telefone)
 
                 clientesDao.create(ClientesModel)
+                    
                     .then(result => {
                         result.cash_token = AuthValue.cash_token
 
@@ -45,7 +59,28 @@ class ClientesService {
         })
     }
 
-    getCliente(cpfClientes) {
+    delete(ClientesModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                ClientesModel.ativado = false;
+
+                ClientesDao.delete(ClientesModel)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+
+    getClientesList(cpfClientes) {
         return new Promise(function (resolve, reject) {
             try {
 
@@ -65,7 +100,7 @@ class ClientesService {
         })
     }
 
-    getClienteList() {
+    get() {
         return new Promise(function (resolve, reject) {
             try {
 
@@ -84,12 +119,46 @@ class ClientesService {
         })
     }
 
+    update(ClientesModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                console.log("to na update");
+                let cliente;
+
+                clientesDao.findOne(ClientesModel)
+                    .then(result => {
+                        cliente = result;
+                    })
+                    .catch(error => {
+                        reject(error)
+                    });
+
+                if (cliente.cpf != ClientesModel.cpf || cliente.cpf != ClientesModel.cpf) {
+                    reject(Exceptions.generateException(400, "Alteração do cpf/cnpj de um cliente não é permitido", "Não é possível realizar a alteração do cpf de um cliente"))
+                }
+                else {
+                    clientesDao.update(ClientesModel)
+                        .then(result => {
+                            resolve(result)
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
+                }
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+
+    }
+
     validarClientes(clientes) {
         return new Promise(function (resolve, reject) {
             try {
 
                 if (!string.validarClientes(clientes)) {
-                    reject(Exceptions.generateException(ClientesResponse.Codes.InvalidField, ClientesResponse.Messages.RegisterError, ClientesResponse.Details.InvalidClientes))
+                    reject()
                 }
 
                 clientesService.validarPrimaryKey(ClientesValue.clientes, clientes)
@@ -97,7 +166,7 @@ class ClientesService {
                         resolve()
                     })
                     .catch(error => {
-                        reject(Exceptions.generateException(ClientesResponse.Codes.DuplicatedPrimaryKey, ClientesResponse.Messages.AlreadyRegisted, ClientesResponse.Details.DuplicatedClientes.replace(ClientesValue.clientesReplaced, clientes)))
+                        reject()
 
                     })
             }

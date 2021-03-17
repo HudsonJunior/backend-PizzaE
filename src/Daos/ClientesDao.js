@@ -18,10 +18,11 @@ class ClientesDal {
 
         ClientesSchema.plugin(mongooseStringQuery);
 
-        Clientes = mongoose.model('produtos_finais', ClientesSchema);
+        Clientes = mongoose.model('clientes', ClientesSchema);
     }
 
     create(ClientesModel) {
+        
         return new Promise(function (resolve, reject) {
 
             const clientes = new Clientes(ClientesModel)
@@ -29,7 +30,7 @@ class ClientesDal {
             clientes.save()
                 .then(data => {
                     try {
-                        const jsonSucess = Sucess.generateUserJsonSucess(UserResponse.Codes.OkRegister, data)
+                        const jsonSucess = Sucess.clientesSucess(200, data)
 
                         resolve(jsonSucess)
                     }
@@ -40,8 +41,9 @@ class ClientesDal {
                 })
                 .catch(error => {
                     console.log(error)
-                    reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    reject(Exceptions.clientesException(500, 'erro','erro'))
                 })
+                
         })
     }
 
