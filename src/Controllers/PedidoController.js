@@ -1,11 +1,11 @@
 /* Imports*/
 
-const PedidoModel = require("../Models/PedidoModel.js");
-const PedidoService = require("../Services/PedidoService.js");
+const PedidoModel = require('../Models/PedidoModel.js');
+const PedidoService = require('../Services/PedidoService.js');
 /**/
 
 module.exports = function (server) {
-    server.post("/pedido", function (req, res, next) {
+    server.post('/pedido', function (req, res, next) {
         try {
             let data = req.body || {};
 
@@ -36,7 +36,7 @@ module.exports = function (server) {
         }
     });
 
-    server.get("/pedido", function (req, res, next) {
+    server.get('/pedido', function (req, res, next) {
         try {
             const pedidoService = new PedidoService();
 

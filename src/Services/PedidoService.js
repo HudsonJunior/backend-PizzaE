@@ -1,22 +1,23 @@
 /* imports */
-var Regex = require("regex");
-const Cpf = require("../Common/Cpf");
-const string = require("../Common/String");
-const Date = require("../Common/Date");
-const ClientesService = require("./ClientesService");
-const PedidoDao = require("../Daos/PedidoDao");
-const exceptionsClass = require("../Models/Responses/Exceptions");
-const PedidoResponse = require("../Models/Responses/PedidoResponse");
-const ProdutosFinaisService = require("./ProdutosFinaisService");
+var Regex = require('regex');
+const Cpf = require('../Common/Cpf');
+const string = require('../Common/String');
+const Date = require('../Common/Date');
+const ClientesService = require('./ClientesService');
+PedidoDao = require('../Daos/PedidoDao');
+const exceptionsClass = require('../Models/Responses/Exceptions');
+const PedidoResponse = require('../Models/Responses/PedidoResponse');
+const ProdutosFinaisService = require('./ProdutosFinaisService');
 /* Global variables*/
 const Exceptions = new exceptionsClass();
-var pedidoDao = new PedidoDao();
 var pedidoService;
+var pedidoDao;
 /* */
 
 class PedidoService {
     constructor() {
         pedidoService = this;
+        pedidoDao = new PedidoDao();
     }
 
     async create(pedidoModel) {
@@ -25,22 +26,21 @@ class PedidoService {
                 /* const validateCode = await pedidoService.validateCode(
                     pedidoModel.codigo
                 ); */
+
                 /* const validateProdutos = await pedidoService.validateProdutos(
                     pedidoModel.produtos
-                );
+                ); */
+
                 const validatePagamento = await pedidoService.validatePagamento(
                     pedidoModel.formaPagamento
                 );
                 const validateExpedicao = await pedidoService.validateExpedicao(
                     pedidoModel.formaExpedicao
                 );
-                const validateClient = await pedidoService.validateClient(
+                /* const validateClient = await pedidoService.validateClient(
                     pedidoModel.formaExpedicao,
                     pedidoModel.cpfCliente
-                );
-                const validateEndereco = await pedidoService.validateEndereco(
-                    pedidoModel.endereco
-                );
+                ); */
                 const validateData = await pedidoService.validateData(
                     pedidoModel.data
                 );
@@ -50,9 +50,6 @@ class PedidoService {
                 const validadeCpfNF = await pedidoService.validateCpfNF(
                     pedidoModel.cpfNF
                 );
-                const validateObservacoes = await pedidoService.validateObservacoes(
-                    pedidoModel.observacoes
-                );
                 const validateStatusPedido = await pedidoService.validateStatusPedido(
                     pedidoModel.statusPedido
                 );
@@ -61,14 +58,14 @@ class PedidoService {
                 );
                 const validateStatusPagamento = await pedidoService.validateStatusPagamento(
                     pedidoModel.statusPagamento
-                ); */
+                );
 
                 pedidoModel.cpfCliente = string.getOnlyNumbers(
                     pedidoModel.cpfCliente
                 );
                 pedidoModel.cpfNF = string.getOnlyNumbers(pedidoModel.cpfNF);
 
-                console.log("cheguei aqui");
+                console.log('cheguei aqui');
 
                 pedidoDao
                     .create(pedidoModel)
@@ -110,12 +107,17 @@ class PedidoService {
     validateProdutos(listaProdutos) {
         return new Promise(function (resolve, reject) {
             try {
-                /* if (ProdutosFinaisService.existemProdutos(listaProdutos)){
-                    resolve()
+                if (ProdutosFinaisService.existemProdutos(listaProdutos)) {
+                    resolve();
+                } else {
+                    reject(
+                        Exceptions.generateException(
+                            PedidoResponse.Codes.InvalidField,
+                            PedidoResponse.Messages.RegisterError,
+                            PedidoResponse.Details.InvalidListProducts
+                        )
+                    );
                 }
-                else {
-                    reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,PedidoResponse.Messages.RegisterError, PedidoResponse.Details.InvalidListProducts))
-                } */
                 resolve();
             } catch (error) {
                 reject(error);
@@ -128,8 +130,9 @@ class PedidoService {
             try {
                 if (
                     string.validateOnlyLetters(formaPagamento) &&
-                    (formaPagamento == "dinheiro" || formaPagamento == "cartao")
+                    (formaPagamento == 'dinheiro' || formaPagamento == 'cartao')
                 ) {
+                    console.log('passou do teste da forma de pagamento');
                     resolve();
                 } else {
                     reject(
@@ -151,8 +154,9 @@ class PedidoService {
             try {
                 if (
                     string.validateOnlyLetters(formaExpedicao) &&
-                    (formaExpedicao == "balcao" || formaExpedicao == "entrega")
+                    (formaExpedicao == 'balcao' || formaExpedicao == 'entrega')
                 ) {
+                    console.log('passou do teste da forma de expedicao');
                     resolve();
                 } else {
                     reject(
@@ -172,7 +176,7 @@ class PedidoService {
     validateClient(formaExpedicao, cpfCliente) {
         return new Promise(function (resolve, reject) {
             try {
-                if (formaExpedicao == "entrega") {
+                if (formaExpedicao == 'entrega') {
                     ClientesService.getCliente(cpfCliente)
                         .then((result) => {
                             resolve(result);
@@ -194,30 +198,11 @@ class PedidoService {
         });
     }
 
-    validateEndereco(endereco) {
+    validateData(data) {
         return new Promise(function (resolve, reject) {
             try {
-                if (string.validateOnlyLetters(endereco)) {
-                    resolve();
-                } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidAdress
-                        )
-                    );
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateData(data) {
-        return Promise(function (resolve, reject) {
-            try {
-                if (!Date.isValidDate(data)) {
+                const d = new Date(data);
+                if (!d.isValidDate(data)) {
                     reject(
                         Exceptions.generateException(
                             PedidoResponse.Codes.InvalidField,
@@ -226,6 +211,7 @@ class PedidoService {
                         )
                     );
                 } else {
+                    console.log('passou no teste do Data');
                     resolve();
                 }
             } catch (error) {
@@ -246,6 +232,7 @@ class PedidoService {
                         )
                     );
                 } else {
+                    console.log('passou no teste do cpf cliente');
                     resolve();
                 }
             } catch (error) {
@@ -266,27 +253,8 @@ class PedidoService {
                         )
                     );
                 } else {
+                    console.log('passou no teste do cpf nf');
                     resolve();
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateObservacoes(observacoes) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if (string.validateOnlyLetters(observacoes)) {
-                    resolve();
-                } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidObservations
-                        )
-                    );
                 }
             } catch (error) {
                 reject(error);
@@ -299,8 +267,9 @@ class PedidoService {
             try {
                 if (
                     string.validateOnlyLetters(status) &&
-                    status == "realizado"
+                    status == 'realizado'
                 ) {
+                    console.log('passou no teste de status do pedido');
                     resolve();
                 } else {
                     reject(
@@ -320,8 +289,12 @@ class PedidoService {
     validateValor(valor) {
         return new Promise(function (resolve, reject) {
             try {
-                var regex = new Regex(/^\d+(\.\d{2})?$/);
-                if (regex.test(valor)) {
+                //var regex = new Regex(/\d+\.\d{1,2}/);
+
+                var regex = /^(\$|)([1-9]\d{0,2}(\,\d{3})*|([1-9]\d*))(\.\d{2})?$/;
+                var passed = valor.match(regex);
+                if (passed != null) {
+                    console.log('passou no teste do valor');
                     resolve();
                 } else {
                     reject(
@@ -343,8 +316,9 @@ class PedidoService {
             try {
                 if (
                     string.validateOnlyLetters(status) &&
-                    (status == "pago" || status == "nao pago")
+                    (status == 'pago' || status == 'nao pago')
                 ) {
+                    console.log('passou no teste de status do pagamento');
                     resolve();
                 } else {
                     reject(
