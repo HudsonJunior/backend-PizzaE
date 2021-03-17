@@ -1,5 +1,4 @@
 /* Imports */
-
 const mongooseStringQuery = require('mongoose-string-query');
 const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('../Models/Responses/Exceptions');
@@ -80,7 +79,7 @@ class PedidoDao {
                 .then((data) => {
                     try {
                         console.log('alo');
-                        const jsonSucess = Sucess.generateUserJsonSucess(
+                        const jsonSucess = Sucess.generateJsonSucess(
                             PedidoResponse.Codes.OkRegister,
                             data
                         );

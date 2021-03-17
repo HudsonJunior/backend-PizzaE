@@ -1,5 +1,4 @@
 /* imports */
-var Regex = require('regex');
 const Cpf = require('../Common/Cpf');
 const string = require('../Common/String');
 const Date = require('../Common/Date');
@@ -25,10 +24,6 @@ class PedidoService {
             try {
                 /* const validateCode = await pedidoService.validateCode(
                     pedidoModel.codigo
-                ); */
-
-                /* const validateProdutos = await pedidoService.validateProdutos(
-                    pedidoModel.produtos
                 ); */
 
                 const validatePagamento = await pedidoService.validatePagamento(
@@ -98,27 +93,6 @@ class PedidoService {
                             )
                         );
                     });
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateProdutos(listaProdutos) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if (ProdutosFinaisService.existemProdutos(listaProdutos)) {
-                    resolve();
-                } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidListProducts
-                        )
-                    );
-                }
-                resolve();
             } catch (error) {
                 reject(error);
             }
@@ -223,7 +197,10 @@ class PedidoService {
     validateCpfCliente(cpf) {
         return new Promise(function (resolve, reject) {
             try {
-                if (!Cpf.validateCpf(cpf)) {
+                if (cpf == '') {
+                    console.log('passou no teste do cpf cliente');
+                    resolve();
+                } else if (!Cpf.validateCpf(cpf)) {
                     reject(
                         Exceptions.generateException(
                             PedidoResponse.Codes.InvalidField,
@@ -244,7 +221,10 @@ class PedidoService {
     validateCpfNF(cpf) {
         return new Promise(function (resolve, reject) {
             try {
-                if (!Cpf.validateCpf(cpf)) {
+                if (cpf == '') {
+                    console.log('passou no teste do cpf cliente');
+                    resolve();
+                } else if (!Cpf.validateCpf(cpf)) {
                     reject(
                         Exceptions.generateException(
                             PedidoResponse.Codes.InvalidField,
