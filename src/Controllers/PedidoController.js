@@ -34,12 +34,20 @@ module.exports = function (server) {
 
     server.get('/pedido', function (req, res, next) {
         try {
+            let pedidoModel = {};
+
+            let dataPedido = req.params.data || null;
+
+            let cpf = req.params.cpfCliente || null;
+
+            pedidoModel.data = dataPedido;
+
+            pedidoModel.clientCpf = cpf;
+
             const pedidoService = new PedidoService();
 
-            let dataPedido = req.params.data;
-
             pedidoService
-                .get(dataPedido)
+                .get(pedidoModel)
                 .then((jsonSuccess) => {
                     res.json(201, jsonSuccess);
                     next();

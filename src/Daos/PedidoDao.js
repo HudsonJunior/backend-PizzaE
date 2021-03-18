@@ -162,10 +162,33 @@ class PedidoDao {
         });
     }
 
-    getList(dataPedido) {
+    getListFromDate(dataPedido) {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.data = dataPedido;
+
+            try {
+                Pedido.find(obj, function (err, data) {
+                    if (err) {
+                        reject();
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data);
+                    } else {
+                        resolve(false);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    getListFromClient(cpf) {
+        return new Promise(function (resolve, reject) {
+            let obj = new Object();
+            obj.cpfCliente = cpf;
 
             try {
                 Pedido.find(obj, function (err, data) {
