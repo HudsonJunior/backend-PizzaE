@@ -38,18 +38,15 @@ module.exports = function (server) {
 
     server.get('/pedido', function (req, res, next) {
         try {
+            
             const pedidoService = new PedidoService();
 
-            let dataPedido = req.query.data;
-
+            let dataPedido = req.params.data;
+            console.log('data', dataPedido)
             pedidoService
                 .get(dataPedido)
                 .then((jsonSuccess) => {
-                    const code = jsonSuccess.code;
-
-                    delete jsonSucess.code;
-
-                    res.json(code, jsonSuccess);
+                    res.json(200, jsonSuccess);
                     next();
                 })
                 .catch((jsonError) => {

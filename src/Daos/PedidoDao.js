@@ -4,6 +4,8 @@ const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('../Models/Responses/Exceptions');
 const sucessClass = require('../Models/Responses/Sucess');
 const PedidoResponse = require('../Models/Responses/PedidoResponse');
+const R = require('ramda')
+
 /* Global variables*/
 
 const Exceptions = new exceptionsClass();
@@ -12,10 +14,6 @@ const Sucess = new sucessClass();
 var Pedido = null;
 
 const PedidoSchema = new mongoose.Schema({
-    codigo: {
-        type: Number,
-        require: true,
-    },
     produtos: {
         type: Object,
         require: true,
@@ -33,7 +31,11 @@ const PedidoSchema = new mongoose.Schema({
         require: true,
     },
     data: {
-        type: Date,
+        type: String,
+        require: true,
+    },
+    hora: {
+        type: String,
         require: true,
     },
     cpfCliente: {
@@ -78,10 +80,9 @@ class PedidoDao {
                 .save()
                 .then((data) => {
                     try {
-                        console.log('alo');
                         const jsonSucess = Sucess.generateJsonSucess(
                             PedidoResponse.Codes.OkRegister,
-                            data
+                            "Pedido registrado com sucesso"
                         );
 
                         resolve(jsonSucess);
@@ -90,7 +91,6 @@ class PedidoDao {
                     }
                 })
                 .catch((error) => {
-                    console.log('carambolas');
                     console.log(error);
                     reject(
                         Exceptions.generateException(
@@ -109,17 +109,14 @@ class PedidoDao {
             obj.id = codigo;
 
             try {
-                console.log('aaa');
                 Pedido.findOne(obj, function (err, data) {
                     if (err) {
                         console.log(err);
                         reject();
                     }
                     if (!data) {
-                        console.log('aaaaa');
                         resolve();
                     } else {
-                        console.log('bbbbb');
                         reject();
                     }
                 });
@@ -169,32 +166,23 @@ class PedidoDao {
 
     getList(dataPedido) {
         return new Promise(function (resolve, reject) {
+            console.log('estou no dao')
             let obj = new Object();
             obj.data = dataPedido;
             try {
-                Pedido.find(obj)
-                    .then((data) => {
-                        try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(
-                                200,
-                                data
-                            );
+                Pedido.find(obj, function(err, data){
+                    if (err) {
+                        reject()
+                    }
 
-                            resolve(jsonSucess);
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        reject(
-                            Exceptions.generateException(
-                                PedidoResponse.Codes.InternalServerError,
-                                PedidoResponse.Messages.RegisterError,
-                                PedidoResponse.Details.DbError
-                            )
-                        );
-                    });
+                    if (data != null && !R.isEmpty(data)){
+                        resolve(data)
+                    }
+
+                    else {
+                        resolve(false)
+                    }
+                })
             } catch (error) {
                 reject(error);
             }
