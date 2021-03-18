@@ -1,14 +1,7 @@
-var moment = require('moment-timezone');
+var moment = require('moment');
 
 class Date{
-    constructor(){
-        this.date = moment().tz('America/Sao_Paulo')
-    }
-
-    toTimeZoneSP(date){
-        var format = 'DD/MM/YYYY HH:mm:ss ZZ';
-        return moment(date, format).tz('America/Sao_Paulo').format(format);
-    }
+    constructor(){   }
 
     getDate(){
         return this.date
@@ -19,6 +12,11 @@ class Date{
         data.updatedAt = this.toTimeZoneSP(data.updatedAt)
 
         return data
+    }
+
+    converteDate(stringDate){
+        const newDate = moment(stringDate).toDate()
+        return newDate
     }
 }
 

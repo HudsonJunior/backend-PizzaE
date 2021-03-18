@@ -1,3 +1,7 @@
+const Date = require("./../Common/Date")
+const DateClass = require("./../Common/Date")
+const date = new DateClass()
+
 class ItemEstoqueModel {
     constructor(data) {
         this.id = data.id
@@ -5,7 +9,7 @@ class ItemEstoqueModel {
         this.nome = data.nome
         this.valor = data.valor
         this.peso = data.peso
-        this.validade = data.validade
+        this.validade = date.converteDate(data.validade)
         this.fabricacao = data.fabricacao
         this.registro = data.registro
     }

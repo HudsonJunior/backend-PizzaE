@@ -149,7 +149,7 @@ class ItemEstoqueService {
         })
     }
 
-    get(ItemModel) {
+    get(ItemModel, aVencer) {
         return new Promise(function (resolve, reject) {
             try {
                 if(ItemModel.id){
@@ -166,7 +166,7 @@ class ItemEstoqueService {
                     })
                 }
                 else{
-                    itemEstoqueDao.list()
+                    itemEstoqueDao.list(aVencer)
                     .then(result => {
                         if(result)
                             resolve(result)

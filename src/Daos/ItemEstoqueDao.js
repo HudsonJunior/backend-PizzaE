@@ -6,6 +6,7 @@ const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('../Models/Responses/Exceptions')
 const sucessClass = require('../Models/Responses/Sucess')
 const R = require('ramda')
+var moment = require('moment');
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
@@ -28,7 +29,7 @@ const ItemEstoqueSchema = new mongoose.Schema(
             required: false,
         },
         validade: {
-            type: String,
+            type: Date,
             required: false,
         },
         fabricacao: {
@@ -106,11 +107,24 @@ class ItemEstoqueDao {
         })
     }
 
-    list() {
+    list(aVencer) {
         return new Promise(function (resolve, reject) {
-
+            const obj = new Object()
             try {
-                ItemEstoque.find({ativado : true}, function(err, data){
+                console.log(aVencer)
+                if(aVencer){
+                    const dataAtual = new Date()
+                    let dataFormatada = ((dataAtual.getFullYear() )) + "-" + ((dataAtual.getMonth() + 1)) + "-" + (dataAtual.getDate() + 7);
+                    const newData = new Date(moment(dataFormatada).toDate())
+                    console.log( "newdata", newData)
+                    obj.validade = {
+                        $lte : newData
+                    }
+                }
+                console.log(obj)
+                ItemEstoque.find(obj, function(err, data){
+                    console.log("erro", err)
+                    console.log("data", data)
                     if(err){
                         reject()
                     }
@@ -123,6 +137,7 @@ class ItemEstoqueDao {
                 })
             }
             catch (error) {
+                console.log(error)
                 reject(error)
             }
         })

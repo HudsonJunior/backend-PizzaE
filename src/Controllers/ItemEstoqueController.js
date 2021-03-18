@@ -17,6 +17,7 @@ module.exports = function (server) {
             let itemEstoque;
 
             itemEstoque = new ItemEstoqueModel(data);
+            console.log(itemEstoque)
 
             const itemService = new ItemEstoqueService();
 
@@ -117,9 +118,8 @@ module.exports = function (server) {
     server.get('/produtos-estoque', function (req, res, next) {
 
         try {
-           // let data = req.body || {}
 
-            let aVencer = req.body.aVencer;
+            let aVencer = req.params.aVencer;
 
             let itemModel = {};
 
@@ -127,13 +127,11 @@ module.exports = function (server) {
 
             itemModel.id = itemCodigo;
 
-            itemModel = new ItemEstoqueModel();
-
             const itemService = new ItemEstoqueService();
 
-            itemService.list(itemModel, aVencer)
+            itemService.get(itemModel, aVencer)
                 .then(jsonSuccess => {
-                    res.json(code, jsonSuccess)
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
