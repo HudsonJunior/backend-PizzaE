@@ -16,11 +16,7 @@ module.exports = function (server) {
             pedidoService
                 .create(pedidoModel)
                 .then((jsonSuccess) => {
-                    const code = jsonSuccess.code;
-
-                    delete jsonSucess.code;
-
-                    res.json(code, jsonSuccess);
+                    res.json(201, jsonSuccess);
                     next();
                 })
                 .catch((jsonError) => {
@@ -38,15 +34,14 @@ module.exports = function (server) {
 
     server.get('/pedido', function (req, res, next) {
         try {
-            
             const pedidoService = new PedidoService();
 
             let dataPedido = req.params.data;
-            console.log('data', dataPedido)
+
             pedidoService
                 .get(dataPedido)
                 .then((jsonSuccess) => {
-                    res.json(200, jsonSuccess);
+                    res.json(201, jsonSuccess);
                     next();
                 })
                 .catch((jsonError) => {

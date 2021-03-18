@@ -60,8 +60,6 @@ class PedidoService {
                 );
                 pedidoModel.cpfNF = string.getOnlyNumbers(pedidoModel.cpfNF);
 
-                console.log('cheguei aqui');
-
                 pedidoDao
                     .create(pedidoModel)
                     .then((result) => {
@@ -319,19 +317,22 @@ class PedidoService {
         return new Promise(function (resolve, reject) {
             try {
                 pedidoDao
-                .getList(dataPedido)
-                .then((result) => {
-                    if (result) {
-                        console.log('voltei com algum pedido')
-                        resolve(result);
-                    }
-                    else {
-                        reject(Exceptions.generateException(400, "Não foi encontrado nenhum pedido com esta data"))
-                    }
-                })
-                .catch((error) => {
-                    reject(error);
-                });
+                    .getList(dataPedido)
+                    .then((result) => {
+                        if (result) {
+                            resolve(result);
+                        } else {
+                            reject(
+                                Exceptions.generateException(
+                                    400,
+                                    'Não foi encontrado nenhum pedido com esta data'
+                                )
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
             } catch (error) {
                 reject(error);
             }

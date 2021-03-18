@@ -4,7 +4,7 @@ const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('../Models/Responses/Exceptions');
 const sucessClass = require('../Models/Responses/Sucess');
 const PedidoResponse = require('../Models/Responses/PedidoResponse');
-const R = require('ramda')
+const R = require('ramda');
 
 /* Global variables*/
 
@@ -81,8 +81,8 @@ class PedidoDao {
                 .then((data) => {
                     try {
                         const jsonSucess = Sucess.generateJsonSucess(
-                            PedidoResponse.Codes.OkRegister,
-                            "Pedido registrado com sucesso"
+                            201,
+                            'Pedido registrado com sucesso'
                         );
 
                         resolve(jsonSucess);
@@ -166,23 +166,21 @@ class PedidoDao {
 
     getList(dataPedido) {
         return new Promise(function (resolve, reject) {
-            console.log('estou no dao')
             let obj = new Object();
             obj.data = dataPedido;
+
             try {
-                Pedido.find(obj, function(err, data){
+                Pedido.find(obj, function (err, data) {
                     if (err) {
-                        reject()
+                        reject();
                     }
 
-                    if (data != null && !R.isEmpty(data)){
-                        resolve(data)
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data);
+                    } else {
+                        resolve(false);
                     }
-
-                    else {
-                        resolve(false)
-                    }
-                })
+                });
             } catch (error) {
                 reject(error);
             }
