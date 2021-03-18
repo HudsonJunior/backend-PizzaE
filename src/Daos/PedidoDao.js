@@ -74,8 +74,6 @@ class PedidoDao {
         return new Promise(function (resolve, reject) {
             const pedido = new Pedido(PedidoModel);
 
-            console.log('pedido: ', pedido);
-
             pedido
                 .save()
                 .then((data) => {
