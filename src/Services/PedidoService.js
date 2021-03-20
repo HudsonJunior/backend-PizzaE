@@ -7,16 +7,20 @@ PedidoDao = require('../Daos/PedidoDao');
 const exceptionsClass = require('../Models/Responses/Exceptions');
 const PedidoResponse = require('../Models/Responses/PedidoResponse');
 const ProdutosFinaisService = require('./ProdutosFinaisService');
+const Helper = require('../Common/Helper');
+ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao');
 /* Global variables*/
 const Exceptions = new exceptionsClass();
 var pedidoService;
 var pedidoDao;
+var produtosFinaisDao;
 /* */
 
 class PedidoService {
     constructor() {
         pedidoService = this;
         pedidoDao = new PedidoDao();
+        produtosFinaisDao = new ProdutosFinaisDao();
     }
 
     async create(pedidoModel) {
@@ -313,7 +317,7 @@ class PedidoService {
         });
     }
 
-    get(pedidoModel) {
+    get(pedidoModel, dataInicio, dataFinal) {
         return new Promise(function (resolve, reject) {
             try {
                 if (pedidoModel.data != null) {
@@ -345,6 +349,62 @@ class PedidoService {
                                     Exceptions.generateException(
                                         400,
                                         'Não foi encontrado nenhum pedido com este cpf'
+                                    )
+                                );
+                            }
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                } else {
+                    pedidoDao
+                        .getListReportFromDate(dataInicio, dataFinal)
+                        .then((result) => {
+                            if (result) {
+                                // contar a qtde que cada produto apareceu nesse intervalo de tempo e retorna uma lista de produtos com o id e quantidade
+                                let productsArray = new Array();
+                                for (var i = 0; i < result.length; i++) {
+                                    var productsList = result[i]['produtos'];
+                                    for (
+                                        var j = 0;
+                                        j < productsList.length;
+                                        j++
+                                    ) {
+                                        var currentID = productsList[j]['_id'];
+                                        var currentName =
+                                            productsList[j]['nome'];
+                                        var currentQtde =
+                                            productsList[j]['quantidade'];
+                                        var idAlreadyExists = Helper.idExists(
+                                            currentID,
+                                            productsArray
+                                        );
+                                        if (
+                                            productsArray.length === 0 ||
+                                            idAlreadyExists === false
+                                        ) {
+                                            let obj = new Object();
+                                            obj['_id'] = currentID;
+                                            obj['nome'] = currentName;
+                                            obj['quantidade'] = currentQtde;
+                                            productsArray.push(obj);
+                                        } else {
+                                            productsArray[idAlreadyExists][
+                                                'quantidade'
+                                            ] =
+                                                productsArray[idAlreadyExists][
+                                                    'quantidade'
+                                                ] + currentQtde;
+                                        }
+                                    }
+                                }
+
+                                resolve(productsArray);
+                            } else {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Não foi encontrado nenhum pedido neste intervalo de data'
                                     )
                                 );
                             }

@@ -40,6 +40,9 @@ module.exports = function (server) {
 
             let cpf = req.params.cpfCliente || null;
 
+            let dataInicio = req.params.dataI || null;
+            let dataFinal = req.params.dataF || null;
+
             pedidoModel.data = dataPedido;
 
             pedidoModel.clientCpf = cpf;
@@ -47,7 +50,7 @@ module.exports = function (server) {
             const pedidoService = new PedidoService();
 
             pedidoService
-                .get(pedidoModel)
+                .get(pedidoModel, dataInicio, dataFinal)
                 .then((jsonSuccess) => {
                     res.json(201, jsonSuccess);
                     next();

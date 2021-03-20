@@ -207,6 +207,34 @@ class PedidoDao {
             }
         });
     }
+
+    getListReportFromDate(dataI, dataF) {
+        return new Promise(function (resolve, reject) {
+            try {
+                Pedido.find(
+                    {
+                        data: {
+                            $gte: dataI,
+                            $lte: dataF,
+                        },
+                    },
+                    function (err, data) {
+                        if (err) {
+                            reject();
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            resolve(data);
+                        } else {
+                            resolve(false);
+                        }
+                    }
+                );
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 }
 
 module.exports = PedidoDao;
