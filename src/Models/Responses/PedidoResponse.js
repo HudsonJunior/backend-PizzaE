@@ -2,6 +2,8 @@ module.exports = {
     Messages: {
         AlreadyRegisted: "Pedido já cadastrado",
         RegisterError: "Não foi possível cadastrar o pedido",
+        CancelError: "Não foi possível cancelar o pedido",
+        UpdateError: "Não foi possível alterar o pedido",
     },
 
     Details: {
@@ -21,6 +23,9 @@ module.exports = {
         InvalidPaymentStatus: "Status do pagamento inválido",
         DbError:
             "Ocorreu um problema no banco de dados e não foi possível cadastrar o pedido",
+        InvalidAttemptCancel: "Não é possível cancelar um pedido que não esteja no estado 'realizado'",
+        InvalidAttemptUpdateItens: "Não é possível alterar os itens ou observações do pedido quando o pedido já está em preparo ou na viagem",
+        InvalidAttemptUpdatePayment: "Não é possível alterar a forma de pagamento do pedido quando o pedido já está em preparo ou na viagem",
     },
     Codes: {
         InvalidField: 400,

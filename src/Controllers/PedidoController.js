@@ -110,4 +110,41 @@ module.exports = function (server) {
             console.log(error);
         }
     });
+
+    server.patch('/pedido', function (req, res, next) {
+        try {
+            let data = req.body || {}
+
+            let cancelar = req.params.cancelar || null
+
+            let pedidoModel;
+
+            pedidoModel = new PedidoModel(data);
+
+            pedidoModel.cancelar = cancelar
+
+            const pedidoService = new PedidoService();
+
+            pedidoService.update(pedidoModel)
+                .then(jsonSuccess => {
+                    const code = jsonSuccess.code
+
+                    delete jsonSuccess.code
+
+                    res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
 };

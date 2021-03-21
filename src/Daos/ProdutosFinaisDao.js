@@ -57,7 +57,7 @@ ProdutosFinaisSchema.plugin(mongooseStringQuery);
 ProdutosFinais = mongoose.model('produto_finals', ProdutosFinaisSchema);
 /* */
 class ProdutosFinaisDao {
-    constructor() {}
+    constructor() { }
 
     create(ProdutoModel) {
         return new Promise(function (resolve, reject) {

@@ -5,12 +5,14 @@ const Date = require('../Common/Date');
 const ClientesService = require('./ClientesService');
 PedidoDao = require('../Daos/PedidoDao');
 const exceptionsClass = require('../Models/Responses/Exceptions');
+const successClass = require('../Models/Responses/Sucess');
 const PedidoResponse = require('../Models/Responses/PedidoResponse');
 const ProdutosFinaisService = require('./ProdutosFinaisService');
 const Helper = require('../Common/Helper');
 ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao');
 /* Global variables*/
 const Exceptions = new exceptionsClass();
+const Success = new successClass();
 var pedidoService;
 var pedidoDao;
 var produtosFinaisDao;
@@ -409,7 +411,7 @@ class PedidoService {
                                             'quantidade'
                                         ] =
                                             productsArray[idAlreadyExists][
-                                                'quantidade'
+                                            'quantidade'
                                             ] + currentQtde;
                                     }
                                 }
@@ -515,6 +517,76 @@ class PedidoService {
                 reject(error);
             }
         });
+    }
+
+    async update(PedidoModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+
+                if (PedidoModel.cancelar && PedidoModel.statusPedido === 'realizado') {
+                    pedidoService.cancelarPedido(PedidoModel)
+                        .then(result => {
+                            resolve(result)
+                        })
+                        .catch(error => {
+                            reject(error)
+                        })
+                }
+                else if (PedidoModel.cancelar && PedidoModel.statusPedido !== 'realizado') {
+                    reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,
+                        PedidoResponse.Messages.CancelError,
+                        PedidoResponse.Details.InvalidAttemptCancel
+                    ))
+                }
+                else {
+                    if ((PedidoModel.observacoes || PedidoModel.produtos) && (PedidoModel.statusPedido === 'preparando' || PedidoModel.statusPedido === 'viagem')) {
+                        reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,
+                            PedidoResponse.Messages.UpdateError,
+                            PedidoResponse.Details.InvalidAttemptUpdateItens
+                        ))
+                    }
+                    else if ((PedidoModel.formaPagamento || PedidoModel.formaExpedicao) && PedidoModel.statusPedido === 'viagem') {
+                        reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,
+                            PedidoResponse.Messages.UpdateError,
+                            PedidoResponse.Details.InvalidAttemptUpdatePayment
+                        ))
+                    }
+                    else {
+                        pedidoDao.update(PedidoModel)
+                            .then(result => {
+                                resolve(result)
+                            })
+                            .catch(error => {
+                                reject(error)
+                            })
+                    }
+                }
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    async cancelarPedido(PedidoModel) {
+        return new Promise(function (resolve, reject) {
+            PedidoModel.statusPedido = 'cancelado'
+            pedidoDao.update(PedidoModel)
+                .then(result => {
+                    if (result) {
+                        const jsonSucess = Success.generateJsonSucess(
+                            200,
+                            'Pedido cancelado com sucesso'
+                        );
+
+                        resolve(jsonSucess)
+                    }
+                    else resolve(result)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
     }
 }
 

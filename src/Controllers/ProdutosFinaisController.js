@@ -1,5 +1,6 @@
 /* Imports*/
 
+const { objOf } = require('ramda')
 const ProdutoFinalModel = require('../Models/ProdutoFinalModel')
 const ProdutosFinaisService = require('../Services/ProdutosFinaisService')
 

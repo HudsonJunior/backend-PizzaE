@@ -68,7 +68,7 @@ PedidoSchema.plugin(mongooseStringQuery);
 Pedido = mongoose.model('pedidos', PedidoSchema);
 /* */
 class PedidoDao {
-    constructor() {}
+    constructor() { }
 
     create(PedidoModel) {
         return new Promise(function (resolve, reject) {
@@ -227,12 +227,12 @@ class PedidoDao {
 
                 obj.id = codigo;
 
-                Pedido.update(obj, PedidoModel)
+                Pedido.updateOne(obj, PedidoModel)
                     .then((data) => {
                         try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(
+                            const jsonSucess = Sucess.generateJsonSucess(
                                 200,
-                                data
+                                'Pedido alterado com sucesso'
                             );
 
                             resolve(jsonSucess);
