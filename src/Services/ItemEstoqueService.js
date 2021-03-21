@@ -76,56 +76,18 @@ class ItemEstoqueService {
     delete(ItemModel, codItem) {
         return new Promise(function (resolve, reject) {
             try {
-                ItemModel.ativado = false;
-
-
-                deleteElement(ItemModel.itens, codItem)
+                itemEstoqueDao.delete(ItemModel, codItem)
                     .then(result => {
-                       // ItemModel.itens = result
-                       // ItemModel.quantidade = ItemModel.quantidade - 1;
-
                         resolve(result)
                     })
                     .catch(error => {
                         reject(error)
                     })
-
-                if (ItemModel.quantidade <= 0) {
-                    itemEstoqueDao.delete(ItemModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                } else {
-                    itemEstoqueService.update(ItemModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
-
             }
             catch (error) {
                 reject(error)
             }
         })
-    }
-
-    deleteElement(list, codigo) {
-        return new Promise(function (resolve, reject) {
-
-            list.map((item, index) => {
-                if (item.codigo == codigo) {
-                    delete item[index]
-                }
-            })
-            resolve(list)
-        }
-        )
     }
 
     existemItemEstoque(itemEstoque) {

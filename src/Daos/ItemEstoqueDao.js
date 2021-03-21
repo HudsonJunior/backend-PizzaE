@@ -157,16 +157,16 @@ class ItemEstoqueDao {
         })
     }
 
-    delete(ItemModel) {
+    delete(ItemModel, codItem) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
-                obj.id = ItemModel.id;
+                obj.id = codItem;
 
                 ItemEstoque.deleteOne(obj, ItemModel)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+                            const jsonSucess = Sucess.generateJsonSucess(201, "Item apagado com sucesso!" );
 
                             resolve(jsonSucess)
                         }
@@ -176,7 +176,7 @@ class ItemEstoqueDao {
                     })
                     .catch(error => {
                         console.log(error)
-                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                        reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar item do estoque!"))
                     })
             }
             catch (error) {
