@@ -124,44 +124,6 @@ class PedidoDao {
         });
     }
 
-    update(PedidoModel) {
-        return new Promise(function (resolve, reject) {
-            try {
-                let codigo = PedidoModel.Pedido;
-
-                let obj = new Object();
-
-                obj.id = codigo;
-
-                Pedido.update(obj, PedidoModel)
-                    .then((data) => {
-                        try {
-                            const jsonSucess = Sucess.generateUserJsonSucess(
-                                200,
-                                data
-                            );
-
-                            resolve(jsonSucess);
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        reject(
-                            Exceptions.generateException(
-                                PedidoResponse.Codes.InternalServerError,
-                                PedidoResponse.Messages.RegisterError,
-                                PedidoResponse.Details.DbError
-                            )
-                        );
-                    });
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
     getListFromDate(dataPedido) {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
@@ -230,6 +192,64 @@ class PedidoDao {
                         }
                     }
                 );
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    list() {
+        return new Promise(function (resolve, reject) {
+            try {
+                Pedido.find(function (err, data) {
+                    if (err) {
+                        reject();
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data);
+                    } else {
+                        resolve(false);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    update(PedidoModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let codigo = PedidoModel.Pedido;
+
+                let obj = new Object();
+
+                obj.id = codigo;
+
+                Pedido.update(obj, PedidoModel)
+                    .then((data) => {
+                        try {
+                            const jsonSucess = Sucess.generateUserJsonSucess(
+                                200,
+                                data
+                            );
+
+                            resolve(jsonSucess);
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        reject(
+                            Exceptions.generateException(
+                                PedidoResponse.Codes.InternalServerError,
+                                PedidoResponse.Messages.RegisterError,
+                                PedidoResponse.Details.DbError
+                            )
+                        );
+                    });
             } catch (error) {
                 reject(error);
             }
