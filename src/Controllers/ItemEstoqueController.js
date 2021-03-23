@@ -1,7 +1,7 @@
 /* Imports*/
 
-const ProdutoEstoqueModel = require('../Models/ProdutoEstoqueModel')
-const ProdutosEstoqueService = require('../Services/ProdutosEstoqueService')
+const ItemEstoqueModel = require('../Models/ItemEstoqueModel')
+const ItemEstoqueService = require('../Services/ItemEstoqueService')
 
 /**/
 
@@ -10,24 +10,29 @@ module.exports = function (server) {
     server.post('/produtos-estoque', function (req, res, next) {
 
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
 
-            let produtoEstoque;
+            console.log("data ", data);
 
-            produtoEstoque = new ProdutoEstoqueModel(data);
+            let itemEstoque;
 
-            const produtoService = new ProdutosEstoqueService();
+            itemEstoque = new ItemEstoqueModel(data);
+            console.log(itemEstoque)
 
-            produtoService.create(produtoEstoque)
+            const itemService = new ItemEstoqueService();
+
+            itemService.create(itemEstoque)
                 .then(jsonSuccess => {
+                    console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                    delete jsonSuccess.code
 
                     res.json(code, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
+                    console.log("jasao trollo", jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
@@ -43,15 +48,15 @@ module.exports = function (server) {
 
     server.patch('/produtos-estoque', function (req, res, next) {
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
 
-            let estoqueModel;
+            let itemModel;
 
-            estoqueModel = new ProdutoEstoqueModel();
+            itemModel = new ItemEstoqueModel();
 
-            const produtoService = new ProdutosEstoqueService();
+            const itemService = new ItemEstoqueService();
 
-            produtoService.update(estoqueModel)
+            itemService.update(itemModel)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -77,23 +82,56 @@ module.exports = function (server) {
     server.del('/produtos-estoque', function (req, res, next) {
 
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = req.body || {}
 
-            let estoqueModel;
+            let itemModel;
 
-            estoqueModel = new ProdutoEstoqueModel();
+            itemModel = new ItemEstoqueModel();
 
             let codItem = req.query.codigo;
 
-            const estoqueService = new ProdutosEstoqueService();
+            const itemService = new ItemEstoqueService();
 
-            estoqueService.delete(estoqueModel, codItem)
+            itemService.delete(itemModel, codItem)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
                     delete jsonSucess.code
 
                     res.json(code, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.get('/produtos-estoque', function (req, res, next) {
+
+        try {
+
+            let aVencer = req.params.aVencer;
+
+            let itemModel = {};
+
+            const itemCodigo = req.params.id || null;
+
+            itemModel.id = itemCodigo;
+
+            const itemService = new ItemEstoqueService();
+
+            itemService.get(itemModel, aVencer)
+                .then(jsonSuccess => {
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {

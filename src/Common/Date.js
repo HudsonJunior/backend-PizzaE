@@ -1,5 +1,6 @@
-var moment = require('moment-timezone');
+var moment = require('moment');
 
+<<<<<<< HEAD
 class Date {
     constructor() {
         this.date = moment().tz('America/Sao_Paulo');
@@ -9,6 +10,10 @@ class Date {
         var format = 'DD/MM/YYYY HH:mm:ss ZZ';
         return moment(date, format).tz('America/Sao_Paulo').format(format);
     }
+=======
+class Date{
+    constructor(){   }
+>>>>>>> Edson-Cizesk
 
     getDate() {
         return this.date;
@@ -167,6 +172,11 @@ class Date {
 
         // Check the range of the day
         return day > 0 && day <= monthLength[month - 1];
+    }
+
+    converteDate(stringDate){
+        const newDate = moment(stringDate).toDate()
+        return newDate
     }
 }
 
