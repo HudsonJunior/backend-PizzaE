@@ -143,6 +143,37 @@ class ItemEstoqueDao {
         })
     }
 
+    find_quantidade(nome){
+        return new Promise(function(resolve, reject){
+            let obj = new Object()
+            obj.nome = nome
+
+            try {
+                ItemEstoque.find(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve({
+                            nome: nome,
+                            quantidade: data.length
+                        })
+                    }
+                    else {
+                        resolve({
+                            nome: nome,
+                            quantidade: 0
+                        })
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
     update(ItemModel) {
         return new Promise(function (resolve, reject) {
             try {

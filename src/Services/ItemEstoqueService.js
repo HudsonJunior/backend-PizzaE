@@ -111,7 +111,7 @@ class ItemEstoqueService {
         })
     }
 
-    get(ItemModel, aVencer) {
+    get(ItemModel, aVencer, flagQuant, nome) {
         return new Promise(function (resolve, reject) {
             try {
                 if(ItemModel.id){
@@ -126,8 +126,15 @@ class ItemEstoqueService {
                     .catch(error => {
                         reject(error)
                     })
-                }
-                else{
+                }else if(flagQuant && nome){
+                    itemEstoqueDao.find_quantidade(nome)
+                    .then(result=>{
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+                }else{
                     itemEstoqueDao.list(aVencer)
                     .then(result => {
                         if(result)

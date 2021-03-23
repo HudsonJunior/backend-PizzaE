@@ -115,6 +115,8 @@ module.exports = function (server) {
         try {
 
             let aVencer = req.params.aVencer;
+            let flagQuant = req.params.flagQuant;
+            let nome = req.params.nome;
 
             let itemModel = {};
 
@@ -124,7 +126,7 @@ module.exports = function (server) {
 
             const itemService = new ItemEstoqueService();
 
-            itemService.get(itemModel, aVencer)
+            itemService.get(itemModel, aVencer, flagQuant, nome)
                 .then(jsonSuccess => {
                     res.json(201, jsonSuccess)
                     next()
