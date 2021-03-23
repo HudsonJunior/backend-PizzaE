@@ -1,9 +1,6 @@
-const cpf = require('cpf')
+const cpf = require('cpf');
 module.exports = {
-
-    validateCpf(cpfString){
-        return cpf.isValid(cpfString)
-    }
-}
-
-
+    validateCpf(cpfString) {
+        return cpf.isValid(cpfString);
+    },
+};
