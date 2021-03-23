@@ -82,17 +82,12 @@ module.exports = function (server) {
     server.del('/produtos-estoque', function (req, res, next) {
 
         try {
-            let data = req.body || {}
 
-            let itemModel;
-
-            itemModel = new ItemEstoqueModel();
-
-            let codItem = req.query.codigo;
+            let codItem = req.params.id;
 
             const itemService = new ItemEstoqueService();
 
-            itemService.delete(itemModel, codItem)
+            itemService.delete(codItem)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 

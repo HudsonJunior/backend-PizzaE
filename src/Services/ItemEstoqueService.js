@@ -73,10 +73,10 @@ class ItemEstoqueService {
         })
     }
 
-    delete(ItemModel, codItem) {
+    delete(codItem) {
         return new Promise(function (resolve, reject) {
             try {
-                itemEstoqueDao.delete(ItemModel, codItem)
+                itemEstoqueDao.delete(codItem)
                     .then(result => {
                         resolve(result)
                     })
