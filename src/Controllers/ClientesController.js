@@ -41,14 +41,14 @@ module.exports = function (server) {
         }
     })
 
-    server.get('/clientes/:cpf', function (req, res, next) {
+    server.get('/clientes', function (req, res, next) {
 
         try {
             
             const clientesService = new ClientesService();
             const cpfClientes = req.params.cpf
-
-            clientesService.getClientesList(cpfClientes)
+            if(cpfClientes == null){
+                clientesService.get()
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -65,17 +65,9 @@ module.exports = function (server) {
                     res.json(code, jsonError)
                     next()
                 })
-        }
-        catch (error) {
-            console.log(error)
-        }
-    })
-
-    server.get('/clientes', function (req, res, next) {
-
-        try {
-            const clientesService = new ClientesService();
-            clientesService.get()
+            }else{
+                console.log(cpfClientes)
+                clientesService.getCliente(cpfClientes)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 
@@ -92,15 +84,21 @@ module.exports = function (server) {
                     res.json(code, jsonError)
                     next()
                 })
+            }
+
+            
         }
         catch (error) {
             console.log(error)
         }
     })
+
+    
 
     server.del('/clientes', function (req, res, next) {
 
         try {
+            /*
             let data = req.body || {}
 
             let clientesModel;
@@ -108,10 +106,12 @@ module.exports = function (server) {
             clientesModel = new ClientesModel(data);
 
             let cpfCliente = req.query.codigo;
-
+            */
+            const cpfCliente = req.params.cpf
+            console.log(cpfCliente)
             const clientesService = new ClientesService();
 
-            clientesService.delete(clientesModel, cpfCliente)
+            clientesService.delete(cpfCliente)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
 

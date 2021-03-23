@@ -30,13 +30,8 @@ class ClientesService {
                 const validarTelefone = await ClientesService.validarTelefone(ClientesModel.telefone)
                 const validarEndereco = await ClientesService.validarEndereco(ClientesModel.endereco)
                 */
-                aux1 = ClientesModel.cpf
-                cpfFlag = validateCpf(aux1)
-
-                if(!cpfFlag){
-                    console.log("Cpf inserido eh invalido")
-                    ClientesModel.cpf = "Cpf ta errado"
-                }
+                
+                //ClientesModel.cpf = validateCpf(ClientesModel.cpf)
                 ClientesModel.password = string.validatePassword(ClientesModel.password)
                 ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
                 ClientesModel.endereco = string.validateOnlyLetters(ClientesModel.endereco)
@@ -59,12 +54,11 @@ class ClientesService {
         })
     }
 
-    delete(ClientesModel) {
+    delete(cpfCliente) {
+        
         return new Promise(function (resolve, reject) {
             try {
-                ClientesModel.ativado = false;
-
-                ClientesDao.delete(ClientesModel)
+                clientesDao.delete(cpfCliente)
                     .then(result => {
                         resolve(result)
                     })
@@ -80,11 +74,12 @@ class ClientesService {
     }
 
 
-    getClientesList(cpfClientes) {
+    getCliente(cpfClientes) {
         return new Promise(function (resolve, reject) {
             try {
-
-                clientesDao.get(cpfClientes)
+                console.log("to em buscar cliente cpf eh:")
+                console.log(cpfClientes)
+                clientesDao.getCliente(cpfClientes)
                     .then(result => {
                         result.cash_token = AuthValue.cash_token
 
@@ -101,6 +96,7 @@ class ClientesService {
     }
 
     get() {
+        console.log("to no listar clientizinhos")
         return new Promise(function (resolve, reject) {
             try {
 

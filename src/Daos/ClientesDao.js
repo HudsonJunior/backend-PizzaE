@@ -47,13 +47,16 @@ class ClientesDal {
         })
     }
 
-    delete(ClientesModel) {
+    delete(cpfCliente) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
-                obj.cpf = ClientesModel.cpf;
+                obj.cpf = cpfCliente;
+                console.log("to no DAO cpf eh:")
+                console.log(cpfCliente)
 
-                Clientes.deleteOne(obj, ClientesModel)
+                ClienteAchado = find(obj)
+                Clientes.deleteOne(obj, ClienteAchado)
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
@@ -76,15 +79,18 @@ class ClientesDal {
     }
 
     getCliente(cpfCliente) {
+        console.log("To em getCliente cpf eh:")
+        console.log(cpfCliente)
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.cpf = cpfCliente;
+            
             try {
                 Clientes.find(obj)
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
-
+                            console.log(data)
                             resolve(jsonSucess)
                         }
                         catch (error) {
@@ -101,8 +107,10 @@ class ClientesDal {
             }
         })
     }
+    
+    
 
-    list(cpfCliente) {
+    list() {
         return new Promise(function (resolve, reject) {
 
             try {
@@ -110,7 +118,7 @@ class ClientesDal {
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
-
+                            console.log(data)
                             resolve(jsonSucess)
                         }
                         catch (error) {
@@ -206,6 +214,7 @@ class ClientesDal {
 
         return ClientesSchema
     }
+    
 }
 
 module.exports = ClientesDal
