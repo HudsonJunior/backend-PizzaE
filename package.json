@@ -23,10 +23,7 @@
     "mongoose-timestamp": "^0.6.0",
     "path": "^0.12.7",
     "ramda": "^0.27.1",
-<<<<<<< HEAD
     "regex": "^0.1.1",
-=======
->>>>>>> Edson-Cizesk
     "restify": "^8.5.1",
     "restify-errors": "^8.0.2",
     "restify-plugins": "^1.6.0"

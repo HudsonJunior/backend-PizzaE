@@ -376,7 +376,6 @@ class PedidoService {
                     .getListReportFromDate(dataInicio, dataFinal)
                     .then((result) => {
                         if (result) {
-                            // contar a qtde que cada produto apareceu nesse intervalo de tempo e retorna uma lista de produtos com o id e quantidade
                             let productsArray = new Array();
 
                             for (var i = 0; i < result.length; i++) {
@@ -385,18 +384,10 @@ class PedidoService {
                                 for (var j = 0; j < productsList.length; j++) {
                                     var currentID = productsList[j]['_id'];
                                     var currentName = productsList[j]['nome'];
-                                    var currentQtde =
-                                        productsList[j]['quantidade'];
-                                    var idAlreadyExists = Helper.fieldSearch(
-                                        '_id',
-                                        currentID,
-                                        productsArray
-                                    );
-
-                                    if (
-                                        productsArray.length === 0 ||
-                                        idAlreadyExists === false
-                                    ) {
+                                    var currentQtde = productsList[j]['quantidade'];
+                                    var idAlreadyExists = Helper.fieldSearch('_id', currentID, productsArray);
+                                    
+                                    if (productsArray.length === 0 || idAlreadyExists === false) {
                                         let obj = new Object();
 
                                         obj['_id'] = currentID;
@@ -405,12 +396,8 @@ class PedidoService {
 
                                         productsArray.push(obj);
                                     } else {
-                                        productsArray[idAlreadyExists][
-                                            'quantidade'
-                                        ] =
-                                            productsArray[idAlreadyExists][
-                                                'quantidade'
-                                            ] + currentQtde;
+                                        productsArray[idAlreadyExists]['quantidade'] =
+                                            productsArray[idAlreadyExists]['quantidade'] + currentQtde;
                                     }
                                 }
                             }
@@ -440,17 +427,16 @@ class PedidoService {
                     .list()
                     .then((result) => {
                         if (result) {
-                            let productsArray = new Array(); //fazer uma relação de quantidade vendida do produto mensalmente dos últimos 6 meses
+                            let productsArray = new Array();
+
                             var date = new Date();
                             var month = date.getCurrentMonth();
                             var year = date.getCurrentYear();
                             var pastYear = date.getCurrentPastYear();
-                            var lastMonths = date.getLastMonths(
-                                month,
-                                year,
-                                pastYear
-                            );
+                            var lastMonths = date.getLastMonths(month,year,pastYear);
+
                             var idProduto = null;
+
                             for (var i = 0; i < 6; i++) {
                                 let obj = new Object();
 
@@ -463,33 +449,24 @@ class PedidoService {
                             }
 
                             for (var i = 0; i < result.length; i++) {
+                                
                                 var productsList = result[i]['produtos'];
 
-                                for (var j = 0; j < productsList.length; j++) {
-                                    if (productsList[j].nome == nomeProduto) {
-                                        idProduto = productsList[j]._id;
-                                        var dataPedido = new Array();
-                                        var dataPedido = result[i].data.split(
-                                            '/'
-                                        );
-                                        var mesAnoPedido = dataPedido[1].concat(
-                                            '/'
-                                        );
-                                        mesAnoPedido = mesAnoPedido.concat(
-                                            dataPedido[2]
-                                        );
-                                        var indexIntervalo = Helper.fieldSearch(
-                                            'data',
-                                            mesAnoPedido,
-                                            productsArray
-                                        );
-                                        if (indexIntervalo)
-                                            productsArray[
-                                                indexIntervalo
-                                            ].quantidade =
-                                                productsArray[indexIntervalo]
-                                                    .quantidade +
-                                                productsList[j].quantidade;
+                                if (productsList != null) {
+                                    
+                                    for (var j = 0;j < productsList.length;j++) {
+                                        if (productsList[j].nome == nomeProduto) {
+                                            idProduto = productsList[j]._id;
+
+                                            var dataPedido = new Array();
+                                            var dataPedido = result[i].data.split('/');
+                                            var mesAnoPedido = dataPedido[1].concat('/');
+                                            mesAnoPedido = mesAnoPedido.concat(dataPedido[2]);
+                                            var indexIntervalo = Helper.fieldSearch('data',mesAnoPedido,productsArray);
+                                            
+                                            if (indexIntervalo)
+                                                productsArray[indexIntervalo].quantidade = productsArray[indexIntervalo].quantidade + productsList[j].quantidade;
+                                        }
                                     }
                                 }
                             }

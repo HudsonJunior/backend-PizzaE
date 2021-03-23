@@ -5,6 +5,7 @@ const PedidoService = require('../Services/PedidoService.js');
 /**/
 
 module.exports = function (server) {
+    
     server.post('/pedido', function (req, res, next) {
         try {
             let data = req.body || {};
@@ -32,20 +33,12 @@ module.exports = function (server) {
         }
     });
 
-    server.get('/pedido', function (req, res, next) {
+    server.get('/pedido/data', function (req, res, next) {
         try {
             let dataPedido = req.params.data || null;
 
-            let cpf = req.params.cpfCliente || null;
-
-            let dataInicio = req.params.dataI || null;
-            let dataFinal = req.params.dataF || null;
-
-            let nomeProduto = req.params.nomeProduto || null;
-
             const pedidoService = new PedidoService();
 
-            if (dataPedido) {
                 pedidoService
                     .getListFromDate(dataPedido)
                     .then((jsonSuccess) => {
@@ -60,7 +53,18 @@ module.exports = function (server) {
                         res.json(code, jsonError);
                         next();
                     });
-            } else if (cpf) {
+            
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    server.get('/pedido/cpf', function (req, res, next) {
+        try {
+            let cpf = req.params.cpfCliente || null;
+
+            const pedidoService = new PedidoService();
+
                 pedidoService
                     .getListFromClient(cpf)
                     .then((jsonSuccess) => {
@@ -75,7 +79,19 @@ module.exports = function (server) {
                         res.json(code, jsonError);
                         next();
                     });
-            } else if (dataInicio && dataFinal) {
+            
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    server.get('/pedido/datas', function (req, res, next) {
+        try {
+            let dataInicio = req.params.dataI || null;
+            let dataFinal = req.params.dataF || null;
+
+            const pedidoService = new PedidoService();
+
                 pedidoService
                     .getListReportFromDate(dataInicio, dataFinal)
                     .then((jsonSuccess) => {
@@ -90,7 +106,18 @@ module.exports = function (server) {
                         res.json(code, jsonError);
                         next();
                     });
-            } else if (nomeProduto) {
+            
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    server.get('/pedido/produto', function (req, res, next) {
+        try {
+            let nomeProduto = req.params.nomeProduto || null;
+
+            const pedidoService = new PedidoService();
+
                 pedidoService
                     .getListFromProduct(nomeProduto)
                     .then((jsonSuccess) => {
@@ -105,7 +132,7 @@ module.exports = function (server) {
                         res.json(code, jsonError);
                         next();
                     });
-            }
+            
         } catch (error) {
             console.log(error);
         }
