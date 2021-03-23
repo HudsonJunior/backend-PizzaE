@@ -1,14 +1,7 @@
-var moment = require('moment-timezone');
+var moment = require('moment');
 
 class Date {
-    constructor() {
-        this.date = moment().tz('America/Sao_Paulo');
-    }
-
-    toTimeZoneSP(date) {
-        var format = 'DD/MM/YYYY HH:mm:ss ZZ';
-        return moment(date, format).tz('America/Sao_Paulo').format(format);
-    }
+    constructor() {}
 
     getDate() {
         return this.date;
@@ -28,6 +21,7 @@ class Date {
     getCurrentYear() {
         return moment().year();
     }
+
     getCurrentPastYear() {
         return moment().year() - 1;
     }
@@ -167,6 +161,11 @@ class Date {
 
         // Check the range of the day
         return day > 0 && day <= monthLength[month - 1];
+    }
+
+    converteDate(stringDate) {
+        const newDate = moment(stringDate).toDate();
+        return newDate;
     }
 }
 
