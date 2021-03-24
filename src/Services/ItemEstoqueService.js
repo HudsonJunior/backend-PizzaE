@@ -154,6 +154,30 @@ class ItemEstoqueService {
             }
         })
     }
+
+    getRelatorio(data, nome) {
+        return new Promise(function (resolve, reject) {
+            try {
+                if(data){
+                    itemEstoqueDao.listExpiredProdutcs(data)
+                    .then(result=>{
+                        if(result){
+                            resolve(result)
+                        }
+                        else{
+                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque vencido nesta data"))
+                        }
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+                }
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
 
 module.exports = ItemEstoqueService

@@ -143,6 +143,36 @@ class ItemEstoqueDao {
         })
     }
 
+    listExpiredProdutcs(dataValidade){
+        return new Promise(function (resolve, reject) {
+            const newData = new Date(moment(dataValidade).toDate());
+            try {                
+                ItemEstoque.find(
+                    {
+                        validade: {
+                            $lte : newData
+                        } 
+                    }, 
+                    function (err, data) {
+                        if (err) {
+                            reject()
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            resolve(data)
+                        }
+                        else {
+                            resolve(false)
+                        }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
+
     find_quantidade(nome){
         return new Promise(function(resolve, reject){
             let obj = new Object()

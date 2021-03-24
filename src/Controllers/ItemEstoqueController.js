@@ -144,4 +144,32 @@ module.exports = function (server) {
             console.log(error)
         }
     })
+
+    server.get('/produtos-estoque/relatorio', function (req, res, next) {
+
+        try {
+            let data = req.params.data || null;
+
+            let nome = req.params.nome || null;
+
+            const itemService = new ItemEstoqueService();
+
+            itemService.getRelatorio(data, nome)
+                .then(jsonSuccess => {
+                    res.json(201, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = jsonError.code
+
+                    delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
 }
