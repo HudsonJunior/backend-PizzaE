@@ -150,11 +150,11 @@ module.exports = function (server) {
         try {
             let data = req.params.data || null;
 
-            let nome = req.params.nome || null;
+            let flagQtde = req.params.flagQtde || null;
 
             const itemService = new ItemEstoqueService();
 
-            itemService.getRelatorio(data, nome)
+            itemService.getRelatorio(data, flagQtde)
                 .then(jsonSuccess => {
                     res.json(201, jsonSuccess)
                     next()

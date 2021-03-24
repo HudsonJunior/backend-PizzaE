@@ -1,9 +1,10 @@
 /* imports */
 const ItemEstoqueDao = require('../Daos/ItemEstoqueDao')
+const Helper = require('../Common/Helper');
+
 /* Global variables*/
 const exceptionsClass = require('../Models/Responses/Exceptions')
 const Exceptions = new exceptionsClass()
-
 var itemEstoqueService
 var itemEstoqueDao
 /* */
@@ -155,10 +156,10 @@ class ItemEstoqueService {
         })
     }
 
-    getRelatorio(data, nome) {
+    getRelatorio(data, flagQtde) {
         return new Promise(function (resolve, reject) {
             try {
-                if(data){
+                if (data) {
                     itemEstoqueDao.listExpiredProdutcs(data)
                     .then(result=>{
                         if(result){
@@ -171,6 +172,39 @@ class ItemEstoqueService {
                     .catch(error => {
                         reject(error)
                     })
+                } else if (flagQtde == "true") {
+                    itemEstoqueDao.listAll()
+                    .then(result=>{
+                        if(result){
+
+                            var estoqueArray = new Array();
+                            
+                            for (var i=0; i < result.length; i++){
+
+                                var indexEstoque = Helper.fieldSearch('nome',result[i].nome,estoqueArray);
+
+                                if (estoqueArray.length === 0 || indexEstoque === false) {
+                                    var obj = new Object();
+                                    obj.nome = result[i].nome;
+                                    obj.quantidade = 1;
+                                    estoqueArray.push(obj);
+                                }
+                                else {
+                                    estoqueArray[indexEstoque].quantidade += 1; 
+                                }
+                                
+                            }
+                            resolve(estoqueArray)
+                        }
+                        else{
+                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque"))
+                        }
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+                } else {
+                    reject(Exceptions.generateException(400, "houve algum erro de requisicao"))
                 }
             }
             catch (error) {
