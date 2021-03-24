@@ -31,7 +31,7 @@ const PedidoSchema = new mongoose.Schema({
         require: true,
     },
     data: {
-        type: String,
+        type: Date,
         require: true,
     },
     hora: {
@@ -101,36 +101,15 @@ class PedidoDao {
         });
     }
 
-    findOne(codigo) {
-        return new Promise(function (resolve, reject) {
-            let obj = new Object();
-            obj.id = codigo;
-
-            try {
-                Pedido.findOne(obj, function (err, data) {
-                    if (err) {
-                        console.log(err);
-                        reject();
-                    }
-                    if (!data) {
-                        resolve();
-                    } else {
-                        reject();
-                    }
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
     getListFromDate(dataPedido) {
         return new Promise(function (resolve, reject) {
-            let obj = new Object();
-            obj.data = dataPedido;
-
             try {
-                Pedido.find(obj, function (err, data) {
+                Pedido.find(
+                    {
+                        data: new Date(dataPedido)
+                    }
+                    , 
+                    function (err, data) {
                     if (err) {
                         reject();
                     }
@@ -176,8 +155,8 @@ class PedidoDao {
                 Pedido.find(
                     {
                         data: {
-                            $gte: dataI,
-                            $lte: dataF,
+                            $gte: new Date(dataI),
+                            $lte: new Date(dataF),
                         },
                     },
                     function (err, data) {

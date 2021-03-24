@@ -28,10 +28,6 @@ class PedidoService {
     async create(pedidoModel) {
         return new Promise(async function (resolve, reject) {
             try {
-                /* const validateCode = await pedidoService.validateCode(
-                    pedidoModel.codigo
-                ); */
-
                 const validatePagamento = await pedidoService.validatePagamento(
                     pedidoModel.formaPagamento
                 );
@@ -42,9 +38,7 @@ class PedidoService {
                     pedidoModel.formaExpedicao,
                     pedidoModel.cpfCliente
                 ); */
-                const validateData = await pedidoService.validateData(
-                    pedidoModel.data
-                );
+
                 const validadeCpfClient = await pedidoService.validateCpfCliente(
                     pedidoModel.cpfCliente
                 );
@@ -176,33 +170,10 @@ class PedidoService {
         });
     }
 
-    validateData(data) {
-        return new Promise(function (resolve, reject) {
-            try {
-                const d = new Date(data);
-                if (!d.isValidDate(data)) {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidDate
-                        )
-                    );
-                } else {
-                    console.log('passou no teste do Data');
-                    resolve();
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
     validateCpfCliente(cpf) {
         return new Promise(function (resolve, reject) {
             try {
                 if (cpf == '') {
-                    console.log('passou no teste do cpf cliente');
                     resolve();
                 } else if (!Cpf.validateCpf(cpf)) {
                     reject(
@@ -226,7 +197,6 @@ class PedidoService {
         return new Promise(function (resolve, reject) {
             try {
                 if (cpf == '') {
-                    console.log('passou no teste do cpf cliente');
                     resolve();
                 } else if (!Cpf.validateCpf(cpf)) {
                     reject(
@@ -253,7 +223,6 @@ class PedidoService {
                     string.validateOnlyLetters(status) &&
                     status == 'realizado'
                 ) {
-                    console.log('passou no teste de status do pedido');
                     resolve();
                 } else {
                     reject(
@@ -278,7 +247,6 @@ class PedidoService {
                 var regex = /^(\$|)([1-9]\d{0,2}(\,\d{3})*|([1-9]\d*))(\.\d{2})?$/;
                 var passed = valor.match(regex);
                 if (passed != null) {
-                    console.log('passou no teste do valor');
                     resolve();
                 } else {
                     reject(
@@ -302,7 +270,6 @@ class PedidoService {
                     string.validateOnlyLetters(status) &&
                     (status == 'pago' || status == 'nao pago')
                 ) {
-                    console.log('passou no teste de status do pagamento');
                     resolve();
                 } else {
                     reject(
@@ -459,24 +426,36 @@ class PedidoService {
                                     for (var j = 0; j < productsList.length; j++) {
                                         if (productsList[j].nome == nomeProduto) {
                                             idProduto = productsList[j]._id;
-
-                                            var dataPedido = new Array();
-                                            var dataPedido = result[i].data.split('/');
-                                            var mesAnoPedido = dataPedido[1].concat('/');
-                                            mesAnoPedido = mesAnoPedido.concat(dataPedido[2]);
+                                            
+                                            var dataPedido = result[i].data.toISOString().split('T')[0];
+                                            dataPedido = dataPedido.split('-')
+                                            
+                                            var mesAnoPedido = dataPedido[0].concat('-');
+                                            mesAnoPedido = mesAnoPedido.concat(dataPedido[1]);
+                                            
                                             var indexIntervalo = Helper.fieldSearch('data', mesAnoPedido, productsArray);
 
-                                            if (indexIntervalo)
-                                                productsArray[indexIntervalo].quantidade = productsArray[indexIntervalo].quantidade + productsList[j].quantidade;
+                                            if (indexIntervalo !== false){
+                                                productsArray[indexIntervalo].quantidade += + productsList[j].quantidade;
+                                            }
+                                            
+                                                console.log(productsArray)
                                         }
                                     }
                                 }
                             }
 
-                            for (var i = 0; i < 6; i++) {
-                                productsArray[i]._id = idProduto;
+                            if (idProduto){
+                                for (var i = 0; i < 6; i++) {
+                                    productsArray[i]._id = idProduto;
+                                }
                             }
-
+                            else{
+                                reject(Exceptions.generateException(
+                                    400,
+                                    'Não foi encontrado nenhum pedidos'
+                                ))
+                            }
                             resolve(productsArray);
                         } else {
                             reject(
