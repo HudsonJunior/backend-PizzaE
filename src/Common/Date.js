@@ -30,137 +30,113 @@ class Date {
         switch (month) {
             case 1:
                 return [
-                    '01' + '/' + year,
-                    '12' + '/' + pastYear,
-                    '11' + '/' + pastYear,
-                    '10' + '/' + pastYear,
-                    '09' + '/' + pastYear,
-                    '08' + '/' + pastYear,
+                    year +'01' + '-',
+                    pastYear  + '-' + '12',
+                    pastYear  + '-' + '11',
+                    pastYear  + '-' + '10',
+                    pastYear  + '-' + '09',
+                    pastYear  + '-' + '08',
                 ];
             case 2:
                 return [
-                    '02' + '/' + year,
-                    '01' + '/' + year,
-                    '12' + '/' + pastYear,
-                    '11' + '/' + pastYear,
-                    '10' + '/' + pastYear,
-                    '09' + '/' + pastYear,
+                    year + '-' + '02', 
+                    year + '-' + '01', 
+                    pastYear + '-' + '12', 
+                    pastYear + '-' + '11', 
+                    pastYear + '-' + '10', 
+                    pastYear + '-' + '09', 
                 ];
             case 3:
                 return [
-                    '03' + '/' + year,
-                    '02' + '/' + year,
-                    '01' + '/' + year,
-                    '12' + '/' + pastYear,
-                    '11' + '/' + pastYear,
-                    '10' + '/' + pastYear,
+                    year+ '-' + '03' ,
+                    year+ '-' + '02' ,
+                    year+ '-' + '01' ,
+                    pastYear+ '-' + '12' ,
+                    pastYear+ '-' + '11' ,
+                    pastYear+ '-' + '10' ,
                 ];
             case 4:
                 return [
-                    '04' + '/' + year,
-                    '03' + '/' + year,
-                    '02' + '/' + year,
-                    '01' + '/' + year,
-                    '12' + '/' + pastYear,
-                    '11' + '/' + pastYear,
+                    year + '-' + '04',
+                    year + '-' + '03',
+                    year + '-' + '02',
+                    year + '-' + '01',
+                    pastYear + '-' + '12',
+                    pastYear + '-' + '11',
                 ];
             case 5:
                 return [
-                    '05' + '/' + year,
-                    '04' + '/' + year,
-                    '03' + '/' + year,
-                    '02' + '/' + year,
-                    '01' + '/' + year,
-                    '12' + '/' + pastYear,
+                    year + '-' + '05' ,
+                    year + '-' + '04' ,
+                    year + '-' + '03' ,
+                    year + '-' + '02' ,
+                    year + '-' + '01' ,
+                    pastYear + '-' + '12' ,
                 ];
             case 6:
                 return [
-                    '06' + '/' + year,
-                    '05' + '/' + year,
-                    '04' + '/' + year,
-                    '03' + '/' + year,
-                    '02' + '/' + year,
-                    '01' + '/' + year,
+                    year + '-' + '06',
+                    year + '-' + '05',
+                    year + '-' + '04',
+                    year + '-' + '03',
+                    year + '-' + '02',
+                    year + '-' + '01',
                 ];
             case 7:
                 return [
-                    '07' + '/' + year,
-                    '06' + '/' + year,
-                    '05' + '/' + year,
-                    '04' + '/' + year,
-                    '03' + '/' + year,
-                    '02' + '/' + year,
+                    year + '-' + '07',
+                    year + '-' + '06',
+                    year + '-' + '05',
+                    year + '-' + '04',
+                    year + '-' + '03',
+                    year + '-' + '02',
                 ];
             case 8:
                 return [
-                    '08' + '/' + year,
-                    '07' + '/' + year,
-                    '06' + '/' + year,
-                    '05' + '/' + year,
-                    '04' + '/' + year,
-                    '03' + '/' + year,
+                    year + '-' + '08',
+                    year + '-' + '07',
+                    year + '-' + '06',
+                    year + '-' + '05',
+                    year + '-' + '04',
+                    year + '-' + '03',
                 ];
             case 9:
                 return [
-                    '09' + '/' + year,
-                    '08' + '/' + year,
-                    '07' + '/' + year,
-                    '06' + '/' + year,
-                    '05' + '/' + year,
-                    '04' + '/' + year,
+                    year + '-' + '09',
+                    year + '-' + '08',
+                    year + '-' + '07',
+                    year + '-' + '06',
+                    year + '-' + '05',
+                    year + '-' + '04',
                 ];
             case 10:
                 return [
-                    '10' + '/' + year,
-                    '09' + '/' + year,
-                    '08' + '/' + year,
-                    '07' + '/' + year,
-                    '06' + '/' + year,
-                    '05' + '/' + year,
+                     year + '-' + '10',
+                     year + '-' + '09',
+                     year + '-' + '08',
+                     year + '-' + '07',
+                     year + '-' + '06',
+                     year + '-' + '05',
                 ];
             case 11:
                 return [
-                    '11' + '/' + year,
-                    '10' + '/' + year,
-                    '09' + '/' + year,
-                    '08' + '/' + year,
-                    '07' + '/' + year,
-                    '06' + '/' + year,
+                    year + '-' + '11',
+                    year + '-' + '10',
+                    year + '-' + '09',
+                    year + '-' + '08',
+                    year + '-' + '07',
+                    year + '-' + '06',
                 ];
             case 12:
                 return [
-                    '12' + '/' + year,
-                    '11' + '/' + year,
-                    '10' + '/' + year,
-                    '09' + '/' + year,
-                    '08' + '/' + year,
-                    '07' + '/' + year,
+                    year + '-' + '12',
+                    year + '-' + '11',
+                    year + '-' + '10',
+                    year + '-' + '09',
+                    year + '-' + '08',
+                    year + '-' + '07',
                 ];
         }
-    }
-
-    isValidDate(dateString) {
-        // First check for the pattern
-        if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) return false;
-
-        // Parse the date parts to integers
-        var parts = dateString.split('/');
-        var day = parseInt(parts[1], 10);
-        var month = parseInt(parts[0], 10);
-        var year = parseInt(parts[2], 10);
-
-        // Check the ranges of month and year
-        if (year < 1000 || year > 3000 || month == 0 || month > 12)
-            return false;
-
-        var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-        // Adjust for leap years
-        if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
-            monthLength[1] = 29;
-
-        // Check the range of the day
-        return day > 0 && day <= monthLength[month - 1];
     }
 
     converteDate(stringDate) {
