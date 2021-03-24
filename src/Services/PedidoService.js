@@ -104,7 +104,6 @@ class PedidoService {
                     string.validateOnlyLetters(formaPagamento) &&
                     (formaPagamento == 'dinheiro' || formaPagamento == 'cartao')
                 ) {
-                    console.log('passou do teste da forma de pagamento');
                     resolve();
                 } else {
                     reject(
@@ -128,7 +127,6 @@ class PedidoService {
                     string.validateOnlyLetters(formaExpedicao) &&
                     (formaExpedicao == 'balcao' || formaExpedicao == 'entrega')
                 ) {
-                    console.log('passou do teste da forma de expedicao');
                     resolve();
                 } else {
                     reject(
@@ -184,7 +182,6 @@ class PedidoService {
                         )
                     );
                 } else {
-                    console.log('passou no teste do cpf cliente');
                     resolve();
                 }
             } catch (error) {
@@ -207,7 +204,6 @@ class PedidoService {
                         )
                     );
                 } else {
-                    console.log('passou no teste do cpf nf');
                     resolve();
                 }
             } catch (error) {
@@ -438,8 +434,6 @@ class PedidoService {
                                             if (indexIntervalo !== false){
                                                 productsArray[indexIntervalo].quantidade += + productsList[j].quantidade;
                                             }
-                                            
-                                                console.log(productsArray)
                                         }
                                     }
                                 }
