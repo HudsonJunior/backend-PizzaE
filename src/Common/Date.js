@@ -7,10 +7,18 @@ class Date {
         return this.date;
     }
 
+    getCurrentDate() {
+        var d = new Date();
+        var date = [d.getCurrentYear(),
+                ('0' + (d.getCurrentMonth())).slice(-2),
+                ('0' + moment().date()).slice(-2)
+                ].join('-');
+        return date;
+    }
+
     convertDateToTimezone(data) {
         data.createdAt = this.toTimeZoneSP(data.createdAt);
         data.updatedAt = this.toTimeZoneSP(data.updatedAt);
-
         return data;
     }
 
