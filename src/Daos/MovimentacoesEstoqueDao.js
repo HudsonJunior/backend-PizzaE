@@ -24,10 +24,10 @@ const movSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    usuario: {
+    /* usuario: {
         type: String,
         required: true,
-    },
+    }, */
 });
 
 movSchema.plugin(mongooseStringQuery);
@@ -38,21 +38,20 @@ class MovimentacoesEstoqueDao {
 
     create(movModel) {
         return new Promise(function (resolve, reject) {
+
             const mov = new Movimentacoes(movModel);
 
             mov
                 .save()
                 .then((data) => {
                     try {
-                        const jsonSucess = Sucess.generateJsonSucess(200, 'Sucesso no registro desta ação');
-
-                        resolve(jsonSucess);
+                        resolve();
                     } catch (error) {
                         console.log(error);
                     }
                 })
                 .catch((error) => {
-                    reject(Exceptions.generateException(500, 'erro', error));
+                    reject();
                 });
         });
     }
@@ -61,7 +60,7 @@ class MovimentacoesEstoqueDao {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.idProduto = movModel.idProduto;
-            obj.acao = "Remoção";
+            obj.acao = "remocao";
             try {
                 Movimentacoes.findOne(obj, function (err, data) {
                     if (err) {
@@ -84,6 +83,7 @@ class MovimentacoesEstoqueDao {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.data = new Date(data)
+            
             try {
                 Movimentacoes.find(obj, function (err, data) {
                     if (err) {

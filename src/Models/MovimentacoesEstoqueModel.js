@@ -4,7 +4,7 @@ class MovimentacoesEstoqueModel {
         this.idProduto = data.idProduto
         this.data = data.data
         this.acao = data.acao
-        this.usuario = data.usuario
+        //this.usuario = data.usuario
     }
 }
 

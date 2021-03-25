@@ -19,21 +19,17 @@ class MovimentacoesEstoqueService {
     create(movModel) {
         return new Promise(function (resolve, reject) {
             try {
-
                 movDao.find(movModel)
                     .then(result => {
                         if (result) 
-                            reject(Exceptions.generateException(400, "Produto não se encontra no estoque", "Não é possivel realizar ações."))
+                            reject()
 
                         else {
                             movDao.create(movModel)
-                                .then(result => {
-                                    resolve(result)
-                                })
+                                .then(resolve())
                                 .catch(error => {
                                     reject(error)
                                 })
-
                         }
                     })
                     .catch(error => {
@@ -54,8 +50,9 @@ class MovimentacoesEstoqueService {
                 if (data){
                     movDao.list(data)
                     .then(result => {
-                        if(result)
+                        if(result){
                             resolve(result)
+                        }
                         else{
                             reject(Exceptions.generateException(400, "Não foi possível encontrar uma ação no estoque nesta data"))
                         }

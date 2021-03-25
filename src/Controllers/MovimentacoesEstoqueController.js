@@ -14,22 +14,12 @@ module.exports = function (server) {
             const movService = new MovimentacoesEstoqueService();
 
             movService.create(movModel)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-
-                    delete jsonSuccess.code
-
-                    res.json(code, jsonSuccess)
+                .then(
                     next()
-                })
-                .catch(jsonError => {
-                    const code = jsonError.code
-
-                    delete jsonError.code
-
-                    res.json(code, jsonError)
+                )
+                .catch(
                     next()
-                })
+                )
         }catch (error) {
             console.log(error)
         }
