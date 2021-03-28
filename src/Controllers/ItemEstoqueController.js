@@ -157,9 +157,7 @@ module.exports = function (server) {
                     next()
                 })
                 .catch(jsonError => {
-                    const code = jsonError.code
-
-                    delete jsonError.code
+                    const code = 500
 
                     res.json(code, jsonError)
                     next()
