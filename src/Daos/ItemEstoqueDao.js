@@ -8,7 +8,7 @@ const sucessClass = require('../Models/Responses/Sucess')
 const R = require('ramda')
 var moment = require('moment');
 const MovimentacoesEstoqueService = require('../Services/MovimentacoesEstoqueService')
-const Date = require('../Common/Date');
+const DateCommon = require('../Common/Date');
 const ItemEstoqueModel = require('../Models/ItemEstoqueModel');
 /* Global variables*/
 
@@ -67,7 +67,7 @@ class ItemEstoqueDao {
                         const jsonSucess = Sucess.generateJsonSucess(201, "Cadastro feito com sucesso")
                         
                         // registro de movimentacao do estoque
-                        var today = new Date().getCurrentDate();
+                        var today = new DateCommon().getCurrentDate();
                     
                         let movData = {
                             idProduto: data._id,
@@ -183,7 +183,9 @@ class ItemEstoqueDao {
 
     listExpiredProdutcs(dataValidade){
         return new Promise(function (resolve, reject) {
+            console.log(moment(dataValidade).toDate())
             const newData = new Date(moment(dataValidade).toDate());
+            
             try {                
                 ItemEstoque.find(
                     {
@@ -193,7 +195,8 @@ class ItemEstoqueDao {
                     }, 
                     function (err, data) {
                         if (err) {
-                            reject()
+                            //console.log(err)
+                            reject(err)
                         }
 
                         if (data != null && !R.isEmpty(data)) {
@@ -259,7 +262,7 @@ class ItemEstoqueDao {
                         );
 
                         // registro de movimentacao do estoque
-                        var today = new Date().getCurrentDate();
+                        var today = new DateCommon().getCurrentDate();
 
                         let movData = {
                             idProduto: id,
@@ -317,7 +320,7 @@ class ItemEstoqueDao {
                 .then((data) => {
                     if (data.deletedCount != 0) {
                         // registro de movimentacao do estoque
-                        var today = new Date().getCurrentDate();
+                        var today = new DateCommon().getCurrentDate();
                     
                         let movData = {
                             idProduto: codItem,
