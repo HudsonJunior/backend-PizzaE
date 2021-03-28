@@ -7,11 +7,14 @@ const exceptionsClass = require('../Models/Responses/Exceptions')
 const sucessClass = require('../Models/Responses/Sucess')
 const R = require('ramda')
 var moment = require('moment');
+const MovimentacoesEstoqueService = require('../Services/MovimentacoesEstoqueService')
+const Date = require('../Common/Date');
+const ItemEstoqueModel = require('../Models/ItemEstoqueModel');
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
 const Sucess = new sucessClass()
-
+const movService = new MovimentacoesEstoqueService()
 var ItemEstoque = null
 
 const ItemEstoqueSchema = new mongoose.Schema(
@@ -62,6 +65,17 @@ class ItemEstoqueDao {
                 .then(data => {
                     try {
                         const jsonSucess = Sucess.generateJsonSucess(201, "Cadastro feito com sucesso")
+                        
+                        // registro de movimentacao do estoque
+                        var today = new Date().getCurrentDate();
+                    
+                        let movData = {
+                            idProduto: data._id,
+                            data: today,
+                            acao: "criacao"
+                        }
+
+                        movService.create(movData);
 
                         resolve(jsonSucess)
                     }
@@ -83,8 +97,8 @@ class ItemEstoqueDao {
             let id = ItemModel.id;
 
             let obj = new Object()
+            obj._id = id
             obj.nome = nome
-            obj.id = id
 
             try {
                 ItemEstoque.findOne(obj, function (err, data) {
@@ -232,9 +246,40 @@ class ItemEstoqueDao {
         return new Promise(function (resolve, reject) {
             try {
                 let id = ItemModel.id
+
                 let obj = new Object();
-                obj.id = id
-                ItemEstoque.update(obj, ItemModel).then().catch()
+                obj._id = id
+
+                ItemEstoque.updateOne(obj, ItemModel)
+                .then((data) => {
+                    try {
+                        const jsonSucess = Sucess.generateJsonSucess(
+                            200,
+                            'Produto alterado com sucesso'
+                        );
+
+                        // registro de movimentacao do estoque
+                        var today = new Date().getCurrentDate();
+
+                        let movData = {
+                            idProduto: id,
+                            data: today,
+                            acao: "alteracao"
+                        }
+
+                        movService.create(movData);
+
+                        resolve(jsonSucess);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(
+                        Exceptions.generateException(500, 'erro', error)
+                    );
+                });
             }
             catch (error) {
                 reject(error)
@@ -245,26 +290,60 @@ class ItemEstoqueDao {
     delete(codItem) {
         return new Promise(function (resolve, reject) {
             try {
-                let obj = new Object();
-                obj.id = codItem;
+                /* let obj = new Object();
+                obj._id = codItem; */
 
-                ItemEstoque.deleteOne(obj, function (err, data) {
-                    if (err) {
-                        reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar item do estoque!"))
-                        console.log(error)
-                    }else{
-                        const jsonSucess = Sucess.generateJsonSucess(201, "Item apagado com sucesso!" );
+                /* ItemEstoque.deleteOne(obj, ItemModel)
+                    .then((data) => {
+                        try {
+                            const jsonSucess = Sucess.generateJsonSucess(
+                                201,
+                                "Item apagado com sucesso!"
+                            );
 
-                        resolve(jsonSucess)
+                            resolve(jsonSucess);
+
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        reject(
+                            Exceptions.generateException(500, 'Erro', "Erro ao deletar item do estoque!")
+                        );
+                    }); */
+                ItemEstoque.deleteOne({_id: codItem})
+                .then((data) => {
+                    if (data.deletedCount != 0) {
+                        // registro de movimentacao do estoque
+                        var today = new Date().getCurrentDate();
+                    
+                        let movData = {
+                            idProduto: codItem,
+                            data: today,
+                            acao: "remocao"
+                        }
+
+                        movService.create(movData);
+                        
+                        resolve(Sucess.generateJsonSucess(201,'Produto deletado com sucesso'))
                     }
+                    else{
+                        reject(Exceptions.generateException(500, "Erro ao deletar um produto Estoque")) 
+                    } 
                 })
+                .catch((error) => {
+                    console.log(error);
+                    
+                });
             }
             catch (error) {
                 reject(error)
             }
         })
     }
-
 }
+
 
 module.exports = ItemEstoqueDao

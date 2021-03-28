@@ -17,13 +17,13 @@ module.exports = function (server) {
             let itemEstoque;
 
             itemEstoque = new ItemEstoqueModel(data);
-            console.log(itemEstoque)
+            //console.log(itemEstoque)
 
             const itemService = new ItemEstoqueService();
 
             itemService.create(itemEstoque)
                 .then(jsonSuccess => {
-                    console.log("jasao deu bom", jsonSuccess)
+                    //console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
@@ -32,7 +32,7 @@ module.exports = function (server) {
                     next()
                 })
                 .catch(jsonError => {
-                    console.log("jasao trollo", jsonError)
+                    //console.log("jasao trollo", jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
@@ -52,17 +52,14 @@ module.exports = function (server) {
 
             let itemModel;
 
-            itemModel = new ItemEstoqueModel();
+            itemModel = new ItemEstoqueModel(data);
 
             const itemService = new ItemEstoqueService();
 
             itemService.update(itemModel)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
 
-                    delete jsonSucess.code
-
-                    res.json(code, jsonSuccess)
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
@@ -89,11 +86,11 @@ module.exports = function (server) {
 
             itemService.delete(codItem)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+                    /* const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                    delete jsonSucess.code */
 
-                    res.json(code, jsonSuccess)
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {

@@ -3,7 +3,7 @@ const ItemEstoqueDao = require('../Daos/ItemEstoqueDao')
 const Helper = require('../Common/Helper');
 
 /* Global variables*/
-const exceptionsClass = require('../Models/Responses/Exceptions')
+const exceptionsClass = require('../Models/Responses/Exceptions');
 const Exceptions = new exceptionsClass()
 var itemEstoqueService
 var itemEstoqueDao
@@ -17,24 +17,14 @@ class ItemEstoqueService {
 
     create(ItemModel) {
         return new Promise(function (resolve, reject) {
-            try {
-               
-                itemEstoqueDao.findOne(ItemModel)
-                    .then(result => {
-                        if(result) reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
-                        else{
-                            itemEstoqueDao.create(ItemModel)
-                            .then(result => {
-                                resolve(result)
-                            })
-                            .catch(erro => {
-                                reject(error)
-                            })
-                        }
-                    })
-                    .catch(error => {
-                        reject(error)
-                    });
+            try {         
+                itemEstoqueDao.create(ItemModel)
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(erro => {
+                    reject(error)
+                })  
             }
             catch (error) {
                 reject(error)
@@ -47,26 +37,27 @@ class ItemEstoqueService {
             try {
                 let itemEstoque;
 
-                produtosEstoqueDao.findOne(ItemModel)
+                itemEstoqueDao.findOne(ItemModel)
                     .then(result => {
                         itemEstoque = result;
+                        
+                        if (itemEstoque._id != ItemModel.id || itemEstoque.nome != ItemModel.nome) {
+                            reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
+                        }
+                        else {
+                            itemEstoqueDao.update(ItemModel)
+                                .then(result => {
+
+                                    resolve(result)
+                                })
+                                .catch(error => {
+                                    reject(error)
+                                })
+                        }
                     })
                     .catch(error => {
                         reject(error)
-                    });
-
-                if (itemEstoque.id != ItemModel.id || itemEstoque.nome != ItemModel.nome) {
-                    reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
-                }
-                else {
-                    itemEstoqueDao.update(ItemModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
+                    }); 
             }
             catch (error) {
                 reject(error)
@@ -82,6 +73,7 @@ class ItemEstoqueService {
                         resolve(result)
                     })
                     .catch(error => {
+
                         reject(error)
                     })
             }
