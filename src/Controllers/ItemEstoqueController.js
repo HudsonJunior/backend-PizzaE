@@ -50,9 +50,13 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
+            console.log("data ", data);
+
             let itemModel;
 
-            itemModel = new ItemEstoqueModel();
+            itemModel = new ItemEstoqueModel(data);
+
+            console.log("id ", itemModel.id)
 
             const itemService = new ItemEstoqueService();
 
@@ -62,7 +66,7 @@ module.exports = function (server) {
 
                     delete jsonSucess.code
 
-                    res.json(code, jsonSuccess)
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
@@ -89,11 +93,8 @@ module.exports = function (server) {
 
             itemService.delete(codItem)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-
-                    delete jsonSucess.code
-
-                    res.json(code, jsonSuccess)
+                
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {

@@ -20,6 +20,10 @@ const ItemEstoqueSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        loteId: {
+            type: String,
+            required: false,
+        },
         valor: {
             type: String,
             required: false,
@@ -84,7 +88,7 @@ class ItemEstoqueDao {
 
             let obj = new Object()
             obj.nome = nome
-            obj.id = id
+            obj._id = id
 
             try {
                 ItemEstoque.findOne(obj, function (err, data) {
@@ -113,6 +117,7 @@ class ItemEstoqueDao {
             try {
                 console.log(aVencer)
                 if(aVencer){
+                    console.log("alou")
                     const dataAtual = new Date()
                     let dataFormatada = ((dataAtual.getFullYear() )) + "-" + ((dataAtual.getMonth() + 1)) + "-" + (dataAtual.getDate() + 7);
                     const newData = new Date(moment(dataFormatada).toDate())
@@ -179,8 +184,25 @@ class ItemEstoqueDao {
             try {
                 let id = ItemModel.id
                 let obj = new Object();
-                obj.id = id
-                ItemEstoque.update(obj, ItemModel).then().catch()
+                obj._id = id
+                ItemEstoque.updateOne(obj, ItemModel)
+                .then((data) => {
+                    try {
+                        const jsonSucess = Sucess.generateJsonSucess(
+                            200,
+                            'Item do estoque alterado com sucesso'
+                        );
+                        resolve(jsonSucess);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(
+                        Exceptions.generateException(500, 'Erro ao atualizar item estoque', error)
+                    );
+                });
             }
             catch (error) {
                 reject(error)
@@ -191,18 +213,21 @@ class ItemEstoqueDao {
     delete(codItem) {
         return new Promise(function (resolve, reject) {
             try {
-                let obj = new Object();
-                obj.id = codItem;
 
-                ItemEstoque.deleteOne(obj, function (err, data) {
-                    if (err) {
-                        reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar item do estoque!"))
-                        console.log(error)
-                    }else{
-                        const jsonSucess = Sucess.generateJsonSucess(201, "Item apagado com sucesso!" );
-
-                        resolve(jsonSucess)
+                ItemEstoque.deleteOne({_id: codItem})
+                .then((data) =>{
+                    try {
+                        const jsonSucess = Sucess.generateJsonSucess(
+                            200,
+                            'Item do estoque deletado com sucesso'
+                        );
+                        resolve(jsonSucess);
+                    } catch (error) {
+                        console.log(error);
                     }
+                })
+                .catch((error) => {
+                    console.log(error);
                 })
             }
             catch (error) {
