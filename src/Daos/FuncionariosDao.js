@@ -52,7 +52,7 @@ const FuncionarioSchema = new mongoose.Schema(
 );
 FuncionarioSchema.plugin(mongooseStringQuery);
 
-Funcionario = mongoose.model('produtos_estoque', FuncionarioSchema);
+Funcionario = mongoose.model('funcionarios', FuncionarioSchema);
 
 /* */   
 class FuncionarioDao {
@@ -87,11 +87,11 @@ class FuncionarioDao {
     findOne(FuncionarioModel) {
         return new Promise(function (resolve, reject) {
             let nome = FuncionarioModel.nome;
-            let id = FuncionarioModel.id;
+            let cpf = FuncionarioModel.cpf;
 
             let obj = new Object()
             obj.nome = nome
-            obj.id = id
+            obj.cpf = cpf
 
             try {
                 Funcionario.findOne(obj, function (err, data) {

@@ -84,21 +84,14 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            let funcionarioModel;
-
-            funcionarioModel = new FuncionariosModel();
-
             let cpfFunc = req.query.cpf;
 
             const funcionarioService = new FuncionariosService();
 
-            funcionarioService.delete(funcionarioModel, cpfFunc)
+            funcionarioService.delete(cpfFunc)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
 
-                    delete jsonSucess.code
-
-                    res.json(code, jsonSuccess)
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
