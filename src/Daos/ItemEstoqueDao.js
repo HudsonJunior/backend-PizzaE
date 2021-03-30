@@ -117,13 +117,12 @@ class ItemEstoqueDao {
             try {
                 console.log(aVencer)
                 if(aVencer){
-                    console.log("alou")
-                    const dataAtual = new Date()
-                    let dataFormatada = ((dataAtual.getFullYear() )) + "-" + ((dataAtual.getMonth() + 1)) + "-" + (dataAtual.getDate() + 7);
-                    const newData = new Date(moment(dataFormatada).toDate())
-                    console.log( "newdata", newData)
+                    var days = 7;
+                    var date = new Date();
+                    var res = date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    date = new Date(res);
                     obj.validade = {
-                        $lte : newData
+                        $lte : date
                     }
                 }
                 console.log(obj)
