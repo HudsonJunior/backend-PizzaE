@@ -47,26 +47,29 @@ class FuncionariosService {
             try {
                 let funcionario;
 
+                console.log('findone')
                 funcionariosDao.findOne(FuncionariosModel)
                     .then(result => {
                         funcionario = result;
+
+                        if (funcionario.cpf != FuncionariosModel.cpf || funcionario.rg != FuncionariosModel.rg || funcionario.carteira != FuncionariosModel.carteira) {
+                            reject(Exceptions.generateException(400, "Alteração de cpf, rg, ou carteira não é permitido", "Não é possível realizar a alteração"))
+                        }
+                        else {
+                            console.log('atualizar iniciado')
+                            funcionariosDao.update(FuncionariosModel)
+                                .then(result => {
+                                    resolve(result)
+                                })
+                                .catch(error => {
+                                    reject(error)
+                                })
+                        }
                     })
                     .catch(error => {
                         reject(error)
                     });
 
-                if (funcionario.id != FuncionariosModel.id || funcionario.nome != FuncionariosModel.nome) {
-                    reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
-                }
-                else {
-                    funcionariosDao.update(FuncionariosModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
             }
             catch (error) {
                 reject(error)
@@ -91,52 +94,23 @@ class FuncionariosService {
         })
     }
 
-    existemItemEstoque(itemEstoque) {
+    get(FuncionariosModel) {
         return new Promise(function (resolve, reject) {
             try {
-                var itemEstoqueEncontrado = false
-                itemEstoque.map(itemEstoque => {
-                    itemEstoqueDao.findOne(itemEstoque)
-                        .then(result => {
-                            resolve()
-                        })
-                        .catch(error => {
-                            itemEstoqueEncontrado = false
-                            reject(error)
-                        });
-                })
-            }
-            catch (error) {
-                reject(error)
-            }
-        })
-    }
-
-    get(ItemModel, aVencer, flagQuant, nome) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if(ItemModel.id){
-                    itemEstoqueDao.findOne(ItemModel)
+                if(FuncionariosModel.cpf){
+                    funcionariosDao.findOne(FuncionariosModel)
                     .then(result=>{
                         if(result)
                             resolve(result)
                         else{
-                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
+                            reject(Exceptions.generateException(400, "Funcionario nao encontrado", "Nao foi encontrado nenhum funcionario com esse cpf"))
                         }
                     })
                     .catch(error => {
                         reject(error)
                     })
-                }else if(flagQuant && nome){
-                    itemEstoqueDao.find_quantidade(nome)
-                    .then(result=>{
-                        resolve(result)
-                    })
-                    .catch(error => {
-                        reject(error)
-                    })
                 }else{
-                    itemEstoqueDao.list(aVencer)
+                    funcionariosDao.list()
                     .then(result => {
                         if(result)
                             resolve(result)
@@ -148,7 +122,6 @@ class FuncionariosService {
                         reject(error)
                     })
                 }
-
             }
             catch (error) {
                 reject(error)

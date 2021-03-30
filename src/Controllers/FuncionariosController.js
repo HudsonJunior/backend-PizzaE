@@ -52,17 +52,16 @@ module.exports = function (server) {
 
             let funcionariosModel;
 
-            funcionariosModel = new FuncionariosModel();
+            console.log(data)
+
+            funcionariosModel = new FuncionariosModel(data);
 
             const funcionariosService = new FuncionariosService();
-
+            
+            console.log('service')
             funcionariosService.update(funcionariosModel)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-
-                    delete jsonSucess.code
-
-                    res.json(code, jsonSuccess)
+                    res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
@@ -114,9 +113,9 @@ module.exports = function (server) {
 
             let funcionarioModel = {};
 
-            const cpfFunc = req.params.cpf || null;
+            let cpfFunc = req.query.cpf || null;
 
-            funcionarioModel.id = cpfFunc;
+            funcionarioModel.cpf = cpfFunc;
 
             const funcionarioService = new FuncionariosService();
 

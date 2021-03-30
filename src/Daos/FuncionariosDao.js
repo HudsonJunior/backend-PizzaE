@@ -32,7 +32,7 @@ const FuncionarioSchema = new mongoose.Schema(
             type: String,
             required: false,
         },
-        carteira_trabalho: {
+        carteira: {
             type: String,
             required: false,
         },
@@ -40,7 +40,11 @@ const FuncionarioSchema = new mongoose.Schema(
             type: String,
             required: false,
         },
-        endereco: {
+        rua: {
+            type: String,
+            required: false,
+        },
+        numero: {
             type: String,
             required: false,
         },
@@ -86,11 +90,9 @@ class FuncionarioDao {
 
     findOne(FuncionarioModel) {
         return new Promise(function (resolve, reject) {
-            let nome = FuncionarioModel.nome;
             let cpf = FuncionarioModel.cpf;
 
             let obj = new Object()
-            obj.nome = nome
             obj.cpf = cpf
 
             try {
@@ -114,22 +116,11 @@ class FuncionarioDao {
         })
     }
 
-    list(aVencer) {
+    list() {
         return new Promise(function (resolve, reject) {
             const obj = new Object()
             try {
-                console.log(aVencer)
-                if(aVencer){
-                    const dataAtual = new Date()
-                    let dataFormatada = ((dataAtual.getFullYear() )) + "-" + ((dataAtual.getMonth() + 1)) + "-" + (dataAtual.getDate() + 7);
-                    const newData = new Date(moment(dataFormatada).toDate())
-                    console.log( "newdata", newData)
-                    obj.validade = {
-                        $lte : newData
-                    }
-                }
-                console.log(obj)
-                Funcionario.find(obj, function(err, data){
+                Funcionario.find(function(err, data){
                     console.log("erro", err)
                     console.log("data", data)
                     if(err){
@@ -150,44 +141,32 @@ class FuncionarioDao {
         })
     }
 
-    find_quantidade(nome){
-        return new Promise(function(resolve, reject){
-            let obj = new Object()
-            obj.nome = nome
-
-            try {
-                Funcionario.find(obj, function (err, data) {
-                    if (err) {
-                        reject()
-                    }
-
-                    if (data != null && !R.isEmpty(data)) {
-                        resolve({
-                            nome: nome,
-                            quantidade: data.length
-                        })
-                    }
-                    else {
-                        resolve({
-                            nome: nome,
-                            quantidade: 0
-                        })
-                    }
-                })
-            }
-            catch (error) {
-                reject(error)
-            }
-        })
-    }
 
     update(FuncionarioModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let id = FuncionarioModel.id
+                console.log('cpf')
+                let cpf = FuncionarioModel.cpf
                 let obj = new Object();
-                obj.id = id
-                Funcionario.update(obj, FuncionarioModel).then().catch()
+                obj.cpf = cpf
+                Funcionario.updateOne(obj, FuncionarioModel)
+                .then((data) => {
+                    try {
+                        const jsonSucess = Sucess.generateJsonSucess(
+                            200,
+                            'Dados do funcionario alterado com sucesso'
+                        );
+                        resolve(jsonSucess);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    reject(
+                        Exceptions.generateException(500, 'Erro ao atualizar dados do funcionario', error)
+                    );
+                });
             }
             catch (error) {
                 reject(error)
