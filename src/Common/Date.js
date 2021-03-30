@@ -38,7 +38,7 @@ class Date {
         switch (month) {
             case 1:
                 return [
-                    year +'01' + '-',
+                    year + '-' + '01',
                     pastYear  + '-' + '12',
                     pastYear  + '-' + '11',
                     pastYear  + '-' + '10',
