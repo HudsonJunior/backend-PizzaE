@@ -5,6 +5,7 @@ const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('./../Models/Responses/Exceptions')
 const sucessClass = require('./../Models/Responses/Sucess')
 /* Global variables*/
+const R = require('ramda')
 
 const Exceptions = new exceptionsClass()
 const Sucess = new sucessClass()
@@ -22,7 +23,7 @@ class ClientesDal {
     }
 
     create(ClientesModel) {
-        
+        console.log("to no DAO de cadastro")
         return new Promise(function (resolve, reject) {
 
             const clientes = new Clientes(ClientesModel)
@@ -46,20 +47,20 @@ class ClientesDal {
                 
         })
     }
-
+    /*
     delete(cpfCliente) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
                 obj.cpf = cpfCliente;
-                console.log("to no DAO cpf eh:")
+                console.log("to no DAO  de deletar , cpf eh:")
                 console.log(cpfCliente)
 
-                ClienteAchado = find(obj)
-                Clientes.deleteOne(obj, ClienteAchado)
+                
+                Clientes.deleteOne(obj)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+                            const jsonSucess = Sucess.generateJsonSucess(201, "Cliente apagado com sucesso");
 
                             resolve(jsonSucess)
                         }
@@ -71,6 +72,30 @@ class ClientesDal {
                         console.log(error)
                         reject(Exceptions.generateException(500, 'Erro', 'Erro'))
                     })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+    */
+    delete(cpfCliente) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let obj = new Object();
+                obj.cpf = cpfCliente;
+                console.log(typeof(cpfCliente))
+
+                Clientes.deleteOne(obj, function (err, data) {
+                    if (err) {
+                        reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar Cliente!"))
+                        console.log(error)
+                    }else{
+                        const jsonSucess = Sucess.generateJsonSucess(201, "Cliente removido com sucesso!" );
+
+                        resolve(jsonSucess)
+                    }
+                })
             }
             catch (error) {
                 reject(error)
@@ -89,7 +114,7 @@ class ClientesDal {
                 Clientes.find(obj)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+                            const jsonSucess = Sucess.generateJsonSucess(201, data);
                             console.log(data)
                             resolve(jsonSucess)
                         }
@@ -142,7 +167,19 @@ class ClientesDal {
                 let cpf = ClientesModel.cpf
                 let obj = new Object();
                 obj.cpf = cpf
-                Clientes.update(obj, ClientesModel).then().catch()
+                Clientes.updateOne(obj, ClientesModel)
+                .then((data)=>{
+                    try{
+                        const jsonSuccess = Sucess.generateJsonSucess(201,'cliente alterado poha');
+                        resolve(jsonSuccess)
+                    }
+                    catch(error){
+                        console.log(error);
+                    }
+                })
+                .catch((error)=>{
+                    console.log(error);
+                })
             }
             catch (error) {
                 reject(error)
@@ -150,6 +187,33 @@ class ClientesDal {
         })
     }
 
+    findOne(ClienteModel) {
+        return new Promise(function (resolve, reject) {
+            let cpf = ClienteModel.cpf;
+
+            let obj = new Object()
+            obj.cpf = cpf
+            
+            try {
+                Clientes.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data)
+                    }
+                    else {
+                        resolve(false)
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
 
 
     validatePrimaryKey(field, value) {
