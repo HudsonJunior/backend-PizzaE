@@ -3,6 +3,14 @@
 const config = require("../config");
 const restify = require("restify");
 var mongoose = require("./Connection/connectionMongo");
+var corsMiddleware = require('restify-cors-middleware');
+
+var cors = corsMiddleware({
+    preflightMaxAge: 5,
+    origins: ['*'],
+    allowHeaders: ['X-App-Version'],
+    exposeHeaders: []
+});
 /****/
 
 const serverOptions = {
@@ -18,6 +26,8 @@ server.use(restify.plugins.fullResponse());
 server.use(restify.plugins.jsonp());
 server.use(restify.plugins.gzipResponse());
 server.use(restify.plugins.bodyParser());
+server.pre(cors.preflight);
+server.use(cors.actual);
 
 server.listen(config.port, () => {
     require("./Routes")(server);
