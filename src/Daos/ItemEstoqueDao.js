@@ -59,9 +59,18 @@ class ItemEstoqueDao {
 
     create(ItemModel) {
         return new Promise(function (resolve, reject) {
+            var today = new Date();
+
+            var date =
+            today.getFullYear() +
+            "-" +
+            (today.getMonth() + 1) +
+            "-" +
+            today.getDate();
+
+            ItemModel.registro = date
 
             const itemEstoque = new ItemEstoque(ItemModel)
-
             itemEstoque.save()
                 .then(data => {
                     try {
