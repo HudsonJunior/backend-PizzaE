@@ -2,65 +2,38 @@
 
 const string = require('./../Common/String')
 
-const ClientesDao = require('../Daos/RelatorioSatisfacaoDao')
+const RelatorioSatisfacaoDao = require('../Daos/RelatorioSatisfacaoDao')
 
 /* Global variables*/
 
-var RelatorioSatisfacaoService
-var clientesDao = new ClientesDao()
+var relatorioSatisfacaoService
+var relatorioSatisfacaoDao = new RelatorioSatisfacaoDao()
 /* */
 
 class RelatorioSatisfacaoService {
     constructor() {
-        RelatorioSatisfacaoService = this
+        relatorioSatisfacaoService = this
     }
 
-    async create(ClientesModel) {
+    async create(RelatorioSatisfacaoModel) {
         console.log("estou no service");
-        console.log(ClientesModel);
+        console.log(RelatorioSatisfacaoModel);
         return new Promise(async function (resolve, reject) {
             try {
 
-                clientesDao.findOne(ClientesModel)
+                RelatorioSatisfacaoModel.opniao = string.validateOnlyLetters(RelatorioSatisfacaoModel.opniao)
+                
+                relatorioSatisfacaoDao.create(RelatorioSatisfacaoModel)
+                    
                     .then(result => {
-                        console.log(result)
-                        if(result){
-                            console.log("Erro no cadastro")
-                            reject()
-                        }
+                        result.cash_token = AuthValue.cash_token
 
-                        else{
-
-                            ClientesModel.password = string.validatePassword(ClientesModel.password)
-                            ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
-                            ClientesModel.endereco = string.validateOnlyLetters(ClientesModel.endereco)
-                            ClientesModel.telefone = string.getOnlyNumbers(ClientesModel.telefone)
-
-                            clientesDao.create(ClientesModel)
-                                
-                                .then(result => {
-                                    result.cash_token = AuthValue.cash_token
-
-                                    resolve(result)
-                                })
-                                .catch(error => {
-                                    reject(error)
-                                })
-
-                        }
+                        resolve(result)
                     })
-                /*
-                const validarClientes = await RelatorioSatisfacaoService.validarClientes(ClientesModel.cliente)
-                const validarEmail = await RelatorioSatisfacaoService.validarEmail(ClientesModel.email)
-                const validarNome = await RelatorioSatisfacaoService.validarNome(ClientesModel.nome)
-                const validarCpf = await RelatorioSatisfacaoService.validarCpf(ClientesModel.Cpf)
-                const validarPassword = await RelatorioSatisfacaoService.validarPassword(ClientesModel.password)
-                const validarTelefone = await RelatorioSatisfacaoService.validarTelefone(ClientesModel.telefone)
-                const validarEndereco = await RelatorioSatisfacaoService.validarEndereco(ClientesModel.endereco)
-                */
-                
-                //ClientesModel.cpf = validateCpf(ClientesModel.cpf)
-                
+                    .catch(error => {
+                        reject(error)
+                    })
+ 
             }
             catch (error) {
                 reject(error)
@@ -69,12 +42,30 @@ class RelatorioSatisfacaoService {
     }
 
 
-    getCliente(cpfClientes) {
+    getFromData(dataRelatorio) {
         return new Promise(function (resolve, reject) {
             try {
-                console.log("to em buscar cliente cpf eh:")
-                console.log(cpfClientes)
-                clientesDao.getCliente(cpfClientes)
+                relatorioSatisfacaoDao.getFromData(dataRelatorio)
+                    .then(result => {
+                        result.cash_token = AuthValue.cash_token
+
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    getFromPedido(cpf) {
+        console.log(cpf)
+        return new Promise(function (resolve, reject) {
+            try {
+                relatorioSatisfacaoDao.getFromPedido(cpf)
                     .then(result => {
                         result.cash_token = AuthValue.cash_token
 
@@ -91,11 +82,10 @@ class RelatorioSatisfacaoService {
     }
 
     get() {
-        console.log("to no listar clientizinhos")
         return new Promise(function (resolve, reject) {
             try {
 
-                clientesDao.list()
+                relatorioSatisfacaoDao.list()
                     .then(result => {
 
                         resolve(result)

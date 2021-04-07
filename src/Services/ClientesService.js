@@ -50,17 +50,6 @@ class ClientesService {
 
                         }
                     })
-                /*
-                const validarClientes = await ClientesService.validarClientes(ClientesModel.cliente)
-                const validarEmail = await ClientesService.validarEmail(ClientesModel.email)
-                const validarNome = await ClientesService.validarNome(ClientesModel.nome)
-                const validarCpf = await ClientesService.validarCpf(ClientesModel.Cpf)
-                const validarPassword = await ClientesService.validarPassword(ClientesModel.password)
-                const validarTelefone = await ClientesService.validarTelefone(ClientesModel.telefone)
-                const validarEndereco = await ClientesService.validarEndereco(ClientesModel.endereco)
-                */
-                
-                //ClientesModel.cpf = validateCpf(ClientesModel.cpf)
                 
             }
             catch (error) {

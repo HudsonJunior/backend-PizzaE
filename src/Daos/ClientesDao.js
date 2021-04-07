@@ -109,7 +109,7 @@ class ClientesDal {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.cpf = cpfCliente;
-            
+            console.log(obj)
             try {
                 Clientes.find(obj)
                     .then(data => {
