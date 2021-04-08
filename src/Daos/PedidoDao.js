@@ -68,7 +68,7 @@ PedidoSchema.plugin(mongooseStringQuery);
 Pedido = mongoose.model('pedidos', PedidoSchema);
 /* */
 class PedidoDao {
-    constructor() { }
+    constructor() {}
 
     create(PedidoModel) {
         return new Promise(function (resolve, reject) {
@@ -106,20 +106,20 @@ class PedidoDao {
             try {
                 Pedido.find(
                     {
-                        data: new Date(dataPedido)
-                    }
-                    , 
+                        data: new Date(dataPedido),
+                    },
                     function (err, data) {
-                    if (err) {
-                        reject();
-                    }
+                        if (err) {
+                            reject();
+                        }
 
-                    if (data != null && !R.isEmpty(data)) {
-                        resolve(data);
-                    } else {
-                        resolve(false);
+                        if (data != null && !R.isEmpty(data)) {
+                            resolve(data);
+                        } else {
+                            resolve(false);
+                        }
                     }
-                });
+                );
             } catch (error) {
                 reject(error);
             }

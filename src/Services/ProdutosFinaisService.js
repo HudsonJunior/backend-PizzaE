@@ -1,51 +1,53 @@
 /* imports */
 
-ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao')
+ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao');
 /* Global variables*/
-const exceptionsClass = require('./../Models/Responses/Exceptions')
+const exceptionsClass = require('./../Models/Responses/Exceptions');
 
-var produtosFinaisService
-var produtosFinaisDao
-const Exceptions = new exceptionsClass()
+var produtosFinaisService;
+var produtosFinaisDao;
+const Exceptions = new exceptionsClass();
 
 /* */
 
 class ProdutosFinaisService {
     constructor() {
-        produtosFinaisService = this
-        produtosFinaisDao = new ProdutosFinaisDao()
+        produtosFinaisService = this;
+        produtosFinaisDao = new ProdutosFinaisDao();
     }
 
     create(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
-
-                produtosFinaisDao.findOne(ProdutoModel)
-                    .then(result => {
-
-                        if (result) reject(Exceptions.generateException(400, "Produto com mesmo nome ou código já cadastrado", "Não é possivel cadastrar um produto com mesmo código ou nome"))
-
+                produtosFinaisDao
+                    .findOne(ProdutoModel)
+                    .then((result) => {
+                        if (result)
+                            reject(
+                                Exceptions.generateException(
+                                    400,
+                                    'Produto com mesmo nome ou código já cadastrado',
+                                    'Não é possivel cadastrar um produto com mesmo código ou nome'
+                                )
+                            );
                         else {
-                            produtosFinaisDao.create(ProdutoModel)
-                                .then(result => {
-                                    resolve(result)
+                            produtosFinaisDao
+                                .create(ProdutoModel)
+                                .then((result) => {
+                                    resolve(result);
                                 })
-                                .catch(error => {
-                                    reject(error)
-                                })
-
+                                .catch((error) => {
+                                    reject(error);
+                                });
                         }
                     })
-                    .catch(error => {
-                        reject(error)
+                    .catch((error) => {
+                        reject(error);
                     });
-
-
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
 
     update(ProdutoModel) {
@@ -53,123 +55,137 @@ class ProdutosFinaisService {
             try {
                 let produto;
 
-                produtosFinaisDao.findOne(ProdutoModel)
-                    .then(result => {
+                produtosFinaisDao
+                    .findOne(ProdutoModel)
+                    .then((result) => {
                         produto = result;
 
                         if (produto) {
-                            if (produto._id != ProdutoModel.id || produto.nome != ProdutoModel.nome) {
-                                reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
-                            }
-                            else {
-                                produtosFinaisDao.update(ProdutoModel)
-                                    .then(result => {
-                                        resolve(result)
+                            if (
+                                produto._id != ProdutoModel.id ||
+                                produto.nome != ProdutoModel.nome
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Alteração de código ou nome do produto não é permitido',
+                                        'Não é possível realizar a alteração do código ou nome de um produto'
+                                    )
+                                );
+                            } else {
+                                produtosFinaisDao
+                                    .update(ProdutoModel)
+                                    .then((result) => {
+                                        resolve(result);
                                     })
-                                    .catch(error => {
-                                        reject(error)
-                                    })
+                                    .catch((error) => {
+                                        reject(error);
+                                    });
                             }
+                        } else {
+                            reject(
+                                Exceptions.generateException(
+                                    400,
+                                    'Produto não encontrado',
+                                    'Não foi encontrado nenhum produto com esse nome ou código para alteração'
+                                )
+                            );
                         }
-                        else {
-                            reject(Exceptions.generateException(400, "Produto não encontrado", "Não foi encontrado nenhum produto com esse nome ou código para alteração"))
-                        }
-
                     })
-                    .catch(error => {
-                        reject(error)
+                    .catch((error) => {
+                        reject(error);
                     });
-
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
-
+        });
     }
 
     get(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
                 if (ProdutoModel.nome) {
-                    produtosFinaisDao.findOne(ProdutoModel)
-                        .then(result => {
-                            if (result)
-                                resolve(result)
+                    produtosFinaisDao
+                        .findFromName(ProdutoModel)
+                        .then((result) => {
+                            if (result) resolve(result);
                             else {
-                                reject(Exceptions.generateException(400, "Produto não encontrado", "Não foi encontrado nenhum produto com esse nome ou código"))
-
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Produto não encontrado',
+                                        'Não foi encontrado nenhum produto com esse nome ou código'
+                                    )
+                                );
                             }
                         })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
-                else {
-                    produtosFinaisDao.list()
-                        .then(result => {
-                            if (result)
-                                resolve(result)
+                        .catch((error) => {
+                            reject(error);
+                        });
+                } else {
+                    produtosFinaisDao
+                        .list()
+                        .then((result) => {
+                            if (result) resolve(result);
                             else {
-                                reject(Exceptions.generateException(400, "Produto não encontrado", "Não foi encontrado nenhum produto com esse nome ou código"))
-
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Produto não encontrado',
+                                        'Não foi encontrado nenhum produto com esse nome ou código'
+                                    )
+                                );
                             }
                         })
-                        .catch(error => {
-                            reject(error)
-                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
                 }
-
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
-
 
     delete(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
                 ProdutoModel.ativado = false;
 
-                produtosFinaisDao.delete(ProdutoModel)
-                    .then(result => {
-                        resolve(result)
+                produtosFinaisDao
+                    .delete(ProdutoModel)
+                    .then((result) => {
+                        resolve(result);
                     })
-                    .catch(error => {
-                        reject(error)
-                    })
-
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
 
     existemProdutos(produtos) {
         return new Promise(function (resolve, reject) {
             try {
-                var produtoEncontrado = false
-                produtos.map(produto => {
-                    produtosFinaisDao.findOne(produto)
-                        .then(result => {
-                            resolve()
+                var produtoEncontrado = false;
+                produtos.map((produto) => {
+                    produtosFinaisDao
+                        .findOne(produto)
+                        .then((result) => {
+                            resolve();
                         })
-                        .catch(error => {
-                            produtoEncontrado = false
-                            reject(error)
+                        .catch((error) => {
+                            produtoEncontrado = false;
+                            reject(error);
                         });
-                })
+                });
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
-
 }
 
-
-module.exports = ProdutosFinaisService
+module.exports = ProdutosFinaisService;

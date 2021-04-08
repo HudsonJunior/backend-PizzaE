@@ -1,15 +1,15 @@
 /* Imports*/
 
-const { objOf } = require('ramda')
-const ProdutoFinalModel = require('../Models/ProdutoFinalModel')
-const ProdutosFinaisService = require('../Services/ProdutosFinaisService')
+const { objOf } = require('ramda');
+const ProdutoFinalModel = require('../Models/ProdutoFinalModel');
+const ProdutosFinaisService = require('../Services/ProdutosFinaisService');
 
 /**/
 
 module.exports = function (server) {
     server.post('/produtos-finais', function (req, res, next) {
         try {
-            let data = req.body || {}
+            let data = req.body || {};
 
             let produtoModel;
 
@@ -17,32 +17,32 @@ module.exports = function (server) {
 
             const produtoService = new ProdutosFinaisService();
 
-            produtoService.create(produtoModel)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+            produtoService
+                .create(produtoModel)
+                .then((jsonSuccess) => {
+                    const code = jsonSuccess.code;
 
-                    delete jsonSuccess.code
+                    delete jsonSuccess.code;
 
-                    res.json(code, jsonSuccess)
-                    next()
+                    res.json(code, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
+    });
 
     server.patch('/produtos-finais', function (req, res, next) {
         try {
-            let data = req.body || {}
+            let data = req.body || {};
 
             let produtoModel;
 
@@ -50,32 +50,31 @@ module.exports = function (server) {
 
             const produtoService = new ProdutosFinaisService();
 
-            produtoService.update(produtoModel)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+            produtoService
+                .update(produtoModel)
+                .then((jsonSuccess) => {
+                    const code = jsonSuccess.code;
 
-                    delete jsonSuccess.code
+                    delete jsonSuccess.code;
 
-                    res.json(code, jsonSuccess)
-                    next()
+                    res.json(code, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
+    });
 
     server.get('/produtos-finais', function (req, res, next) {
         try {
-
             let produtoModel = {};
 
             const produtoNome = req.params.nome || null;
@@ -84,61 +83,59 @@ module.exports = function (server) {
 
             const produtoService = new ProdutosFinaisService();
 
-            produtoService.get(produtoModel)
-                .then(jsonSuccess => {
-                    res.json(200, jsonSuccess)
-                    next()
+            produtoService
+                .get(produtoModel)
+                .then((jsonSuccess) => {
+                    res.json(200, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
+    });
 
     server.del('/produtos-finais', function (req, res, next) {
-
         try {
-            let data = JSON.parse(req.body) || {}
+            let data = JSON.parse(req.body) || {};
 
             let produtoModel;
 
-            if (data.tipo === "Normal") {
+            if (data.tipo === 'Normal') {
                 produtoModel = new ProdutoNormalModel(data);
-            }
-            else {
+            } else {
                 produtoModel = new PizzaModel(data);
             }
 
             const produtoService = new ProdutosFinaisService(data.tipo);
 
-            produtoService.delete(produtoModel)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+            produtoService
+                .delete(produtoModel)
+                .then((jsonSuccess) => {
+                    const code = jsonSuccess.code;
 
-                    delete jsonSucess.code
+                    delete jsonSucess.code;
 
-                    res.json(code, jsonSuccess)
-                    next()
+                    res.json(code, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
-}
+    });
+};

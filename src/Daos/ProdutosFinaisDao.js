@@ -57,7 +57,7 @@ ProdutosFinaisSchema.plugin(mongooseStringQuery);
 ProdutosFinais = mongoose.model('produto_finals', ProdutosFinaisSchema);
 /* */
 class ProdutosFinaisDao {
-    constructor() { }
+    constructor() {}
 
     create(ProdutoModel) {
         return new Promise(function (resolve, reject) {
@@ -103,6 +103,61 @@ class ProdutosFinaisDao {
                         resolve(false);
                     }
                 });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    findOne(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            let nome = ProdutoModel.nome;
+            let codigo = ProdutoModel.id;
+
+            let obj = new Object();
+            obj.nome = nome;
+            codigo ? (obj._id = codigo) : null;
+
+            console.log('entrou 4', obj);
+
+            try {
+                ProdutosFinais.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject();
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data);
+                    } else {
+                        resolve(false);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    findFromName(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            const name = ProdutoModel.nome;
+            try {
+                ProdutosFinais.find(
+                    { nome: { $regex: `.*${name}` }, ativado: true },
+                    function (err, data) {
+                        if (err) {
+                            reject();
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            console.log(data);
+                            resolve(data);
+                        } else {
+                            console.log(data);
+                            resolve(false);
+                        }
+                    }
+                );
             } catch (error) {
                 reject(error);
             }
