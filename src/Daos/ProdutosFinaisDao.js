@@ -22,14 +22,13 @@ const ProdutosFinaisSchema = new mongoose.Schema({
         required: true,
     },
     ingredientes: {
-        type: Object,
+        type: String,
     },
-    adicionar: {
-        type: Object,
+    adicionais: {
+        type: String,
     },
     peso: {
         type: String,
-        required: true,
     },
     ativado: {
         type: String,
@@ -37,7 +36,6 @@ const ProdutosFinaisSchema = new mongoose.Schema({
     },
     valor_promocional: {
         type: String,
-        required: true,
     },
     tipo: {
         type: String,
@@ -45,11 +43,9 @@ const ProdutosFinaisSchema = new mongoose.Schema({
     },
     inicio_promo: {
         type: String,
-        required: true,
     },
     fim_promo: {
         type: String,
-        required: true,
     },
 });
 
@@ -83,12 +79,9 @@ class ProdutosFinaisDao {
     findOne(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             let nome = ProdutoModel.nome;
-            let codigo = ProdutoModel.id;
 
             let obj = new Object();
             obj.nome = nome;
-            codigo ? (obj._id = codigo) : null;
-
             console.log('entrou 4', obj);
 
             try {
@@ -210,10 +203,9 @@ class ProdutosFinaisDao {
     update(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let codigo = ProdutoModel.id;
 
                 let obj = new Object();
-                obj._id = codigo;
+                obj.nome = ProdutoModel.nome;;
 
                 ProdutosFinais.updateOne(obj, ProdutoModel)
                     .then((data) => {

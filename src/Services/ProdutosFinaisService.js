@@ -36,13 +36,17 @@ class ProdutosFinaisService {
                                 .then((result) => {
                                     resolve(result);
                                 })
-                                .catch((error) => {
-                                    reject(error);
-                                });
+                                .catch(error => {
+                                    console.log(error)
+
+                                    reject(error)
+                                })
+
                         }
                     })
-                    .catch((error) => {
-                        reject(error);
+                    .catch(error => {
+                        console.log(error)
+                        reject(error)
                     });
             } catch (error) {
                 reject(error);
@@ -61,22 +65,16 @@ class ProdutosFinaisService {
                         produto = result;
 
                         if (produto) {
-                            if (
-                                produto._id != ProdutoModel.id ||
-                                produto.nome != ProdutoModel.nome
-                            ) {
-                                reject(
-                                    Exceptions.generateException(
-                                        400,
-                                        'Alteração de código ou nome do produto não é permitido',
-                                        'Não é possível realizar a alteração do código ou nome de um produto'
-                                    )
-                                );
-                            } else {
-                                produtosFinaisDao
-                                    .update(ProdutoModel)
-                                    .then((result) => {
-                                        resolve(result);
+                            if (produto.nome != ProdutoModel.nome) {
+                                reject(Exceptions.generateException(400, "Alteração de nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
+                            }
+                            else {
+                                produtosFinaisDao.update(ProdutoModel)
+                                    .then(result => {
+                                        resolve(result)
+                                    })
+                                    .catch(error => {
+                                        reject(error)
                                     })
                                     .catch((error) => {
                                         reject(error);

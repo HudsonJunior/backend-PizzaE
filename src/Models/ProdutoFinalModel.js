@@ -7,7 +7,7 @@ class ProdutoFinalModel {
         this.valor = data.valor
         this.ingredientes = data.ingredientes || ''
         this.adicionais = data.adicionais || ''
-        this.peso = data.peso
+        this.peso = data.peso || -1
         this.ativado = data.ativado
         this.valor_promocional = data.valor_promocional
         this.inicio_promo = data.inicio_promo

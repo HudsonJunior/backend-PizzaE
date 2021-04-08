@@ -12,7 +12,7 @@ module.exports = function (server) {
             let data = req.body || {};
 
             let produtoModel;
-
+            console.log('aiaiai', data)
             produtoModel = new ProdutoFinalModel(data);
 
             const produtoService = new ProdutosFinaisService();
@@ -27,16 +27,13 @@ module.exports = function (server) {
                     res.json(code, jsonSuccess);
                     next();
                 })
-                .catch((jsonError) => {
-                    const code = jsonError.code;
-
-                    delete jsonError.code;
-
-                    res.json(code, jsonError);
-                    next();
-                });
-        } catch (error) {
-            console.log(error);
+                .catch(jsonError => {
+                    res.json(400, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
         }
     });
 
