@@ -92,11 +92,9 @@ class ItemEstoqueDao {
 
     findOne(ItemModel) {
         return new Promise(function (resolve, reject) {
-            let nome = ItemModel.nome;
             let id = ItemModel.id;
 
             let obj = new Object()
-            obj.nome = nome
             obj._id = id
 
             try {

@@ -40,16 +40,11 @@ class ItemEstoqueService {
                 itemEstoqueDao.findOne(ItemModel)
                     .then(result => {
                         itemEstoque = result;
-
-                        console.log("=============")
-                        console.log(itemEstoque._id)
-                        console.log(ItemModel.id)
-                        console.log(itemEstoque.nome)
-                        console.log(ItemModel.nome)
-                        console.log("=============")
-                        
-                        if (itemEstoque._id != ItemModel.id || itemEstoque.nome != ItemModel.nome) {
-                            reject(Exceptions.generateException(400, "Alteração de código ou nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
+            
+                        console.log("cu", itemEstoque)
+                        console.log("bosta", ItemModel.id)
+                        if (itemEstoque._id != ItemModel.id) {
+                            reject(Exceptions.generateException(400, "Alteração de código não é permitido", "Não é possível realizar a alteração do código de um produto"))
                         }
                         else {
                             itemEstoqueDao.update(ItemModel)
