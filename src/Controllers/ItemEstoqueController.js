@@ -17,13 +17,13 @@ module.exports = function (server) {
             let itemEstoque;
 
             itemEstoque = new ItemEstoqueModel(data);
-            console.log(itemEstoque)
+            //console.log(itemEstoque)
 
             const itemService = new ItemEstoqueService();
 
             itemService.create(itemEstoque)
                 .then(jsonSuccess => {
-                    console.log("jasao deu bom", jsonSuccess)
+                    //console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
@@ -32,7 +32,7 @@ module.exports = function (server) {
                     next()
                 })
                 .catch(jsonError => {
-                    console.log("jasao trollo", jsonError)
+                    //console.log("jasao trollo", jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
@@ -62,9 +62,6 @@ module.exports = function (server) {
 
             itemService.update(itemModel)
                 .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-
-                    delete jsonSucess.code
 
                     res.json(201, jsonSuccess)
                     next()
@@ -136,6 +133,32 @@ module.exports = function (server) {
                     const code = jsonError.code
 
                     delete jsonError.code
+
+                    res.json(code, jsonError)
+                    next()
+                })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    server.get('/produtos-estoque/relatorio', function (req, res, next) {
+
+        try {
+            let data = req.params.data || null;
+
+            let flagQtde = req.params.flagQtde || null;
+
+            const itemService = new ItemEstoqueService();
+
+            itemService.getRelatorio(data, flagQtde)
+                .then(jsonSuccess => {
+                    res.json(201, jsonSuccess)
+                    next()
+                })
+                .catch(jsonError => {
+                    const code = 500
 
                     res.json(code, jsonError)
                     next()

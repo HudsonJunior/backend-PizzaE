@@ -7,11 +7,14 @@ const exceptionsClass = require('../Models/Responses/Exceptions')
 const sucessClass = require('../Models/Responses/Sucess')
 const R = require('ramda')
 var moment = require('moment');
+const MovimentacoesEstoqueService = require('../Services/MovimentacoesEstoqueService')
+const DateCommon = require('../Common/Date');
+const ItemEstoqueModel = require('../Models/ItemEstoqueModel');
 /* Global variables*/
 
 const Exceptions = new exceptionsClass()
 const Sucess = new sucessClass()
-
+const movService = new MovimentacoesEstoqueService()
 var ItemEstoque = null
 
 const ItemEstoqueSchema = new mongoose.Schema(
@@ -75,6 +78,17 @@ class ItemEstoqueDao {
                 .then(data => {
                     try {
                         const jsonSucess = Sucess.generateJsonSucess(201, "Cadastro feito com sucesso")
+                        
+                        // registro de movimentacao do estoque
+                        var today = new DateCommon().getCurrentDate();
+                    
+                        let movData = {
+                            idProduto: data._id,
+                            data: today,
+                            acao: "criacao"
+                        }
+
+                        movService.create(movData);
 
                         resolve(jsonSucess)
                     }
@@ -154,6 +168,63 @@ class ItemEstoqueDao {
         })
     }
 
+    listAll() {
+        return new Promise(function (resolve, reject) {
+            try {                
+                ItemEstoque.find(
+                    function (err, data) {
+                        if (err) {
+                            reject()
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            resolve(data)
+                        }
+                        else {
+                            resolve(false)
+                        }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
+
+    listExpiredProdutcs(dataValidade){
+        return new Promise(function (resolve, reject) {
+            console.log(moment(dataValidade).toDate())
+            const newData = new Date(moment(dataValidade).toDate());
+            
+            try {                
+                ItemEstoque.find(
+                    {
+                        validade: {
+                            $lte : newData
+                        } 
+                    }, 
+                    function (err, data) {
+                        if (err) {
+                            //console.log(err)
+                            reject(err)
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            resolve(data)
+                        }
+                        else {
+                            resolve(false)
+                        }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
+
     find_quantidade(nome){
         return new Promise(function(resolve, reject){
             let obj = new Object()
@@ -189,6 +260,7 @@ class ItemEstoqueDao {
         return new Promise(function (resolve, reject) {
             try {
                 let id = ItemModel.id
+
                 let obj = new Object();
                 obj._id = id
                 ItemEstoque.updateOne(obj, ItemModel)
@@ -231,6 +303,9 @@ class ItemEstoqueDao {
                     } catch (error) {
                         console.log(error);
                     }
+                    else{
+                        reject(Exceptions.generateException(500, "Erro ao deletar um produto Estoque")) 
+                    } 
                 })
                 .catch((error) => {
                     console.log(error);
@@ -241,7 +316,7 @@ class ItemEstoqueDao {
             }
         })
     }
-
 }
+
 
 module.exports = ItemEstoqueDao

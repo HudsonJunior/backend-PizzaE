@@ -22,14 +22,13 @@ const ProdutosFinaisSchema = new mongoose.Schema({
         required: true,
     },
     ingredientes: {
-        type: Object,
+        type: String,
     },
-    adicionar: {
-        type: Object,
+    adicionais: {
+        type: String,
     },
     peso: {
         type: String,
-        required: true,
     },
     ativado: {
         type: String,
@@ -37,7 +36,6 @@ const ProdutosFinaisSchema = new mongoose.Schema({
     },
     valor_promocional: {
         type: String,
-        required: true,
     },
     tipo: {
         type: String,
@@ -45,11 +43,9 @@ const ProdutosFinaisSchema = new mongoose.Schema({
     },
     inicio_promo: {
         type: String,
-        required: true,
     },
     fim_promo: {
         type: String,
-        required: true,
     },
 });
 
@@ -57,7 +53,7 @@ ProdutosFinaisSchema.plugin(mongooseStringQuery);
 ProdutosFinais = mongoose.model('produto_finals', ProdutosFinaisSchema);
 /* */
 class ProdutosFinaisDao {
-    constructor() { }
+    constructor() {}
 
     create(ProdutoModel) {
         return new Promise(function (resolve, reject) {
@@ -77,6 +73,32 @@ class ProdutosFinaisDao {
                 .catch((error) => {
                     reject(Exceptions.generateException(500, 'erro', error));
                 });
+        });
+    }
+
+    findOne(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            let nome = ProdutoModel.nome;
+
+            let obj = new Object();
+            obj.nome = nome;
+            console.log('entrou 4', obj);
+
+            try {
+                ProdutosFinais.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject();
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data);
+                    } else {
+                        resolve(false);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 
@@ -103,6 +125,32 @@ class ProdutosFinaisDao {
                         resolve(false);
                     }
                 });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    findFromName(ProdutoModel) {
+        return new Promise(function (resolve, reject) {
+            const name = ProdutoModel.nome;
+            try {
+                ProdutosFinais.find(
+                    { nome: { $regex: `.*${name}` }, ativado: true },
+                    function (err, data) {
+                        if (err) {
+                            reject();
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            console.log(data);
+                            resolve(data);
+                        } else {
+                            console.log(data);
+                            resolve(false);
+                        }
+                    }
+                );
             } catch (error) {
                 reject(error);
             }
@@ -155,10 +203,9 @@ class ProdutosFinaisDao {
     update(ProdutoModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let codigo = ProdutoModel.id;
 
                 let obj = new Object();
-                obj._id = codigo;
+                obj.nome = ProdutoModel.nome;;
 
                 ProdutosFinais.updateOne(obj, ProdutoModel)
                     .then((data) => {

@@ -12,6 +12,8 @@ class Pedido {
         this.statusPedido = data.statusPedido;
         this.valor = data.valor;
         this.statusPagamento = data.statusPagamento;
+        this.id = data.id;
+        this.cancelar = data.cancelar || false
     }
 }
 

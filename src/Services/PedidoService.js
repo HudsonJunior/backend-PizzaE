@@ -28,30 +28,24 @@ class PedidoService {
     async create(pedidoModel) {
         return new Promise(async function (resolve, reject) {
             try {
-                /* const validateCode = await pedidoService.validateCode(
-                    pedidoModel.codigo
-                ); */
-
-                const validatePagamento = await pedidoService.validatePagamento(
+                /* const validatePagamento = await pedidoService.validatePagamento(
                     pedidoModel.formaPagamento
                 );
                 const validateExpedicao = await pedidoService.validateExpedicao(
                     pedidoModel.formaExpedicao
-                );
+                ); */
                 /* const validateClient = await pedidoService.validateClient(
                     pedidoModel.formaExpedicao,
                     pedidoModel.cpfCliente
                 ); */
-                const validateData = await pedidoService.validateData(
-                    pedidoModel.data
-                );
+
                 const validadeCpfClient = await pedidoService.validateCpfCliente(
                     pedidoModel.cpfCliente
                 );
                 const validadeCpfNF = await pedidoService.validateCpfNF(
                     pedidoModel.cpfNF
                 );
-                const validateStatusPedido = await pedidoService.validateStatusPedido(
+                /* const validateStatusPedido = await pedidoService.validateStatusPedido(
                     pedidoModel.statusPedido
                 );
                 const validateValor = await pedidoService.validateValor(
@@ -64,8 +58,8 @@ class PedidoService {
                 pedidoModel.cpfCliente = string.getOnlyNumbers(
                     pedidoModel.cpfCliente
                 );
-                pedidoModel.cpfNF = string.getOnlyNumbers(pedidoModel.cpfNF);
-
+                pedidoModel.cpfNF = string.getOnlyNumbers(pedidoModel.cpfNF); */
+                console.log(pedidoModel);
                 pedidoDao
                     .create(pedidoModel)
                     .then((result) => {
@@ -108,9 +102,10 @@ class PedidoService {
             try {
                 if (
                     string.validateOnlyLetters(formaPagamento) &&
-                    (formaPagamento == 'dinheiro' || formaPagamento == 'cartao')
+                    (formaPagamento == 'dinheiro' ||
+                        formaPagamento == 'cartao de debito' ||
+                        formaPagamento == 'cartao de credito')
                 ) {
-                    console.log('passou do teste da forma de pagamento');
                     resolve();
                 } else {
                     reject(
@@ -134,7 +129,6 @@ class PedidoService {
                     string.validateOnlyLetters(formaExpedicao) &&
                     (formaExpedicao == 'balcao' || formaExpedicao == 'entrega')
                 ) {
-                    console.log('passou do teste da forma de expedicao');
                     resolve();
                 } else {
                     reject(
@@ -176,33 +170,10 @@ class PedidoService {
         });
     }
 
-    validateData(data) {
-        return new Promise(function (resolve, reject) {
-            try {
-                const d = new Date(data);
-                if (!d.isValidDate(data)) {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidDate
-                        )
-                    );
-                } else {
-                    console.log('passou no teste do Data');
-                    resolve();
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
     validateCpfCliente(cpf) {
         return new Promise(function (resolve, reject) {
             try {
                 if (cpf == '') {
-                    console.log('passou no teste do cpf cliente');
                     resolve();
                 } else if (!Cpf.validateCpf(cpf)) {
                     reject(
@@ -213,7 +184,6 @@ class PedidoService {
                         )
                     );
                 } else {
-                    console.log('passou no teste do cpf cliente');
                     resolve();
                 }
             } catch (error) {
@@ -226,7 +196,6 @@ class PedidoService {
         return new Promise(function (resolve, reject) {
             try {
                 if (cpf == '') {
-                    console.log('passou no teste do cpf cliente');
                     resolve();
                 } else if (!Cpf.validateCpf(cpf)) {
                     reject(
@@ -237,7 +206,6 @@ class PedidoService {
                         )
                     );
                 } else {
-                    console.log('passou no teste do cpf nf');
                     resolve();
                 }
             } catch (error) {
@@ -253,7 +221,6 @@ class PedidoService {
                     string.validateOnlyLetters(status) &&
                     status == 'realizado'
                 ) {
-                    console.log('passou no teste de status do pedido');
                     resolve();
                 } else {
                     reject(
@@ -278,7 +245,6 @@ class PedidoService {
                 var regex = /^(\$|)([1-9]\d{0,2}(\,\d{3})*|([1-9]\d*))(\.\d{2})?$/;
                 var passed = valor.match(regex);
                 if (passed != null) {
-                    console.log('passou no teste do valor');
                     resolve();
                 } else {
                     reject(
@@ -302,7 +268,6 @@ class PedidoService {
                     string.validateOnlyLetters(status) &&
                     (status == 'pago' || status == 'nao pago')
                 ) {
-                    console.log('passou no teste de status do pagamento');
                     resolve();
                 } else {
                     reject(
@@ -386,10 +351,18 @@ class PedidoService {
                                 for (var j = 0; j < productsList.length; j++) {
                                     var currentID = productsList[j]['_id'];
                                     var currentName = productsList[j]['nome'];
-                                    var currentQtde = productsList[j]['quantidade'];
-                                    var idAlreadyExists = Helper.fieldSearch('_id', currentID, productsArray);
+                                    var currentQtde =
+                                        productsList[j]['quantidade'];
+                                    var idAlreadyExists = Helper.fieldSearch(
+                                        '_id',
+                                        currentID,
+                                        productsArray
+                                    );
 
-                                    if (productsArray.length === 0 || idAlreadyExists === false) {
+                                    if (
+                                        productsArray.length === 0 ||
+                                        idAlreadyExists === false
+                                    ) {
                                         let obj = new Object();
 
                                         obj['_id'] = currentID;
@@ -398,8 +371,12 @@ class PedidoService {
 
                                         productsArray.push(obj);
                                     } else {
-                                        productsArray[idAlreadyExists]['quantidade'] =
-                                            productsArray[idAlreadyExists]['quantidade'] + currentQtde;
+                                        productsArray[idAlreadyExists][
+                                            'quantidade'
+                                        ] =
+                                            productsArray[idAlreadyExists][
+                                            'quantidade'
+                                            ] + currentQtde;
                                     }
                                 }
                             }
@@ -435,7 +412,11 @@ class PedidoService {
                             var month = date.getCurrentMonth();
                             var year = date.getCurrentYear();
                             var pastYear = date.getCurrentPastYear();
-                            var lastMonths = date.getLastMonths(month, year, pastYear);
+                            var lastMonths = date.getLastMonths(
+                                month,
+                                year,
+                                pastYear
+                            );
 
                             var idProduto = null;
 
@@ -451,32 +432,60 @@ class PedidoService {
                             }
 
                             for (var i = 0; i < result.length; i++) {
-
                                 var productsList = result[i]['produtos'];
 
                                 if (productsList != null) {
-
-                                    for (var j = 0; j < productsList.length; j++) {
-                                        if (productsList[j].nome == nomeProduto) {
+                                    for (
+                                        var j = 0;
+                                        j < productsList.length;
+                                        j++
+                                    ) {
+                                        if (
+                                            productsList[j].nome == nomeProduto
+                                        ) {
                                             idProduto = productsList[j]._id;
 
-                                            var dataPedido = new Array();
-                                            var dataPedido = result[i].data.split('/');
-                                            var mesAnoPedido = dataPedido[1].concat('/');
-                                            mesAnoPedido = mesAnoPedido.concat(dataPedido[2]);
-                                            var indexIntervalo = Helper.fieldSearch('data', mesAnoPedido, productsArray);
+                                            var dataPedido = result[i].data
+                                                .toISOString()
+                                                .split('T')[0];
+                                            dataPedido = dataPedido.split('-');
 
-                                            if (indexIntervalo)
-                                                productsArray[indexIntervalo].quantidade = productsArray[indexIntervalo].quantidade + productsList[j].quantidade;
+                                            var mesAnoPedido = dataPedido[0].concat(
+                                                '-'
+                                            );
+                                            mesAnoPedido = mesAnoPedido.concat(
+                                                dataPedido[1]
+                                            );
+
+                                            var indexIntervalo = Helper.fieldSearch(
+                                                'data',
+                                                mesAnoPedido,
+                                                productsArray
+                                            );
+
+                                            if (indexIntervalo !== false) {
+                                                productsArray[
+                                                    indexIntervalo
+                                                ].quantidade += +productsList[j]
+                                                    .quantidade;
+                                            }
                                         }
                                     }
                                 }
                             }
 
-                            for (var i = 0; i < 6; i++) {
-                                productsArray[i]._id = idProduto;
+                            if (idProduto) {
+                                for (var i = 0; i < 6; i++) {
+                                    productsArray[i]._id = idProduto;
+                                }
+                            } else {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Não foi encontrado nenhum pedidos'
+                                    )
+                                );
                             }
-
                             resolve(productsArray);
                         } else {
                             reject(
@@ -499,71 +508,113 @@ class PedidoService {
     async update(PedidoModel) {
         return new Promise(function (resolve, reject) {
             try {
+                if (
+                    PedidoModel.cancelar &&
+                    PedidoModel.statusPedido === 'realizado'
+                ) {
+                    pedidoService
+                        .cancelarPedido(PedidoModel)
+                        .then((result) => {
+                            resolve(result);
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                } else if (
+                    PedidoModel.cancelar &&
+                    PedidoModel.statusPedido !== 'realizado'
+                ) {
+                    console.log('HDOASOHDHASIOD')
+                    reject(
+                        Exceptions.generateException(
+                            PedidoResponse.Codes.InvalidField,
+                            PedidoResponse.Messages.CancelError,
+                            PedidoResponse.Details.InvalidAttemptCancel
+                        )
+                    );
+                } else {
+                    console.log('pedido', PedidoModel)
+                    pedidoDao.findOne(PedidoModel).then(pedido => {
+                        console.log('parte 1', pedido)
+                        if (pedido) {
+                            console.log(PedidoModel.observacoes != pedido.observacoes, PedidoModel.produtos.toString() != pedido.produtos.toString())
+                            if (
+                                (PedidoModel.observacoes != pedido.observacoes || PedidoModel.produtos.toString() != pedido.produtos.toString()) &&
+                                (PedidoModel.statusPedido === 'preparando' ||
+                                    PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        PedidoResponse.Codes.InvalidField,
+                                        PedidoResponse.Messages.UpdateError,
+                                        PedidoResponse.Details.InvalidAttemptUpdateItens
+                                    )
+                                );
+                            } else if (
+                                (PedidoModel.formaPagamento != pedido.formaPagamento ||
+                                    PedidoModel.formaExpedicao != pedido.formaExpedicao) &&
+                                (PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        PedidoResponse.Codes.InvalidField,
+                                        PedidoResponse.Messages.UpdateError,
+                                        PedidoResponse.Details
+                                            .InvalidAttemptUpdatePayment
+                                    )
+                                );
+                            } else {
+                                pedidoDao
+                                    .update(PedidoModel)
+                                    .then((result) => {
+                                        resolve(result);
+                                    })
+                                    .catch((error) => {
+                                        reject(error);
+                                    });
+                            }
+                        }
+                        else {
+                            Exceptions.generateException(
+                                PedidoResponse.Codes.InternalServerError,
+                                'Pedido inválido',
+                                'Ocorreu um problema ao editar o pedido. Pedido não encontrado'
+                            )
+                        }
+                    }
 
-                if (PedidoModel.cancelar && PedidoModel.statusPedido === 'realizado') {
-                    pedidoService.cancelarPedido(PedidoModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
+                    ).catch(error => {
+                        reject(error)
+                    })
+
                 }
-                else if (PedidoModel.cancelar && PedidoModel.statusPedido !== 'realizado') {
-                    reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,
-                        PedidoResponse.Messages.CancelError,
-                        PedidoResponse.Details.InvalidAttemptCancel
-                    ))
-                }
-                else {
-                    if ((PedidoModel.observacoes || PedidoModel.produtos) && (PedidoModel.statusPedido === 'preparando' || PedidoModel.statusPedido === 'viagem')) {
-                        reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.UpdateError,
-                            PedidoResponse.Details.InvalidAttemptUpdateItens
-                        ))
-                    }
-                    else if ((PedidoModel.formaPagamento || PedidoModel.formaExpedicao) && PedidoModel.statusPedido === 'viagem') {
-                        reject(Exceptions.generateException(PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.UpdateError,
-                            PedidoResponse.Details.InvalidAttemptUpdatePayment
-                        ))
-                    }
-                    else {
-                        pedidoDao.update(PedidoModel)
-                            .then(result => {
-                                resolve(result)
-                            })
-                            .catch(error => {
-                                reject(error)
-                            })
-                    }
-                }
+            } catch (error) {
+                reject(error);
             }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
 
     async cancelarPedido(PedidoModel) {
         return new Promise(function (resolve, reject) {
-            PedidoModel.statusPedido = 'cancelado'
-            pedidoDao.update(PedidoModel)
-                .then(result => {
+            PedidoModel.statusPedido = 'cancelado';
+            pedidoDao
+                .update(PedidoModel)
+                .then((result) => {
+                    console.log('result', result)
                     if (result) {
                         const jsonSucess = Success.generateJsonSucess(
                             200,
                             'Pedido cancelado com sucesso'
                         );
-
-                        resolve(jsonSucess)
-                    }
-                    else resolve(result)
+                        console.log('dosajhdisad', result)
+                        resolve(jsonSucess);
+                    } else reject(result);
                 })
-                .catch(error => {
-                    reject(error)
-                })
-        })
+                .catch((error) => {
+                    console.log('erro', error)
+                    reject(error);
+                });
+        });
     }
 }
 
