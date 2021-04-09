@@ -302,10 +302,8 @@ class ItemEstoqueDao {
                         resolve(jsonSucess);
                     } catch (error) {
                         console.log(error);
-                    }
-                    else{
                         reject(Exceptions.generateException(500, "Erro ao deletar um produto Estoque")) 
-                    } 
+                    }
                 })
                 .catch((error) => {
                     console.log(error);
