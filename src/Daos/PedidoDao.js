@@ -68,7 +68,7 @@ PedidoSchema.plugin(mongooseStringQuery);
 Pedido = mongoose.model('pedidos', PedidoSchema);
 /* */
 class PedidoDao {
-    constructor() {}
+    constructor() { }
 
     create(PedidoModel) {
         return new Promise(function (resolve, reject) {
@@ -149,6 +149,28 @@ class PedidoDao {
         });
     }
 
+    findOne(PedidoModel) {
+        return new Promise(function (resolve, reject) {
+            let obj = new Object();
+            obj._id = PedidoModel.id
+
+            try {
+                Pedido.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject();
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data);
+                    } else {
+                        resolve(false);
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
     getListReportFromDate(dataI, dataF) {
         return new Promise(function (resolve, reject) {
             try {
@@ -200,11 +222,10 @@ class PedidoDao {
     update(PedidoModel) {
         return new Promise(function (resolve, reject) {
             try {
-                let codigo = PedidoModel.Pedido;
 
                 let obj = new Object();
 
-                obj.id = codigo;
+                obj._id = PedidoModel.id;
 
                 Pedido.updateOne(obj, PedidoModel)
                     .then((data) => {

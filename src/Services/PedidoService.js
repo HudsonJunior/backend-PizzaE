@@ -375,7 +375,7 @@ class PedidoService {
                                             'quantidade'
                                         ] =
                                             productsArray[idAlreadyExists][
-                                                'quantidade'
+                                            'quantidade'
                                             ] + currentQtde;
                                     }
                                 }
@@ -524,6 +524,7 @@ class PedidoService {
                     PedidoModel.cancelar &&
                     PedidoModel.statusPedido !== 'realizado'
                 ) {
+                    console.log('HDOASOHDHASIOD')
                     reject(
                         Exceptions.generateException(
                             PedidoResponse.Codes.InvalidField,
@@ -532,41 +533,60 @@ class PedidoService {
                         )
                     );
                 } else {
-                    if (
-                        (PedidoModel.observacoes || PedidoModel.produtos) &&
-                        (PedidoModel.statusPedido === 'preparando' ||
-                            PedidoModel.statusPedido === 'viagem')
-                    ) {
-                        reject(
+                    console.log('pedido', PedidoModel)
+                    pedidoDao.findOne(PedidoModel).then(pedido => {
+                        console.log('parte 1', pedido)
+                        if (pedido) {
+                            console.log(PedidoModel.observacoes != pedido.observacoes, PedidoModel.produtos.toString() != pedido.produtos.toString())
+                            if (
+                                (PedidoModel.observacoes != pedido.observacoes || PedidoModel.produtos.toString() != pedido.produtos.toString()) &&
+                                (PedidoModel.statusPedido === 'preparando' ||
+                                    PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        PedidoResponse.Codes.InvalidField,
+                                        PedidoResponse.Messages.UpdateError,
+                                        PedidoResponse.Details.InvalidAttemptUpdateItens
+                                    )
+                                );
+                            } else if (
+                                (PedidoModel.formaPagamento != pedido.formaPagamento ||
+                                    PedidoModel.formaExpedicao != pedido.formaExpedicao) &&
+                                (PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        PedidoResponse.Codes.InvalidField,
+                                        PedidoResponse.Messages.UpdateError,
+                                        PedidoResponse.Details
+                                            .InvalidAttemptUpdatePayment
+                                    )
+                                );
+                            } else {
+                                pedidoDao
+                                    .update(PedidoModel)
+                                    .then((result) => {
+                                        resolve(result);
+                                    })
+                                    .catch((error) => {
+                                        reject(error);
+                                    });
+                            }
+                        }
+                        else {
                             Exceptions.generateException(
-                                PedidoResponse.Codes.InvalidField,
-                                PedidoResponse.Messages.UpdateError,
-                                PedidoResponse.Details.InvalidAttemptUpdateItens
+                                PedidoResponse.Codes.InternalServerError,
+                                'Pedido inválido',
+                                'Ocorreu um problema ao editar o pedido. Pedido não encontrado'
                             )
-                        );
-                    } else if (
-                        (PedidoModel.formaPagamento ||
-                            PedidoModel.formaExpedicao) &&
-                        PedidoModel.statusPedido === 'viagem'
-                    ) {
-                        reject(
-                            Exceptions.generateException(
-                                PedidoResponse.Codes.InvalidField,
-                                PedidoResponse.Messages.UpdateError,
-                                PedidoResponse.Details
-                                    .InvalidAttemptUpdatePayment
-                            )
-                        );
-                    } else {
-                        pedidoDao
-                            .update(PedidoModel)
-                            .then((result) => {
-                                resolve(result);
-                            })
-                            .catch((error) => {
-                                reject(error);
-                            });
+                        }
                     }
+
+                    ).catch(error => {
+                        reject(error)
+                    })
+
                 }
             } catch (error) {
                 reject(error);
@@ -580,16 +600,18 @@ class PedidoService {
             pedidoDao
                 .update(PedidoModel)
                 .then((result) => {
+                    console.log('result', result)
                     if (result) {
                         const jsonSucess = Success.generateJsonSucess(
                             200,
                             'Pedido cancelado com sucesso'
                         );
-
+                        console.log('dosajhdisad', result)
                         resolve(jsonSucess);
-                    } else resolve(result);
+                    } else reject(result);
                 })
                 .catch((error) => {
+                    console.log('erro', error)
                     reject(error);
                 });
         });

@@ -24,8 +24,8 @@ module.exports = {
         DbError:
             "Ocorreu um problema no banco de dados e não foi possível cadastrar o pedido",
         InvalidAttemptCancel: "Não é possível cancelar um pedido que não esteja no estado 'realizado'",
-        InvalidAttemptUpdateItens: "Não é possível alterar os itens ou observações do pedido quando o pedido já está em preparo ou na viagem",
-        InvalidAttemptUpdatePayment: "Não é possível alterar a forma de pagamento do pedido quando o pedido já está em preparo ou na viagem",
+        InvalidAttemptUpdateItens: "Não é possível alterar os itens ou observações do pedido quando o pedido já está em preparo, na viagem ou já foi entregue",
+        InvalidAttemptUpdatePayment: "Não é possível alterar a forma de pagamento ou a forma de expedição do pedido quando o pedido já está na viagem ou foi entregue",
     },
     Codes: {
         InvalidField: 400,

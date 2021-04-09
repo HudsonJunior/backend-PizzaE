@@ -5,7 +5,7 @@ const PedidoService = require('../Services/PedidoService.js');
 /**/
 
 module.exports = function (server) {
-    
+
     server.post('/pedido', function (req, res, next) {
         try {
             let data = req.body || {};
@@ -39,21 +39,21 @@ module.exports = function (server) {
 
             const pedidoService = new PedidoService();
 
-                pedidoService
-                    .getListFromDate(dataPedido)
-                    .then((jsonSuccess) => {
-                        res.json(201, jsonSuccess);
-                        next();
-                    })
-                    .catch((jsonError) => {
-                        const code = jsonError.code;
+            pedidoService
+                .getListFromDate(dataPedido)
+                .then((jsonSuccess) => {
+                    res.json(201, jsonSuccess);
+                    next();
+                })
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                        delete jsonError.code;
+                    delete jsonError.code;
 
-                        res.json(code, jsonError);
-                        next();
-                    });
-            
+                    res.json(code, jsonError);
+                    next();
+                });
+
         } catch (error) {
             console.log(error);
         }
@@ -65,21 +65,21 @@ module.exports = function (server) {
 
             const pedidoService = new PedidoService();
 
-                pedidoService
-                    .getListFromClient(cpf)
-                    .then((jsonSuccess) => {
-                        res.json(201, jsonSuccess);
-                        next();
-                    })
-                    .catch((jsonError) => {
-                        const code = jsonError.code;
+            pedidoService
+                .getListFromClient(cpf)
+                .then((jsonSuccess) => {
+                    res.json(201, jsonSuccess);
+                    next();
+                })
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                        delete jsonError.code;
+                    delete jsonError.code;
 
-                        res.json(code, jsonError);
-                        next();
-                    });
-            
+                    res.json(code, jsonError);
+                    next();
+                });
+
         } catch (error) {
             console.log(error);
         }
@@ -92,21 +92,21 @@ module.exports = function (server) {
 
             const pedidoService = new PedidoService();
 
-                pedidoService
-                    .getListReportFromDate(dataInicio, dataFinal)
-                    .then((jsonSuccess) => {
-                        res.json(201, jsonSuccess);
-                        next();
-                    })
-                    .catch((jsonError) => {
-                        const code = jsonError.code;
+            pedidoService
+                .getListReportFromDate(dataInicio, dataFinal)
+                .then((jsonSuccess) => {
+                    res.json(201, jsonSuccess);
+                    next();
+                })
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                        delete jsonError.code;
+                    delete jsonError.code;
 
-                        res.json(code, jsonError);
-                        next();
-                    });
-            
+                    res.json(code, jsonError);
+                    next();
+                });
+
         } catch (error) {
             console.log(error);
         }
@@ -118,21 +118,21 @@ module.exports = function (server) {
 
             const pedidoService = new PedidoService();
 
-                pedidoService
-                    .getListFromProduct(nomeProduto)
-                    .then((jsonSuccess) => {
-                        res.json(201, jsonSuccess);
-                        next();
-                    })
-                    .catch((jsonError) => {
-                        const code = jsonError.code;
+            pedidoService
+                .getListFromProduct(nomeProduto)
+                .then((jsonSuccess) => {
+                    res.json(201, jsonSuccess);
+                    next();
+                })
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                        delete jsonError.code;
+                    delete jsonError.code;
 
-                        res.json(code, jsonError);
-                        next();
-                    });
-            
+                    res.json(code, jsonError);
+                    next();
+                });
+
         } catch (error) {
             console.log(error);
         }
@@ -140,22 +140,19 @@ module.exports = function (server) {
 
     server.patch('/pedido', function (req, res, next) {
         try {
+            console.log('entrou')
             let data = req.body || {}
-
-            let cancelar = req.params.cancelar || null
 
             let pedidoModel;
 
             pedidoModel = new PedidoModel(data);
-
-            pedidoModel.cancelar = cancelar
 
             const pedidoService = new PedidoService();
 
             pedidoService.update(pedidoModel)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
-
+                    console.log('diasjdsadsa')
                     delete jsonSuccess.code
 
                     res.json(code, jsonSuccess)
@@ -163,6 +160,7 @@ module.exports = function (server) {
                 })
                 .catch(jsonError => {
                     const code = jsonError.code
+                    console.log('cuuuuuu')
 
                     delete jsonError.code
 
