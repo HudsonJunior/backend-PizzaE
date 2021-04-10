@@ -53,7 +53,7 @@ ProdutosFinaisSchema.plugin(mongooseStringQuery);
 ProdutosFinais = mongoose.model('produto_finals', ProdutosFinaisSchema);
 /* */
 class ProdutosFinaisDao {
-    constructor() {}
+    constructor() { }
 
     create(ProdutoModel) {
         return new Promise(function (resolve, reject) {
@@ -180,10 +180,12 @@ class ProdutosFinaisDao {
         });
     }
 
-    list() {
+    list(ativado = false) {
         return new Promise(function (resolve, reject) {
+            let obj = new Object()
+            if (ativado == true) obj.ativado = true
             try {
-                ProdutosFinais.find({ ativado: true }, function (err, data) {
+                ProdutosFinais.find({ ...obj }, function (err, data) {
                     if (err) {
                         reject();
                     }
