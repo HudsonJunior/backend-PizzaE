@@ -16,6 +16,10 @@ const movSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    nomeProduto: {
+        type: String,
+        required: true,
+    },
     data: {
         type: Date,
         required: true,
@@ -38,11 +42,9 @@ class MovimentacoesEstoqueDao {
 
     create(movModel) {
         return new Promise(function (resolve, reject) {
-
             const mov = new Movimentacoes(movModel);
 
-            mov
-                .save()
+            mov.save()
                 .then((data) => {
                     try {
                         resolve();
@@ -60,7 +62,7 @@ class MovimentacoesEstoqueDao {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.idProduto = movModel.idProduto;
-            obj.acao = "remocao";
+            obj.acao = 'remocao';
             try {
                 Movimentacoes.findOne(obj, function (err, data) {
                     if (err) {
@@ -82,8 +84,8 @@ class MovimentacoesEstoqueDao {
     list(data) {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
-            obj.data = new Date(data)
-            
+            obj.data = new Date(data);
+
             try {
                 Movimentacoes.find(obj, function (err, data) {
                     if (err) {
