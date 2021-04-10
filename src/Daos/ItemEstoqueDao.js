@@ -10,6 +10,7 @@ var moment = require('moment');
 const MovimentacoesEstoqueService = require('../Services/MovimentacoesEstoqueService');
 const DateCommon = require('../Common/Date');
 const ItemEstoqueModel = require('../Models/ItemEstoqueModel');
+const DateClass = require('../Common/Date');
 /* Global variables*/
 
 const Exceptions = new exceptionsClass();
@@ -83,6 +84,7 @@ class ItemEstoqueDao {
 
                         let movData = {
                             idProduto: data._id,
+                            nomeProduto: data.nome,
                             data: today,
                             acao: 'criacao',
                         };
@@ -252,27 +254,35 @@ class ItemEstoqueDao {
             try {
                 let id = ItemModel.id;
 
-                let obj = new Object();
-                obj._id = id;
-                ItemEstoque.updateOne(obj, ItemModel)
-                    .then((data) => {
-                        try {
-                            const jsonSucess = Sucess.generateJsonSucess(
-                                200,
-                                'Item do estoque alterado com sucesso'
-                            );
-                            resolve(jsonSucess);
-                        } catch (error) {
-                            console.log(error);
-                        }
+                ItemEstoque.findOneAndUpdate({ _id: id }, ItemModel, {
+                    new: true,
+                })
+                    .then((result) => {
+                        // registro de movimentacao do estoque
+                        var today = new DateCommon().getCurrentDate();
+
+                        let movData = {
+                            idProduto: result._id,
+                            nomeProduto: result.nome,
+                            data: today,
+                            acao: 'alteracao',
+                        };
+
+                        movService.create(movData);
+
+                        const jsonSucess = Sucess.generateJsonSucess(
+                            200,
+                            'Item do estoque alterado com sucesso'
+                        );
+
+                        resolve(jsonSucess);
                     })
                     .catch((error) => {
                         console.log(error);
                         reject(
                             Exceptions.generateException(
                                 500,
-                                'Erro ao atualizar item estoque',
-                                error
+                                'Erro ao alterar um produto Estoque'
                             )
                         );
                     });
@@ -285,9 +295,22 @@ class ItemEstoqueDao {
     delete(codItem) {
         return new Promise(function (resolve, reject) {
             try {
-                ItemEstoque.deleteOne({ _id: codItem })
-                    .then((data) => {
+                ItemEstoque.findOneAndDelete({ _id: codItem })
+                    .then((result) => {
                         try {
+                            console.log(result);
+
+                            // registro de movimentacao do estoque
+                            var today = new DateClass().getCurrentDate();
+
+                            let movData = {
+                                idProduto: result._id,
+                                nomeProduto: result.nome,
+                                data: today,
+                                acao: 'remocao',
+                            };
+
+                            movService.create(movData);
                             const jsonSucess = Sucess.generateJsonSucess(
                                 200,
                                 'Item do estoque deletado com sucesso'
