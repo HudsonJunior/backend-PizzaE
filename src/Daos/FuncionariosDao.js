@@ -116,6 +116,33 @@ class FuncionarioDao {
         })
     }
 
+    findFromCpf(FuncionarioModel) {
+        return new Promise(function (resolve, reject) {
+            const cpf = FuncionarioModel.cpf;
+            try {
+                Funcionario.find(
+                    { cpf: { $regex: `.*${cpf}`}},
+                    function (err, data) {
+                        if (err) {
+                            reject();
+                        }
+
+                        if (data != null && !R.isEmpty(data)) {
+                            console.log(data);
+                            resolve(data);
+                        } else {
+                            console.log(data);
+                            resolve(false);
+                        }
+                    }
+                );
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+
     list() {
         return new Promise(function (resolve, reject) {
             const obj = new Object()

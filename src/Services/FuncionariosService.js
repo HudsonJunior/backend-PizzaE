@@ -98,7 +98,7 @@ class FuncionariosService {
         return new Promise(function (resolve, reject) {
             try {
                 if(FuncionariosModel.cpf){
-                    funcionariosDao.findOne(FuncionariosModel)
+                    funcionariosDao.findFromCpf(FuncionariosModel)
                     .then(result=>{
                         if(result)
                             resolve(result)

@@ -116,7 +116,8 @@ class ItemEstoqueService {
                         if(result)
                             resolve(result)
                         else{
-                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
+                            resolve([])
+                          //  reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
                         }
                     })
                     .catch(error => {

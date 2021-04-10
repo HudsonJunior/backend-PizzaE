@@ -118,7 +118,7 @@ class ItemEstoqueDao {
                     }
 
                     if (data != null && !R.isEmpty(data)) {
-                        resolve(data)
+                        resolve([data])
                     }
                     else {
                         resolve(false)
@@ -131,6 +131,7 @@ class ItemEstoqueDao {
 
         })
     }
+
 
     list(aVencer) {
         return new Promise(function (resolve, reject) {
