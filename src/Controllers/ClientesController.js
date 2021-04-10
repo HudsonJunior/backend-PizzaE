@@ -20,19 +20,18 @@ module.exports = function (server) {
 
             clientesService.create(clientesModel)
                 .then(jsonSuccess => {
+                    console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                    delete jsonSuccess.code
 
                     res.json(code, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
-                    const code = jsonError.code
 
-                    delete jsonError.code
-
-                    res.json(code, jsonError)
+                    console.log("------------", jsonError)
+                    res.json(500, jsonError)
                     next()
                 })
         }
@@ -44,56 +43,56 @@ module.exports = function (server) {
     server.get('/clientes', function (req, res, next) {
 
         try {
-            
+
             const clientesService = new ClientesService();
             const cpfClientes = req.params.cpf
-            if(cpfClientes == null){
+            if (cpfClientes == null) {
                 clientesService.get()
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+                    .then(jsonSuccess => {
+                        const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                        delete jsonSucess.code
 
-                    res.json(code, jsonSuccess)
-                    next()
-                })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                        res.json(code, jsonSuccess)
+                        next()
+                    })
+                    .catch(jsonError => {
+                        const code = jsonError.code
 
-                    delete jsonError.code
+                        delete jsonError.code
 
-                    res.json(code, jsonError)
-                    next()
-                })
-            }else{
+                        res.json(code, jsonError)
+                        next()
+                    })
+            } else {
                 console.log(cpfClientes)
                 clientesService.getCliente(cpfClientes)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+                    .then(jsonSuccess => {
+                        const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                        delete jsonSucess.code
 
-                    res.json(code, jsonSuccess)
-                    next()
-                })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                        res.json(code, jsonSuccess)
+                        next()
+                    })
+                    .catch(jsonError => {
+                        const code = jsonError.code
 
-                    delete jsonError.code
+                        delete jsonError.code
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                        res.json(code, jsonError)
+                        next()
+                    })
             }
 
-            
+
         }
         catch (error) {
             console.log(error)
         }
     })
 
-    
+
 
     server.del('/clientes', function (req, res, next) {
 
@@ -143,7 +142,7 @@ module.exports = function (server) {
             clientesModel = new ClientesModel(data);
 
             const clientesService = new ClientesService();
-            
+
             console.log(clientesModel)
 
             clientesService.update(clientesModel)

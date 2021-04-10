@@ -18,19 +18,19 @@ class ClientesService {
 
     async create(ClientesModel) {
         console.log("estou no service");
-        console.log(ClientesModel);
+        //console.log(ClientesModel);
         return new Promise(async function (resolve, reject) {
             try {
 
                 clientesDao.findOne(ClientesModel)
                     .then(result => {
-                        console.log(result)
-                        if(result){
+                        console.log("resultado do findOne", result)
+                        if (result) {
                             console.log("Erro no cadastro")
-                            reject()
+                            reject(Exceptions.clientesException(500, 'Erro ao cadastrar cliente', 'cpf existente'))
                         }
 
-                        else{
+                        else {
 
                             ClientesModel.password = string.validatePassword(ClientesModel.password)
                             ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
@@ -38,9 +38,9 @@ class ClientesService {
                             ClientesModel.telefone = string.getOnlyNumbers(ClientesModel.telefone)
 
                             clientesDao.create(ClientesModel)
-                                
+
                                 .then(result => {
-                                    result.cash_token = AuthValue.cash_token
+                                    //result.cash_token = AuthValue.cash_token
 
                                     resolve(result)
                                 })
@@ -50,7 +50,7 @@ class ClientesService {
 
                         }
                     })
-                
+
             }
             catch (error) {
                 reject(error)
@@ -59,7 +59,7 @@ class ClientesService {
     }
 
     delete(cpfCliente) {
-        
+
         return new Promise(function (resolve, reject) {
             try {
                 clientesDao.delete(cpfCliente)
@@ -129,44 +129,44 @@ class ClientesService {
                     .then(result => {
                         cliente = result;
                         if (cliente.cpf != ClientesModel.cpf) {
-                    console.log(cliente)
-                    reject(Exceptions.generateException(400, "Alteração do cpf/cnpj de um cliente não é permitido", "Não é possível realizar a alteração do cpf de um cliente"))
-                }
-                else {
-                    console.log("to no else")
-                    console.log(cliente)
+                            console.log(cliente)
+                            reject(Exceptions.generateException(400, "Alteração do cpf/cnpj de um cliente não é permitido", "Não é possível realizar a alteração do cpf de um cliente"))
+                        }
+                        else {
+                            console.log("to no else")
+                            console.log(cliente)
 
-                    // Verificar se os campos pra atualizar sao nulos
-                    if(ClientesModel.endereco == null){
-                        ClientesModel.endereco = result.endereco  
-                    }
-                    if(ClientesModel.nome == null){
-                        ClientesModel.nome = result.nome  
-                    }
-                    if(ClientesModel.telefone == null){
-                        ClientesModel.telefone = result.telefone  
-                    }
-                    if(ClientesModel.email == null){
-                        ClientesModel.email = result.email  
-                    }
-                    if(ClientesModel.senha == null){
-                        ClientesModel.senha = result.senha  
-                    }
+                            // Verificar se os campos pra atualizar sao nulos
+                            if (ClientesModel.endereco == null) {
+                                ClientesModel.endereco = result.endereco
+                            }
+                            if (ClientesModel.nome == null) {
+                                ClientesModel.nome = result.nome
+                            }
+                            if (ClientesModel.telefone == null) {
+                                ClientesModel.telefone = result.telefone
+                            }
+                            if (ClientesModel.email == null) {
+                                ClientesModel.email = result.email
+                            }
+                            if (ClientesModel.senha == null) {
+                                ClientesModel.senha = result.senha
+                            }
 
-                    clientesDao.update(ClientesModel)
-                        .then(result => {
-                            resolve(result)
-                        })
-                        .catch(error => {
-                            reject(error)
-                        })
-                }
+                            clientesDao.update(ClientesModel)
+                                .then(result => {
+                                    resolve(result)
+                                })
+                                .catch(error => {
+                                    reject(error)
+                                })
+                        }
                     })
                     .catch(error => {
                         reject(error)
                     });
 
-                
+
             }
             catch (error) {
                 reject(error)

@@ -32,7 +32,7 @@ class ClientesDal {
                 .then(data => {
                     try {
                         const jsonSucess = Sucess.clientesSucess(200, data)
-
+                        console.log("sucesso no dao do cliente")
                         resolve(jsonSucess)
                     }
                     catch (error) {
@@ -41,10 +41,10 @@ class ClientesDal {
 
                 })
                 .catch(error => {
-                    console.log(error)
-                    reject(Exceptions.clientesException(500, 'erro','erro'))
+                    console.log("Erro dentro do catch do DAO", error)
+                    reject(Exceptions.clientesException(500, 'erro', 'erro'))
                 })
-                
+
         })
     }
     /*
@@ -84,14 +84,14 @@ class ClientesDal {
             try {
                 let obj = new Object();
                 obj.cpf = cpfCliente;
-                console.log(typeof(cpfCliente))
+                console.log(typeof (cpfCliente))
 
                 Clientes.deleteOne(obj, function (err, data) {
                     if (err) {
                         reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar Cliente!"))
                         console.log(error)
-                    }else{
-                        const jsonSucess = Sucess.generateJsonSucess(201, "Cliente removido com sucesso!" );
+                    } else {
+                        const jsonSucess = Sucess.generateJsonSucess(201, "Cliente removido com sucesso!");
 
                         resolve(jsonSucess)
                     }
@@ -132,8 +132,8 @@ class ClientesDal {
             }
         })
     }
-    
-    
+
+
 
     list() {
         return new Promise(function (resolve, reject) {
@@ -168,18 +168,18 @@ class ClientesDal {
                 let obj = new Object();
                 obj.cpf = cpf
                 Clientes.updateOne(obj, ClientesModel)
-                .then((data)=>{
-                    try{
-                        const jsonSuccess = Sucess.generateJsonSucess(201,'cliente alterado poha');
-                        resolve(jsonSuccess)
-                    }
-                    catch(error){
+                    .then((data) => {
+                        try {
+                            const jsonSuccess = Sucess.generateJsonSucess(201, 'cliente alterado poha');
+                            resolve(jsonSuccess)
+                        }
+                        catch (error) {
+                            console.log(error);
+                        }
+                    })
+                    .catch((error) => {
                         console.log(error);
-                    }
-                })
-                .catch((error)=>{
-                    console.log(error);
-                })
+                    })
             }
             catch (error) {
                 reject(error)
@@ -193,7 +193,7 @@ class ClientesDal {
 
             let obj = new Object()
             obj.cpf = cpf
-            
+
             try {
                 Clientes.findOne(obj, function (err, data) {
                     if (err) {
@@ -278,7 +278,7 @@ class ClientesDal {
 
         return ClientesSchema
     }
-    
+
 }
 
 module.exports = ClientesDal
