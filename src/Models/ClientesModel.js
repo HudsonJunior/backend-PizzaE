@@ -1,13 +1,15 @@
 
-class ClienteModel {
+class ClientesModel {
 
     constructor(data) {
+        
         this.nome = data.nome;
         this.endereco =data.endereco;
+        this.email=data.email;
         this.cpf = data.cpf;
         this.telefone = data.telefone;
-        this.senha = this.senha;
+        this.senha = data.senha;
     }
 }
 
-module.exports = ClienteModel
+module.exports = ClientesModel

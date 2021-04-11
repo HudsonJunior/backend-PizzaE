@@ -1,7 +1,9 @@
 /* imports */
 
 const string = require('./../Common/String')
+
 const ClientesDao = require('../Daos/ClientesDao')
+const { validateCpf } = require('../Common/Cpf')
 
 /* Global variables*/
 
@@ -14,42 +16,74 @@ class ClientesService {
         clientesService = this
     }
 
-    async create(ClienteModel) {
+    async create(ClientesModel) {
+        console.log("estou no service");
+        //console.log(ClientesModel);
         return new Promise(async function (resolve, reject) {
             try {
 
-                const validarClientes = await ClientesService.validarClientes(ClientesModel.cliente)
-                const validarEmail = await ClientesService.validarEmail(ClientesModel.email)
-                const validarNome = await ClientesService.validarNome(ClientesModel.nome)
-                const validarCpf = await ClientesService.validarCpf(ClientesModel.Cpf)
-                const validarPassword = await ClientesService.validarPassword(ClientesModel.password)
-                const validarTelefone = await ClientesService.validarTelefone(ClientesModel.telefone)
-                const validarEndereco = await ClientesService.validarEndereco(ClientesModel.endereco)
-
-                ClientesModel.cpf = string.getOnlyNumbers(ClientesModel.cpf)
-                ClientesModel.password = await clientesService.validateNome(fullName)
-
-                clientesDao.create(ClientesModel)
+                clientesDao.findOne(ClientesModel)
                     .then(result => {
-                        result.cash_token = AuthValue.cash_token
+                        console.log("resultado do findOne", result)
+                        if (result) {
+                            console.log("Erro no cadastro")
+                            reject(Exceptions.clientesException(500, 'Erro ao cadastrar cliente', 'cpf existente'))
+                        }
 
-                        resolve(result)
+                        else {
+
+                            ClientesModel.password = string.validatePassword(ClientesModel.password)
+                            ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
+                            ClientesModel.endereco = string.validateOnlyLetters(ClientesModel.endereco)
+                            ClientesModel.telefone = string.getOnlyNumbers(ClientesModel.telefone)
+
+                            clientesDao.create(ClientesModel)
+
+                                .then(result => {
+                                    //result.cash_token = AuthValue.cash_token
+
+                                    resolve(result)
+                                })
+                                .catch(error => {
+                                    reject(error)
+                                })
+
+                        }
                     })
-                    .catch(error => {
-                        reject(error)
-                    })
+
             }
             catch (error) {
                 reject(error)
             }
         })
     }
+
+    delete(cpfCliente) {
+
+        return new Promise(function (resolve, reject) {
+            try {
+                clientesDao.delete(cpfCliente)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+
 
     getCliente(cpfClientes) {
         return new Promise(function (resolve, reject) {
             try {
-
-                clientesDao.get(cpfClientes)
+                console.log("to em buscar cliente cpf eh:")
+                console.log(cpfClientes)
+                clientesDao.getCliente(cpfClientes)
                     .then(result => {
                         result.cash_token = AuthValue.cash_token
 
@@ -65,7 +99,8 @@ class ClientesService {
         })
     }
 
-    getClienteList() {
+    get() {
+        console.log("to no listar clientizinhos")
         return new Promise(function (resolve, reject) {
             try {
 
@@ -84,12 +119,68 @@ class ClientesService {
         })
     }
 
+    update(ClientesModel) {
+        return new Promise(function (resolve, reject) {
+            try {
+                console.log("to na update");
+                let cliente;
+
+                clientesDao.findOne(ClientesModel)
+                    .then(result => {
+                        cliente = result;
+                        if (cliente.cpf != ClientesModel.cpf) {
+                            console.log(cliente)
+                            reject(Exceptions.generateException(400, "Alteração do cpf/cnpj de um cliente não é permitido", "Não é possível realizar a alteração do cpf de um cliente"))
+                        }
+                        else {
+                            console.log("to no else")
+                            console.log(cliente)
+
+                            // Verificar se os campos pra atualizar sao nulos
+                            if (ClientesModel.endereco == null) {
+                                ClientesModel.endereco = result.endereco
+                            }
+                            if (ClientesModel.nome == null) {
+                                ClientesModel.nome = result.nome
+                            }
+                            if (ClientesModel.telefone == null) {
+                                ClientesModel.telefone = result.telefone
+                            }
+                            if (ClientesModel.email == null) {
+                                ClientesModel.email = result.email
+                            }
+                            if (ClientesModel.senha == null) {
+                                ClientesModel.senha = result.senha
+                            }
+
+                            clientesDao.update(ClientesModel)
+                                .then(result => {
+                                    resolve(result)
+                                })
+                                .catch(error => {
+                                    reject(error)
+                                })
+                        }
+                    })
+                    .catch(error => {
+                        reject(error)
+                    });
+
+
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+
+    }
+
     validarClientes(clientes) {
         return new Promise(function (resolve, reject) {
             try {
 
                 if (!string.validarClientes(clientes)) {
-                    reject(Exceptions.generateException(ClientesResponse.Codes.InvalidField, ClientesResponse.Messages.RegisterError, ClientesResponse.Details.InvalidClientes))
+                    reject()
                 }
 
                 clientesService.validarPrimaryKey(ClientesValue.clientes, clientes)
@@ -97,7 +188,7 @@ class ClientesService {
                         resolve()
                     })
                     .catch(error => {
-                        reject(Exceptions.generateException(ClientesResponse.Codes.DuplicatedPrimaryKey, ClientesResponse.Messages.AlreadyRegisted, ClientesResponse.Details.DuplicatedClientes.replace(ClientesValue.clientesReplaced, clientes)))
+                        reject()
 
                     })
             }

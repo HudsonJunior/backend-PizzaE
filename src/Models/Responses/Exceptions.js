@@ -13,6 +13,15 @@ class Exceptions {
 
         return jsonObj
     }
+    clientesException(code,message, details){
+        const jsonObj = {
+            code: code,
+            message: message,
+            details: details
+        }
+
+        return jsonObj
+    }
 }
 
 module.exports = Exceptions

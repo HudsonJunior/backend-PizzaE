@@ -5,23 +5,56 @@ const mongoose = require('../Connection/connectionMongo');
 const exceptionsClass = require('./../Models/Responses/Exceptions')
 const sucessClass = require('./../Models/Responses/Sucess')
 /* Global variables*/
+const R = require('ramda')
 
 const Exceptions = new exceptionsClass()
 const Sucess = new sucessClass()
 
 var Clientes = null
 
+const ClientesSchema = new mongoose.Schema(
+    {
+        nome: {
+            type: String,
+            required: true,
+            select: true,
+        },
+        cpf: {
+            type: String,
+            required: true,
+            select: true,
+        },
+        endereco: {
+            type: String,
+            required: true,
+        },
+        telefone: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: false,
+        },
+        senha: {
+            type: String,
+            required: false,
+            select: true,
+        }
+    },
+);
+
+ClientesSchema.plugin(mongooseStringQuery);
+
+Clientes = mongoose.model('clientes', ClientesSchema);
 /* */
 class ClientesDal {
     constructor() {
-        const ClientesSchema = this.getClientesSchema()
 
-        ClientesSchema.plugin(mongooseStringQuery);
-
-        Clientes = mongoose.model('produtos_finais', ClientesSchema);
     }
 
     create(ClientesModel) {
+        console.log("to no DAO de cadastro")
         return new Promise(function (resolve, reject) {
 
             const clientes = new Clientes(ClientesModel)
@@ -29,8 +62,8 @@ class ClientesDal {
             clientes.save()
                 .then(data => {
                     try {
-                        const jsonSucess = Sucess.generateUserJsonSucess(UserResponse.Codes.OkRegister, data)
-
+                        const jsonSucess = Sucess.clientesSucess(200, data)
+                        console.log("sucesso no dao do cliente")
                         resolve(jsonSucess)
                     }
                     catch (error) {
@@ -39,22 +72,26 @@ class ClientesDal {
 
                 })
                 .catch(error => {
-                    console.log(error)
-                    reject(Exceptions.generateException(UserResponse.Codes.InternalServerError, UserResponse.Messages.RegisterError, UserResponse.Details.DbError))
+                    console.log("Erro dentro do catch do DAO", error)
+                    reject(Exceptions.clientesException(500, 'erro', 'erro'))
                 })
+
         })
     }
-
-    delete(ClientesModel) {
+    /*
+    delete(cpfCliente) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
-                obj.cpf = ClientesModel.cpf;
+                obj.cpf = cpfCliente;
+                console.log("to no DAO  de deletar , cpf eh:")
+                console.log(cpfCliente)
 
-                Clientes.deleteOne(obj, ClientesModel)
+                
+                Clientes.deleteOne(obj)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+                            const jsonSucess = Sucess.generateJsonSucess(201, "Cliente apagado com sucesso");
 
                             resolve(jsonSucess)
                         }
@@ -66,6 +103,30 @@ class ClientesDal {
                         console.log(error)
                         reject(Exceptions.generateException(500, 'Erro', 'Erro'))
                     })
+            }
+            catch (error) {
+                reject(error)
+            }
+        })
+    }
+    */
+    delete(cpfCliente) {
+        return new Promise(function (resolve, reject) {
+            try {
+                let obj = new Object();
+                obj.cpf = cpfCliente;
+                console.log(typeof (cpfCliente))
+
+                Clientes.deleteOne(obj, function (err, data) {
+                    if (err) {
+                        reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar Cliente!"))
+                        console.log(error)
+                    } else {
+                        const jsonSucess = Sucess.generateJsonSucess(201, "Cliente removido com sucesso!");
+
+                        resolve(jsonSucess)
+                    }
+                })
             }
             catch (error) {
                 reject(error)
@@ -74,15 +135,18 @@ class ClientesDal {
     }
 
     getCliente(cpfCliente) {
+        console.log("To em getCliente cpf eh:")
+        console.log(cpfCliente)
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.cpf = cpfCliente;
+            console.log(obj)
             try {
                 Clientes.find(obj)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(200, data);
-
+                            const jsonSucess = Sucess.generateJsonSucess(201, data);
+                            console.log(data)
                             resolve(jsonSucess)
                         }
                         catch (error) {
@@ -100,7 +164,9 @@ class ClientesDal {
         })
     }
 
-    list(cpfCliente) {
+
+
+    list() {
         return new Promise(function (resolve, reject) {
 
             try {
@@ -108,8 +174,8 @@ class ClientesDal {
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
-
-                            resolve(jsonSucess)
+                            console.log(data)
+                            resolve(data)
                         }
                         catch (error) {
                             console.log(error)
@@ -132,7 +198,19 @@ class ClientesDal {
                 let cpf = ClientesModel.cpf
                 let obj = new Object();
                 obj.cpf = cpf
-                Clientes.update(obj, ClientesModel).then().catch()
+                Clientes.updateOne(obj, ClientesModel)
+                    .then((data) => {
+                        try {
+                            const jsonSuccess = Sucess.generateJsonSucess(201, 'cliente alterado poha');
+                            resolve(jsonSuccess)
+                        }
+                        catch (error) {
+                            console.log(error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             }
             catch (error) {
                 reject(error)
@@ -140,8 +218,63 @@ class ClientesDal {
         })
     }
 
+    findOne(ClienteModel) {
+        return new Promise(function (resolve, reject) {
+            let cpf = ClienteModel.cpf;
 
+            let obj = new Object()
+            obj.cpf = cpf
 
+            try {
+                Clientes.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data)
+                    }
+                    else {
+                        resolve(false)
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
+
+    login(ClienteModel) {
+        return new Promise(function (resolve, reject) {
+            let cpf = ClienteModel.cpf;
+            let senha = ClienteModel.senha;
+
+            let obj = new Object()
+            obj.cpf = cpf
+            obj.senha = senha
+
+            try {
+                Clientes.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data)
+                    }
+                    else {
+                        resolve(false)
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
     validatePrimaryKey(field, value) {
         return new Promise(function (resolve, reject) {
 
@@ -169,41 +302,6 @@ class ClientesDal {
         })
     }
 
-    getClientesSchema() {
-        const ClientesSchema = new mongoose.Schema(
-            {
-                nome: {
-                    type: String,
-                    required: true,
-                    select: true,
-                },
-                cpf: {
-                    type: String,
-                    required: true,
-                    select: true,
-                },
-                endereco: {
-                    type: String,
-                    required: true,
-                },
-                telefone: {
-                    type: String,
-                    required: true,
-                },
-                email: {
-                    type: String,
-                    required: false,
-                },
-                senha: {
-                    type: String,
-                    required: true,
-                    select: true,
-                }
-            },
-        );
-
-        return ClientesSchema
-    }
 }
 
 module.exports = ClientesDal

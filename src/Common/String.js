@@ -13,10 +13,15 @@ module.exports = {
 
             const result = regex.test(string)
 
-            console.log(result)
-            return result
+            if(result){
+                return string
+            }else{
+                return falsa
+            }
+            
         }
         catch(error){
+            
             return false
         }
         
