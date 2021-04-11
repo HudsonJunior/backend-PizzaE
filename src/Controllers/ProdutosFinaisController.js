@@ -75,8 +75,10 @@ module.exports = function (server) {
             let produtoModel = {};
 
             const produtoNome = req.params.nome || null;
-
+            const ativado = req.params.ativado == false ? true : false;
             produtoModel.nome = produtoNome;
+            produtoModel.ativado = ativado;
+
 
             const produtoService = new ProdutosFinaisService();
 

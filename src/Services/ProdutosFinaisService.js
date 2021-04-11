@@ -122,7 +122,7 @@ class ProdutosFinaisService {
                         });
                 } else {
                     produtosFinaisDao
-                        .list()
+                        .list(ProdutoModel.ativado)
                         .then((result) => {
                             if (result) resolve(result);
                             else {
