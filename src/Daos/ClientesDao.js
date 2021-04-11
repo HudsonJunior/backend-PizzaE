@@ -144,7 +144,7 @@ class ClientesDal {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
                             console.log(data)
-                            resolve(jsonSucess)
+                            resolve(data)
                         }
                         catch (error) {
                             console.log(error)
@@ -270,7 +270,7 @@ class ClientesDal {
                 },
                 senha: {
                     type: String,
-                    required: true,
+                    required: false,
                     select: true,
                 }
             },

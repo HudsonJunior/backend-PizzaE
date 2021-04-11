@@ -49,19 +49,19 @@ module.exports = function (server) {
             if (cpfClientes == null) {
                 clientesService.get()
                     .then(jsonSuccess => {
-                        const code = jsonSuccess.code
+                        //const code = jsonSuccess.code
 
-                        delete jsonSucess.code
+                        //delete jsonSucess.code
 
-                        res.json(code, jsonSuccess)
+                        res.json(201, jsonSuccess)
                         next()
                     })
                     .catch(jsonError => {
-                        const code = jsonError.code
+                        //const code = jsonError.code
 
                         delete jsonError.code
 
-                        res.json(code, jsonError)
+                        res.json(201, jsonError)
                         next()
                     })
             } else {
