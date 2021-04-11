@@ -23,7 +23,7 @@ class ClientesDal {
     }
 
     create(ClientesModel) {
-        console.log("to no DAO de cadastro")
+
         return new Promise(function (resolve, reject) {
 
             const clientes = new Clientes(ClientesModel)
@@ -32,7 +32,7 @@ class ClientesDal {
                 .then(data => {
                     try {
                         const jsonSucess = Sucess.clientesSucess(200, data)
-                        console.log("sucesso no dao do cliente")
+
                         resolve(jsonSucess)
                     }
                     catch (error) {
@@ -47,44 +47,13 @@ class ClientesDal {
 
         })
     }
-    /*
+
     delete(cpfCliente) {
         return new Promise(function (resolve, reject) {
             try {
                 let obj = new Object();
                 obj.cpf = cpfCliente;
-                console.log("to no DAO  de deletar , cpf eh:")
-                console.log(cpfCliente)
 
-                
-                Clientes.deleteOne(obj)
-                    .then(data => {
-                        try {
-                            const jsonSucess = Sucess.generateJsonSucess(201, "Cliente apagado com sucesso");
-
-                            resolve(jsonSucess)
-                        }
-                        catch (error) {
-                            console.log(error)
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
-                    })
-            }
-            catch (error) {
-                reject(error)
-            }
-        })
-    }
-    */
-    delete(cpfCliente) {
-        return new Promise(function (resolve, reject) {
-            try {
-                let obj = new Object();
-                obj.cpf = cpfCliente;
-                console.log(typeof (cpfCliente))
 
                 Clientes.deleteOne(obj, function (err, data) {
                     if (err) {
@@ -104,12 +73,10 @@ class ClientesDal {
     }
 
     getCliente(cpfCliente) {
-        console.log("To em getCliente cpf eh:")
-        console.log(cpfCliente)
         return new Promise(function (resolve, reject) {
             let obj = new Object();
             obj.cpf = cpfCliente;
-            console.log(obj)
+
             try {
                 Clientes.find(obj)
                     .then(data => {
@@ -143,7 +110,7 @@ class ClientesDal {
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(200, data);
-                            console.log(data)
+
                             resolve(data)
                         }
                         catch (error) {

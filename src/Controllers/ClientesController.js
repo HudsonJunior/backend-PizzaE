@@ -8,8 +8,9 @@ const ClientesService = require('../Services/ClientesService')
 module.exports = function (server) {
 
     server.post('/clientes', function (req, res, next) {
-        console.log("estou no controler");
+
         try {
+            console.log("teste de save")
             let data = req.body || {}
 
             let clientesModel;
@@ -107,7 +108,7 @@ module.exports = function (server) {
             let cpfCliente = req.query.codigo;
             */
             const cpfCliente = req.params.cpf
-            console.log(cpfCliente)
+
             const clientesService = new ClientesService();
 
             clientesService.delete(cpfCliente)
