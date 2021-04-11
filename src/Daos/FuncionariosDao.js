@@ -24,7 +24,7 @@ const FuncionarioSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        cpf:{
+        cpf: {
             type: String,
             required: true,
         },
@@ -51,6 +51,10 @@ const FuncionarioSchema = new mongoose.Schema(
         complemento: {
             type: String,
             required: false,
+        },
+        tipo: {
+            type: String,
+            required: false,
         }
     }
 );
@@ -58,7 +62,7 @@ FuncionarioSchema.plugin(mongooseStringQuery);
 
 Funcionario = mongoose.model('funcionarios', FuncionarioSchema);
 
-/* */   
+/* */
 class FuncionarioDao {
 
     constructor() {
@@ -67,6 +71,7 @@ class FuncionarioDao {
     create(FuncionarioModel) {
         return new Promise(function (resolve, reject) {
 
+            FuncionarioModel.tipo = 'F'
             const funcionario = new Funcionario(FuncionarioModel)
 
             funcionario.save()
@@ -118,18 +123,16 @@ class FuncionarioDao {
 
     list() {
         return new Promise(function (resolve, reject) {
-            const obj = new Object()
             try {
-                Funcionario.find(function(err, data){
-                    console.log("erro", err)
-                    console.log("data", data)
-                    if(err){
+                Funcionario.find({ tipo: 'F' }, function (err, data) {
+
+                    if (err) {
                         reject()
                     }
-                    if(data != null && !R.isEmpty(data)){
+                    if (data != null && !R.isEmpty(data)) {
                         resolve(data)
                     }
-                    else{
+                    else {
                         resolve(false)
                     }
                 })
@@ -150,23 +153,23 @@ class FuncionarioDao {
                 let obj = new Object();
                 obj.cpf = cpf
                 Funcionario.updateOne(obj, FuncionarioModel)
-                .then((data) => {
-                    try {
-                        const jsonSucess = Sucess.generateJsonSucess(
-                            200,
-                            'Dados do funcionario alterado com sucesso'
-                        );
-                        resolve(jsonSucess);
-                    } catch (error) {
+                    .then((data) => {
+                        try {
+                            const jsonSucess = Sucess.generateJsonSucess(
+                                200,
+                                'Dados do funcionario alterado com sucesso'
+                            );
+                            resolve(jsonSucess);
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    })
+                    .catch((error) => {
                         console.log(error);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    reject(
-                        Exceptions.generateException(500, 'Erro ao atualizar dados do funcionario', error)
-                    );
-                });
+                        reject(
+                            Exceptions.generateException(500, 'Erro ao atualizar dados do funcionario', error)
+                        );
+                    });
             }
             catch (error) {
                 reject(error)
@@ -184,8 +187,8 @@ class FuncionarioDao {
                     if (err) {
                         reject(Exceptions.generateException(500, 'Erro', "Erro ao deletar funcionario!"))
                         console.log(error)
-                    }else{
-                        const jsonSucess = Sucess.generateJsonSucess(201, "Funcionario apagado com sucesso!" );
+                    } else {
+                        const jsonSucess = Sucess.generateJsonSucess(201, "Funcionario apagado com sucesso!");
 
                         resolve(jsonSucess)
                     }
@@ -197,6 +200,34 @@ class FuncionarioDao {
         })
     }
 
+    login(FuncionarioModel) {
+        return new Promise(function (resolve, reject) {
+            let cpf = FuncionarioModel.cpf;
+            let senha = FuncionarioModel.senha;
+
+            let obj = new Object()
+            obj.cpf = cpf
+            obj.senha = senha
+
+            try {
+                Funcionario.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data)
+                    }
+                    else {
+                        resolve(false)
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
 }
 
 module.exports = FuncionarioDao
