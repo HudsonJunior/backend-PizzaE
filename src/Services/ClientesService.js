@@ -84,7 +84,7 @@ class ClientesService {
                 console.log(cpfClientes)
                 clientesDao.getCliente(cpfClientes)
                     .then(result => {
-                        result.cash_token = AuthValue.cash_token
+
 
                         resolve(result)
                     })

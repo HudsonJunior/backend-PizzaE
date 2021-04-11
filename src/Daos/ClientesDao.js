@@ -112,9 +112,9 @@ class ClientesDal {
                 Clientes.find(obj)
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(201, data);
-                            console.log(data)
-                            resolve(jsonSucess)
+                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+
+                            resolve(data)
                         }
                         catch (error) {
                             console.log(error)
