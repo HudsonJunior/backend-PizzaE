@@ -1,6 +1,5 @@
 /* imports */
 
-GeneralDao = require('../Daos/GeneralDao')
 /* Global variables*/
 const exceptionsClass = require('./../Models/Responses/Exceptions')
 const ClientesDao = require('../Daos/ClientesDao')
