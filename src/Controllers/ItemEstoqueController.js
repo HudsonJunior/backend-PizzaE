@@ -114,7 +114,7 @@ module.exports = function (server) {
 
             let aVencer = req.params.aVencer;
             let flagQuant = req.params.flagQuant;
-            let nome = req.params.nome;
+            let nome = req.params.nome || null;
 
             let itemModel = {};
 
