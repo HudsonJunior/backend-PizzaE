@@ -12,14 +12,45 @@ const Sucess = new sucessClass()
 
 var Clientes = null
 
+const ClientesSchema = new mongoose.Schema(
+    {
+        nome: {
+            type: String,
+            required: true,
+            select: true,
+        },
+        cpf: {
+            type: String,
+            required: true,
+            select: true,
+        },
+        endereco: {
+            type: String,
+            required: true,
+        },
+        telefone: {
+            type: String,
+            required: true,
+        },
+        email: {
+            type: String,
+            required: false,
+        },
+        senha: {
+            type: String,
+            required: false,
+            select: true,
+        }
+    },
+);
+
+ClientesSchema.plugin(mongooseStringQuery);
+
+Clientes = mongoose.model('clientes', ClientesSchema);
 /* */
 class ClientesDal {
     constructor() {
-        const ClientesSchema = this.getClientesSchema()
 
-        ClientesSchema.plugin(mongooseStringQuery);
-
-        Clientes = mongoose.model('clientes', ClientesSchema);
     }
 
     create(ClientesModel) {
@@ -215,7 +246,35 @@ class ClientesDal {
         })
     }
 
+    login(ClienteModel) {
+        return new Promise(function (resolve, reject) {
+            let cpf = ClienteModel.cpf;
+            let senha = ClienteModel.senha;
 
+            let obj = new Object()
+            obj.cpf = cpf
+            obj.senha = senha
+
+            try {
+                Clientes.findOne(obj, function (err, data) {
+                    if (err) {
+                        reject()
+                    }
+
+                    if (data != null && !R.isEmpty(data)) {
+                        resolve(data)
+                    }
+                    else {
+                        resolve(false)
+                    }
+                })
+            }
+            catch (error) {
+                reject(error)
+            }
+
+        })
+    }
     validatePrimaryKey(field, value) {
         return new Promise(function (resolve, reject) {
 
@@ -241,42 +300,6 @@ class ClientesDal {
                 reject
             }
         })
-    }
-
-    getClientesSchema() {
-        const ClientesSchema = new mongoose.Schema(
-            {
-                nome: {
-                    type: String,
-                    required: true,
-                    select: true,
-                },
-                cpf: {
-                    type: String,
-                    required: true,
-                    select: true,
-                },
-                endereco: {
-                    type: String,
-                    required: true,
-                },
-                telefone: {
-                    type: String,
-                    required: true,
-                },
-                email: {
-                    type: String,
-                    required: false,
-                },
-                senha: {
-                    type: String,
-                    required: false,
-                    select: true,
-                }
-            },
-        );
-
-        return ClientesSchema
     }
 
 }

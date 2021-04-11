@@ -8,4 +8,5 @@ module.exports = function (server) {
     require('../Controllers/RelatorioSatisfacaoController')(server)
     require('../Controllers/NFController')(server)
     require('../Controllers/MovimentacoesEstoqueController')(server)
+    require('../Controllers/Login')(server)
 }

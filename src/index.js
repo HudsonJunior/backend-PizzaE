@@ -2,7 +2,6 @@
 
 const config = require("../config");
 const restify = require("restify");
-var mongoose = require("./Connection/connectionMongo");
 var corsMiddleware = require('restify-cors-middleware');
 
 var cors = corsMiddleware({
