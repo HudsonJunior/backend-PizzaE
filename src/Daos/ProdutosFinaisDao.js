@@ -184,8 +184,10 @@ class ProdutosFinaisDao {
         return new Promise(function (resolve, reject) {
             let obj = new Object()
             if (ativado == true) obj.ativado = true
+            console.log('obj', obj)
             try {
                 ProdutosFinais.find({ ...obj }, function (err, data) {
+                    console.log('data', data)
                     if (err) {
                         reject();
                     }

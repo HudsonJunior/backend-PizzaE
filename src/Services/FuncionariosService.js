@@ -46,8 +46,6 @@ class FuncionariosService {
         return new Promise(function (resolve, reject) {
             try {
                 let funcionario;
-
-                console.log('findone')
                 funcionariosDao.findOne(FuncionariosModel)
                     .then(result => {
                         funcionario = result;
@@ -98,7 +96,7 @@ class FuncionariosService {
         return new Promise(function (resolve, reject) {
             try {
                 if(FuncionariosModel.cpf){
-                    funcionariosDao.findOne(FuncionariosModel)
+                    funcionariosDao.findFromCpf(FuncionariosModel)
                     .then(result=>{
                         if(result)
                             resolve(result)
