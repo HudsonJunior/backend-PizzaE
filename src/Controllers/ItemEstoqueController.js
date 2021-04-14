@@ -50,7 +50,7 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            console.log("data ", data);
+            console.log("patch", data);
 
             let itemModel;
 
@@ -62,11 +62,12 @@ module.exports = function (server) {
 
             itemService.update(itemModel)
                 .then(jsonSuccess => {
-
+                    console.log('sucess', jsonSuccess)
                     res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
+                    console.log('error', jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code

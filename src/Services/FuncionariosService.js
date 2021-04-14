@@ -46,8 +46,6 @@ class FuncionariosService {
         return new Promise(function (resolve, reject) {
             try {
                 let funcionario;
-
-                console.log('findone')
                 funcionariosDao.findOne(FuncionariosModel)
                     .then(result => {
                         funcionario = result;

@@ -139,7 +139,6 @@ class ItemEstoqueDao {
         return new Promise(function (resolve, reject) {
             const obj = new Object();
             try {
-                console.log(aVencer);
                 if (aVencer) {
                     var days = 7;
                     var date = new Date();
@@ -151,10 +150,7 @@ class ItemEstoqueDao {
                         $lte: date,
                     };
                 }
-                console.log(obj);
                 ItemEstoque.find(obj, function (err, data) {
-                    console.log('erro', err);
-                    console.log('data', data);
                     if (err) {
                         reject();
                     }
@@ -193,7 +189,6 @@ class ItemEstoqueDao {
 
     listExpiredProdutcs(dataValidade) {
         return new Promise(function (resolve, reject) {
-            console.log(moment(dataValidade).toDate());
             const newData = new Date(moment(dataValidade).toDate());
 
             try {
@@ -205,7 +200,6 @@ class ItemEstoqueDao {
                     },
                     function (err, data) {
                         if (err) {
-                            //console.log(err)
                             reject(err);
                         }
 
