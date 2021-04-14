@@ -11,6 +11,8 @@ module.exports = function (server) {
 
             let pedidoModel = new PedidoModel(data);
 
+            console.log('pedido model', pedidoModel)
+
             const pedidoService = new PedidoService();
 
             pedidoService

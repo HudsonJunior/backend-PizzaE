@@ -8,8 +8,9 @@ const ClientesService = require('../Services/ClientesService')
 module.exports = function (server) {
 
     server.post('/clientes', function (req, res, next) {
-        console.log("estou no controler");
+
         try {
+            console.log("teste de save")
             let data = req.body || {}
 
             let clientesModel;
@@ -68,19 +69,17 @@ module.exports = function (server) {
                 console.log(cpfClientes)
                 clientesService.getCliente(cpfClientes)
                     .then(jsonSuccess => {
-                        const code = jsonSuccess.code
 
-                        delete jsonSucess.code
 
-                        res.json(code, jsonSuccess)
+                        res.json(201, jsonSuccess)
                         next()
                     })
                     .catch(jsonError => {
-                        const code = jsonError.code
+
 
                         delete jsonError.code
 
-                        res.json(code, jsonError)
+                        res.json(201, jsonError)
                         next()
                     })
             }
@@ -97,17 +96,9 @@ module.exports = function (server) {
     server.del('/clientes', function (req, res, next) {
 
         try {
-            /*
-            let data = req.body || {}
 
-            let clientesModel;
-
-            clientesModel = new ClientesModel(data);
-
-            let cpfCliente = req.query.codigo;
-            */
             const cpfCliente = req.params.cpf
-            console.log(cpfCliente)
+
             const clientesService = new ClientesService();
 
             clientesService.delete(cpfCliente)

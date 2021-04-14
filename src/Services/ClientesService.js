@@ -17,16 +17,15 @@ class ClientesService {
     }
 
     async create(ClientesModel) {
-        console.log("estou no service");
         //console.log(ClientesModel);
         return new Promise(async function (resolve, reject) {
             try {
 
                 clientesDao.findOne(ClientesModel)
                     .then(result => {
-                        console.log("resultado do findOne", result)
+
                         if (result) {
-                            console.log("Erro no cadastro")
+
                             reject(Exceptions.clientesException(500, 'Erro ao cadastrar cliente', 'cpf existente'))
                         }
 
@@ -85,7 +84,7 @@ class ClientesService {
                 console.log(cpfClientes)
                 clientesDao.getCliente(cpfClientes)
                     .then(result => {
-                        result.cash_token = AuthValue.cash_token
+
 
                         resolve(result)
                     })
@@ -100,7 +99,6 @@ class ClientesService {
     }
 
     get() {
-        console.log("to no listar clientizinhos")
         return new Promise(function (resolve, reject) {
             try {
 

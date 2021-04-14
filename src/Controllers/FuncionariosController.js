@@ -81,7 +81,6 @@ module.exports = function (server) {
     server.del('/funcionarios', function (req, res, next) {
 
         try {
-            let data = req.body || {}
 
             let cpfFunc = req.query.cpf;
 

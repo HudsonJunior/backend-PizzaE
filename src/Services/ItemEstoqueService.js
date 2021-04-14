@@ -40,10 +40,7 @@ class ItemEstoqueService {
 
                 itemEstoqueDao.findOne(ItemModel)
                     .then(result => {
-                        itemEstoque = result;
-            
-                        console.log("cu", itemEstoque)
-                        console.log("bosta", ItemModel.id)
+                        itemEstoque = result[0];
                         if (itemEstoque._id != ItemModel.id) {
                             reject(Exceptions.generateException(400, "Alteração de código não é permitido", "Não é possível realizar a alteração do código de um produto"))
                         }
@@ -116,7 +113,8 @@ class ItemEstoqueService {
                         if(result)
                             resolve(result)
                         else{
-                            reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
+                            resolve([])
+                          //  reject(Exceptions.generateException(400, "Item nao encontrado", "Nao foi encontrado nenhum produto no estoque com esse codigo"))
                         }
                     })
                     .catch(error => {
