@@ -22,9 +22,9 @@ class RelatorioSatisfacaoService {
             try {
 
                 RelatorioSatisfacaoModel.opniao = string.validateOnlyLetters(RelatorioSatisfacaoModel.opniao)
-                
+
                 relatorioSatisfacaoDao.create(RelatorioSatisfacaoModel)
-                    
+
                     .then(result => {
                         result.cash_token = AuthValue.cash_token
 
@@ -33,7 +33,7 @@ class RelatorioSatisfacaoService {
                     .catch(error => {
                         reject(error)
                     })
- 
+
             }
             catch (error) {
                 reject(error)
@@ -47,7 +47,7 @@ class RelatorioSatisfacaoService {
             try {
                 relatorioSatisfacaoDao.getFromData(dataRelatorio)
                     .then(result => {
-                        result.cash_token = AuthValue.cash_token
+                        //result.cash_token = AuthValue.cash_token
 
                         resolve(result)
                     })
@@ -67,7 +67,7 @@ class RelatorioSatisfacaoService {
             try {
                 relatorioSatisfacaoDao.getFromPedido(cpf)
                     .then(result => {
-                        result.cash_token = AuthValue.cash_token
+                        //result.cash_token = AuthValue.cash_token
 
                         resolve(result)
                     })
@@ -100,7 +100,7 @@ class RelatorioSatisfacaoService {
         })
     }
 
-    
+
 }
 
 module.exports = RelatorioSatisfacaoService

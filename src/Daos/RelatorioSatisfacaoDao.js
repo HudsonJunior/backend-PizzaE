@@ -22,7 +22,7 @@ class RelatorioSatisfacaoDao {
     }
 
     create(RelatorioSatisfacaoModel) {
-        
+
         return new Promise(function (resolve, reject) {
 
             const relatorioSatisfacao = new RelatorioSatisfacao(RelatorioSatisfacaoModel)
@@ -39,33 +39,33 @@ class RelatorioSatisfacaoDao {
 
                 })
                 .catch(error => {
-                    reject(Exceptions.generateException(500, 'erro', error));    
+                    reject(Exceptions.generateException(500, 'erro', error));
                 })
-                
+
         })
     }
-    
-    
+
+
     getFromData(dataRelatorio) {
-        
+
         return new Promise(function (resolve, reject) {
             try {
                 RelatorioSatisfacao.find(
                     {
                         data: new Date(dataRelatorio)
                     }
-                ,
-                function (err, data) {
-                    if (err) {
-                        reject();
-                    }
+                    ,
+                    function (err, data) {
+                        if (err) {
+                            reject();
+                        }
 
-                    if (data != null && !R.isEmpty(data)) {
-                        resolve(data);
-                    } else {
-                        resolve(false);
-                    }
-                });
+                        if (data != null && !R.isEmpty(data)) {
+                            resolve(data);
+                        } else {
+                            resolve(false);
+                        }
+                    });
 
             }
             catch (error) {
@@ -85,8 +85,8 @@ class RelatorioSatisfacaoDao {
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(201, data);
-                            console.log(data)
-                            resolve(jsonSucess)
+                            //console.log(data)
+                            resolve(data)
                         }
                         catch (error) {
                             console.log(error)
@@ -101,7 +101,7 @@ class RelatorioSatisfacaoDao {
             }
         })
     }
-    
+
     list() {
         return new Promise(function (resolve, reject) {
 
@@ -109,9 +109,9 @@ class RelatorioSatisfacaoDao {
                 RelatorioSatisfacao.find({})
                     .then(data => {
                         try {
-                            const jsonSucess = Sucess.generateJsonSucess(200, data);
+                            //const jsonSucess = Sucess.generateJsonSucess(200, data);
                             console.log(data)
-                            resolve(jsonSucess)
+                            resolve(data)
                         }
                         catch (error) {
                             console.log(error)
@@ -134,7 +134,7 @@ class RelatorioSatisfacaoDao {
 
             let obj = new Object()
             obj.cpf = cpf
-            
+
             try {
                 Clientes.findOne(obj, function (err, data) {
                     if (err) {
@@ -187,28 +187,29 @@ class RelatorioSatisfacaoDao {
     getRelatorioSatisfacaoSchema() {
         const RelatorioSatisfacaoSchema = new mongoose.Schema(
             {
-                pedido: {
-                    type: Object,
-                    //required: true
-                },
                 opniao: {
                     type: String,
                     required: true,
                     //select: true,
                 },
-                data:{
-                    type:Date,
+                data: {
+                    type: Date,
                     //required: true,
                 },
-                cpfCliente:{
-                    type:String
+                cpfCliente: {
+                    type: String,
+                    required: true,
+                },
+                produto: {
+                    type: String,
+                    required: true,
                 }
             },
         );
 
         return RelatorioSatisfacaoSchema
     }
-    
+
 }
 
 module.exports = RelatorioSatisfacaoDao
