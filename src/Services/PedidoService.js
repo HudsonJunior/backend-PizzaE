@@ -15,7 +15,6 @@ const Exceptions = new exceptionsClass();
 const Success = new successClass();
 var pedidoService;
 var pedidoDao;
-var produtosFinaisDao;
 /* */
 
 class PedidoService {
@@ -59,7 +58,7 @@ class PedidoService {
                     pedidoModel.cpfCliente
                 );
                 pedidoModel.cpfNF = string.getOnlyNumbers(pedidoModel.cpfNF); */
-                console.log(pedidoModel);
+
                 pedidoDao
                     .create(pedidoModel)
                     .then((result) => {
@@ -67,29 +66,6 @@ class PedidoService {
                     })
                     .catch((error) => {
                         reject(error);
-                    });
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateCode(codigo) {
-        return new Promise(function (resolve, reject) {
-            try {
-                pedidoDao
-                    .findOne(codigo)
-                    .then((result) => {
-                        resolve();
-                    })
-                    .catch((error) => {
-                        reject(
-                            Exceptions.generateException(
-                                PedidoResponse.Codes.DuplicatedPrimaryKey,
-                                PedidoResponse.Messages.AlreadyRegisted,
-                                PedidoResponse.Details.DuplicatedCode
-                            )
-                        );
                     });
             } catch (error) {
                 reject(error);
@@ -155,13 +131,7 @@ class PedidoService {
                         })
                         .catch((error) => {
                             console.log(error);
-                            reject(
-                                Exceptions.generateException(
-                                    PedidoResponse.Codes.InvalidField,
-                                    PedidoResponse.Messages.RegisterError,
-                                    PedidoResponse.Details.InvalidClient
-                                )
-                            );
+                            reject('cliente não encontrado');
                         });
                 }
             } catch (error) {
@@ -176,13 +146,7 @@ class PedidoService {
                 if (cpf == '') {
                     resolve();
                 } else if (!Cpf.validateCpf(cpf)) {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidCpfClient
-                        )
-                    );
+                    reject('cpf do cliente inválido');
                 } else {
                     resolve();
                 }
@@ -198,13 +162,7 @@ class PedidoService {
                 if (cpf == '') {
                     resolve();
                 } else if (!Cpf.validateCpf(cpf)) {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidCpfNF
-                        )
-                    );
+                    reject('cpf da nota fiscal inválido');
                 } else {
                     resolve();
                 }
@@ -223,13 +181,7 @@ class PedidoService {
                 ) {
                     resolve();
                 } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidOrderStatus
-                        )
-                    );
+                    reject('status do pedido inválido');
                 }
             } catch (error) {
                 reject(error);
@@ -240,20 +192,12 @@ class PedidoService {
     validateValor(valor) {
         return new Promise(function (resolve, reject) {
             try {
-                //var regex = new Regex(/\d+\.\d{1,2}/);
-
                 var regex = /^(\$|)([1-9]\d{0,2}(\,\d{3})*|([1-9]\d*))(\.\d{2})?$/;
                 var passed = valor.match(regex);
                 if (passed != null) {
                     resolve();
                 } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidOrderValue
-                        )
-                    );
+                    reject('valor do pedido inválido');
                 }
             } catch (error) {
                 reject(error);
@@ -270,13 +214,7 @@ class PedidoService {
                 ) {
                     resolve();
                 } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidPaymentStatus
-                        )
-                    );
+                    reject('status do pagamento inválido');
                 }
             } catch (error) {
                 reject(error);
@@ -375,7 +313,7 @@ class PedidoService {
                                             'quantidade'
                                         ] =
                                             productsArray[idAlreadyExists][
-                                            'quantidade'
+                                                'quantidade'
                                             ] + currentQtde;
                                     }
                                 }
@@ -524,7 +462,6 @@ class PedidoService {
                     PedidoModel.cancelar &&
                     PedidoModel.statusPedido !== 'realizado'
                 ) {
-                    console.log('HDOASOHDHASIOD')
                     reject(
                         Exceptions.generateException(
                             PedidoResponse.Codes.InvalidField,
@@ -533,60 +470,72 @@ class PedidoService {
                         )
                     );
                 } else {
-                    console.log('pedido', PedidoModel)
-                    pedidoDao.findOne(PedidoModel).then(pedido => {
-                        console.log('parte 1', pedido)
-                        if (pedido) {
-                            console.log(PedidoModel.observacoes != pedido.observacoes, PedidoModel.produtos.toString() != pedido.produtos.toString())
-                            if (
-                                (PedidoModel.observacoes != pedido.observacoes || PedidoModel.produtos.toString() != pedido.produtos.toString()) &&
-                                (PedidoModel.statusPedido === 'preparando' ||
-                                    PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
-                            ) {
-                                reject(
-                                    Exceptions.generateException(
-                                        PedidoResponse.Codes.InvalidField,
-                                        PedidoResponse.Messages.UpdateError,
-                                        PedidoResponse.Details.InvalidAttemptUpdateItens
-                                    )
+                    pedidoDao
+                        .findOne(PedidoModel)
+                        .then((pedido) => {
+                            console.log('parte 1', pedido);
+                            if (pedido) {
+                                console.log(
+                                    PedidoModel.observacoes !=
+                                        pedido.observacoes,
+                                    PedidoModel.produtos.toString() !=
+                                        pedido.produtos.toString()
                                 );
-                            } else if (
-                                (PedidoModel.formaPagamento != pedido.formaPagamento ||
-                                    PedidoModel.formaExpedicao != pedido.formaExpedicao) &&
-                                (PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
-                            ) {
-                                reject(
-                                    Exceptions.generateException(
-                                        PedidoResponse.Codes.InvalidField,
-                                        PedidoResponse.Messages.UpdateError,
-                                        PedidoResponse.Details
-                                            .InvalidAttemptUpdatePayment
-                                    )
-                                );
+                                if (
+                                    (PedidoModel.observacoes !=
+                                        pedido.observacoes ||
+                                        PedidoModel.produtos.toString() !=
+                                            pedido.produtos.toString()) &&
+                                    (PedidoModel.statusPedido ===
+                                        'preparando' ||
+                                        PedidoModel.statusPedido === 'viagem' ||
+                                        PedidoModel.statusPedido === 'entregue')
+                                ) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            PedidoResponse.Codes.InvalidField,
+                                            PedidoResponse.Messages.UpdateError,
+                                            PedidoResponse.Details
+                                                .InvalidAttemptUpdateItens
+                                        )
+                                    );
+                                } else if (
+                                    (PedidoModel.formaPagamento !=
+                                        pedido.formaPagamento ||
+                                        PedidoModel.formaExpedicao !=
+                                            pedido.formaExpedicao) &&
+                                    (PedidoModel.statusPedido === 'viagem' ||
+                                        PedidoModel.statusPedido === 'entregue')
+                                ) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            PedidoResponse.Codes.InvalidField,
+                                            PedidoResponse.Messages.UpdateError,
+                                            PedidoResponse.Details
+                                                .InvalidAttemptUpdatePayment
+                                        )
+                                    );
+                                } else {
+                                    pedidoDao
+                                        .update(PedidoModel)
+                                        .then((result) => {
+                                            resolve(result);
+                                        })
+                                        .catch((error) => {
+                                            reject(error);
+                                        });
+                                }
                             } else {
-                                pedidoDao
-                                    .update(PedidoModel)
-                                    .then((result) => {
-                                        resolve(result);
-                                    })
-                                    .catch((error) => {
-                                        reject(error);
-                                    });
+                                Exceptions.generateException(
+                                    400,
+                                    'Pedido inválido',
+                                    'Ocorreu um problema ao editar o pedido. Pedido não encontrado'
+                                );
                             }
-                        }
-                        else {
-                            Exceptions.generateException(
-                                PedidoResponse.Codes.InternalServerError,
-                                'Pedido inválido',
-                                'Ocorreu um problema ao editar o pedido. Pedido não encontrado'
-                            )
-                        }
-                    }
-
-                    ).catch(error => {
-                        reject(error)
-                    })
-
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
                 }
             } catch (error) {
                 reject(error);
@@ -600,18 +549,16 @@ class PedidoService {
             pedidoDao
                 .update(PedidoModel)
                 .then((result) => {
-                    console.log('result', result)
                     if (result) {
                         const jsonSucess = Success.generateJsonSucess(
                             200,
                             'Pedido cancelado com sucesso'
                         );
-                        console.log('dosajhdisad', result)
                         resolve(jsonSucess);
                     } else reject(result);
                 })
                 .catch((error) => {
-                    console.log('erro', error)
+                    console.log('erro', error);
                     reject(error);
                 });
         });

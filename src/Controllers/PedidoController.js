@@ -5,7 +5,6 @@ const PedidoService = require('../Services/PedidoService.js');
 /**/
 
 module.exports = function (server) {
-
     server.post('/pedido', function (req, res, next) {
         try {
             let data = req.body || {};
@@ -21,11 +20,7 @@ module.exports = function (server) {
                     next();
                 })
                 .catch((jsonError) => {
-                    const code = jsonError.code;
-
-                    delete jsonError.code;
-
-                    res.json(code, jsonError);
+                    res.json(500, jsonError);
                     next();
                 });
         } catch (error) {
@@ -53,7 +48,6 @@ module.exports = function (server) {
                     res.json(code, jsonError);
                     next();
                 });
-
         } catch (error) {
             console.log(error);
         }
@@ -79,7 +73,6 @@ module.exports = function (server) {
                     res.json(code, jsonError);
                     next();
                 });
-
         } catch (error) {
             console.log(error);
         }
@@ -106,7 +99,6 @@ module.exports = function (server) {
                     res.json(code, jsonError);
                     next();
                 });
-
         } catch (error) {
             console.log(error);
         }
@@ -132,7 +124,6 @@ module.exports = function (server) {
                     res.json(code, jsonError);
                     next();
                 });
-
         } catch (error) {
             console.log(error);
         }
@@ -140,8 +131,8 @@ module.exports = function (server) {
 
     server.patch('/pedido', function (req, res, next) {
         try {
-            console.log('entrou')
-            let data = req.body || {}
+            console.log('entrou');
+            let data = req.body || {};
 
             let pedidoModel;
 
@@ -149,27 +140,25 @@ module.exports = function (server) {
 
             const pedidoService = new PedidoService();
 
-            pedidoService.update(pedidoModel)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
-                    console.log('diasjdsadsa')
-                    delete jsonSuccess.code
+            pedidoService
+                .update(pedidoModel)
+                .then((jsonSuccess) => {
+                    const code = jsonSuccess.code;
+                    delete jsonSuccess.code;
 
-                    res.json(code, jsonSuccess)
-                    next()
+                    res.json(code, jsonSuccess);
+                    next();
                 })
-                .catch(jsonError => {
-                    const code = jsonError.code
-                    console.log('cuuuuuu')
+                .catch((jsonError) => {
+                    const code = jsonError.code;
 
-                    delete jsonError.code
+                    delete jsonError.code;
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                    res.json(code, jsonError);
+                    next();
+                });
+        } catch (error) {
+            console.log(error);
         }
-        catch (error) {
-            console.log(error)
-        }
-    })
+    });
 };
