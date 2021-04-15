@@ -24,7 +24,7 @@ class ItemEstoqueService {
                     resolve(result)
                 })
                 .catch(erro => {
-                    reject(error)
+                    reject(Exceptions.generateException(400, "Cadastro falhou! Campo com erro.", "Não é possível realizar o cadastro."))
                 })
             }
             catch (error) {

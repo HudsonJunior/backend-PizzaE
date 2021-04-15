@@ -54,7 +54,6 @@ class FuncionariosService {
                             reject(Exceptions.generateException(400, "Alteração de cpf, rg, ou carteira não é permitido", "Não é possível realizar a alteração"))
                         }
                         else {
-                            console.log('atualizar iniciado')
                             funcionariosDao.update(FuncionariosModel)
                                 .then(result => {
                                     resolve(result)

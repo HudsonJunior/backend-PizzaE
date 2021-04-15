@@ -12,18 +12,14 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            console.log("data ", data);
-
             let itemEstoque;
 
             itemEstoque = new ItemEstoqueModel(data);
-            //console.log(itemEstoque)
 
             const itemService = new ItemEstoqueService();
 
             itemService.create(itemEstoque)
                 .then(jsonSuccess => {
-                    //console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
@@ -32,7 +28,6 @@ module.exports = function (server) {
                     next()
                 })
                 .catch(jsonError => {
-                    //console.log("jasao trollo", jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
@@ -50,24 +45,18 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            console.log("patch", data);
-
             let itemModel;
 
             itemModel = new ItemEstoqueModel(data);
-
-            console.log("id ", itemModel.id)
 
             const itemService = new ItemEstoqueService();
 
             itemService.update(itemModel)
                 .then(jsonSuccess => {
-                    console.log('sucess', jsonSuccess)
                     res.json(201, jsonSuccess)
                     next()
                 })
                 .catch(jsonError => {
-                    console.log('error', jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
