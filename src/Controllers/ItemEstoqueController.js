@@ -14,6 +14,8 @@ module.exports = function (server) {
 
             let itemEstoque;
 
+            console.log('data', data)
+
             itemEstoque = new ItemEstoqueModel(data);
 
             const itemService = new ItemEstoqueService();
@@ -23,6 +25,7 @@ module.exports = function (server) {
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
+                    console.log('json', jsonSuccess);
 
                     res.json(code, jsonSuccess)
                     next()
@@ -31,6 +34,7 @@ module.exports = function (server) {
                     const code = jsonError.code
 
                     delete jsonError.code
+                    console.log('json', jsonError);
 
                     res.json(code, jsonError)
                     next()
@@ -53,6 +57,7 @@ module.exports = function (server) {
 
             itemService.update(itemModel)
                 .then(jsonSuccess => {
+                    console.log('sucess', jsonSuccess)
                     res.json(201, jsonSuccess)
                     next()
                 })
@@ -60,7 +65,7 @@ module.exports = function (server) {
                     const code = jsonError.code
 
                     delete jsonError.code
-
+                    console.log('error', jsonError)
                     res.json(code, jsonError)
                     next()
                 })

@@ -148,6 +148,9 @@ class Date {
     }
 
     converteDate(stringDate) {
+        if(stringDate == ""){
+            return null
+        }
         const newDate = moment(stringDate).toDate();
         return newDate;
     }

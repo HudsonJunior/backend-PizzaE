@@ -97,10 +97,10 @@ class ItemEstoqueDao {
                     }
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log('error', error);
                     reject(
                         Exceptions.generateException(
-                            500,
+                            400,
                             'Erro ao cadastrar item no estoque'
                         )
                     );
@@ -117,6 +117,7 @@ class ItemEstoqueDao {
 
             try {
                 ItemEstoque.findOne(obj, function (err, data) {
+                    console.log('data', data)
                     if (err) {
                         reject();
                     }
@@ -274,7 +275,7 @@ class ItemEstoqueDao {
                         resolve(jsonSucess);
                     })
                     .catch((error) => {
-                        console.log(error);
+                        console.log('erro', error);
                         reject(
                             Exceptions.generateException(
                                 500,
@@ -283,6 +284,7 @@ class ItemEstoqueDao {
                         );
                     });
             } catch (error) {
+                console.log('ERROZAO', error);
                 reject(error);
             }
         });

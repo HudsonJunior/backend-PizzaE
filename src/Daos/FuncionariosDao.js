@@ -149,7 +149,7 @@ class FuncionarioDao {
     list() {
         return new Promise(function (resolve, reject) {
             try {
-                Funcionario.find({ tipo: 'F' }, function (err, data) {
+                Funcionario.find({}, function (err, data) {
 
                     if (err) {
                         reject()
