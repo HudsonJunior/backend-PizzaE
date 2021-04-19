@@ -21,7 +21,7 @@ class RelatorioSatisfacaoService {
         return new Promise(async function (resolve, reject) {
             try {
 
-                RelatorioSatisfacaoModel.opniao = string.validateOnlyLetters(RelatorioSatisfacaoModel.opniao)
+                //RelatorioSatisfacaoModel.opniao = string.validateOnlyLetters(RelatorioSatisfacaoModel.opniao)
 
                 relatorioSatisfacaoDao.create(RelatorioSatisfacaoModel)
 
@@ -45,6 +45,7 @@ class RelatorioSatisfacaoService {
     getFromData(dataRelatorio) {
         return new Promise(function (resolve, reject) {
             try {
+                console.log("to no service")
                 relatorioSatisfacaoDao.getFromData(dataRelatorio)
                     .then(result => {
                         //result.cash_token = AuthValue.cash_token

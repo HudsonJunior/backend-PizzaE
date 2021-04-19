@@ -46,7 +46,7 @@ module.exports = function (server) {
         try {
             const relatorioSatisfacaoService = new RelatorioSatisfacaoService();
             const dataRelatorio = req.params.data || null;
-
+            console.log("to no get pela dataSatisfacao")
             relatorioSatisfacaoService.getFromData(dataRelatorio)
                 .then(jsonSuccess => {
                     //const code = jsonSuccess.code
