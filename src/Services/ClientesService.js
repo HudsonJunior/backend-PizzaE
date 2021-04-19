@@ -1,5 +1,5 @@
 /* imports */
-
+const exceptionsClass = require('./../Models/Responses/Exceptions');
 const string = require('./../Common/String')
 
 const ClientesDao = require('../Daos/ClientesDao')
@@ -9,6 +9,7 @@ const { validateCpf } = require('../Common/Cpf')
 
 var clientesService
 var clientesDao = new ClientesDao()
+const Exceptions = new exceptionsClass();
 /* */
 
 class ClientesService {
@@ -20,35 +21,53 @@ class ClientesService {
         //console.log(ClientesModel);
         return new Promise(async function (resolve, reject) {
             try {
+                if (validateCpf(ClientesModel.cpf)) {
+                    if (ClientesModel.endereco.length <= 40 && ClientesModel.endereco.length >= 3) {
+                        clientesDao.findOne(ClientesModel)
+                            .then(result => {
 
-                clientesDao.findOne(ClientesModel)
-                    .then(result => {
+                                if (result) {
 
-                        if (result) {
+                                    reject(Exceptions.clientesException(500, 'Erro ao cadastrar cliente', 'cpf existente'))
+                                }
 
-                            reject(Exceptions.clientesException(500, 'Erro ao cadastrar cliente', 'cpf existente'))
-                        }
+                                else {
 
-                        else {
+                                    ClientesModel.password = string.validatePassword(ClientesModel.password)
+                                    ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
+                                    ClientesModel.endereco = string.validateOnlyLetters(ClientesModel.endereco)
+                                    ClientesModel.telefone = string.getOnlyNumbers(ClientesModel.telefone)
 
-                            ClientesModel.password = string.validatePassword(ClientesModel.password)
-                            ClientesModel.nome = string.validateOnlyLetters(ClientesModel.nome)
-                            ClientesModel.endereco = string.validateOnlyLetters(ClientesModel.endereco)
-                            ClientesModel.telefone = string.getOnlyNumbers(ClientesModel.telefone)
+                                    clientesDao.create(ClientesModel)
 
-                            clientesDao.create(ClientesModel)
+                                        .then(result => {
+                                            //result.cash_token = AuthValue.cash_token
 
-                                .then(result => {
-                                    //result.cash_token = AuthValue.cash_token
+                                            resolve(result)
+                                        })
+                                        .catch(error => {
+                                            reject(error)
+                                        })
 
-                                    resolve(result)
-                                })
-                                .catch(error => {
-                                    reject(error)
-                                })
+                                }
+                            })
+                    } else {
+                        reject(
+                            Exceptions.generateException(
+                                400,
+                                'Endereço inválido'
+                            )
+                        );
+                    }
+                } else {
+                    reject(
+                        Exceptions.generateException(
+                            400,
+                            'CPF inválido'
+                        )
+                    );
+                }
 
-                        }
-                    })
 
             }
             catch (error) {
