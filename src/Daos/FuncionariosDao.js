@@ -126,7 +126,7 @@ class FuncionarioDao {
             const cpf = FuncionarioModel.cpf;
             try {
                 Funcionario.find(
-                    { cpf: { $regex: `.*${cpf}`}},
+                    { cpf: { $regex: `.*${cpf}` } },
                     function (err, data) {
                         if (err) {
                             reject();

@@ -12,7 +12,6 @@ module.exports = function (server) {
             let data = req.body || {};
 
             let produtoModel;
-            console.log('aiaiai', data)
             produtoModel = new ProdutoFinalModel(data);
 
             const produtoService = new ProdutosFinaisService();
@@ -24,10 +23,13 @@ module.exports = function (server) {
 
                     delete jsonSuccess.code;
 
+                    jsonSuccess.message = "Produto registrado com sucesso"
+
                     res.json(code, jsonSuccess);
                     next();
                 })
                 .catch(jsonError => {
+
                     res.json(400, jsonError)
                     next()
                 })

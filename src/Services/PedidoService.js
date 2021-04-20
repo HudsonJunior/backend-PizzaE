@@ -230,7 +230,7 @@ class PedidoService {
                                             'quantidade'
                                         ] =
                                             productsArray[idAlreadyExists][
-                                                'quantidade'
+                                            'quantidade'
                                             ] + currentQtde;
                                     }
                                 }
@@ -375,22 +375,39 @@ class PedidoService {
                         )
                     );
                 } else {
-                    pedidoDao
-                        .findOne(PedidoModel)
-                        .then((pedido) => {
-                            console.log('parte 1', pedido);
-                            if (pedido) {
-                                console.log(
-                                    PedidoModel.observacoes !=
-                                        pedido.observacoes,
-                                    PedidoModel.produtos.toString() !=
-                                        pedido.produtos.toString()
+                    pedidoDao.findOne(PedidoModel).then(pedido => {
+                        if (pedido) {
+                            console.log(PedidoModel.observacoes != pedido.observacoes, PedidoModel.produtos.toString() != pedido.produtos.toString())
+                            if (
+                                (PedidoModel.observacoes != pedido.observacoes || PedidoModel.produtos.toString() != pedido.produtos.toString()) &&
+                                (PedidoModel.statusPedido === 'preparando' ||
+                                    PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        PedidoResponse.Codes.InvalidField,
+                                        PedidoResponse.Messages.UpdateError,
+                                        PedidoResponse.Details.InvalidAttemptUpdateItens
+                                    )
+                                );
+                            } else if (
+                                (PedidoModel.formaPagamento != pedido.formaPagamento ||
+                                    PedidoModel.formaExpedicao != pedido.formaExpedicao) &&
+                                (PedidoModel.statusPedido === 'viagem' || PedidoModel.statusPedido === 'entregue')
+                            ) {
+                                reject(
+                                    Exceptions.generateException(
+                                        PedidoResponse.Codes.InvalidField,
+                                        PedidoResponse.Messages.UpdateError,
+                                        PedidoResponse.Details
+                                            .InvalidAttemptUpdatePayment
+                                    )
                                 );
                                 if (
                                     (PedidoModel.observacoes !=
                                         pedido.observacoes ||
                                         PedidoModel.produtos.toString() !=
-                                            pedido.produtos.toString()) &&
+                                        pedido.produtos.toString()) &&
                                     (PedidoModel.statusPedido ===
                                         'preparando' ||
                                         PedidoModel.statusPedido === 'viagem' ||
@@ -408,7 +425,7 @@ class PedidoService {
                                     (PedidoModel.formaPagamento !=
                                         pedido.formaPagamento ||
                                         PedidoModel.formaExpedicao !=
-                                            pedido.formaExpedicao) &&
+                                        pedido.formaExpedicao) &&
                                     (PedidoModel.statusPedido === 'viagem' ||
                                         PedidoModel.statusPedido === 'entregue')
                                 ) {
