@@ -97,7 +97,6 @@ class ItemEstoqueDao {
                     }
                 })
                 .catch((error) => {
-                    console.log('error', error);
                     reject(
                         Exceptions.generateException(
                             400,
@@ -117,7 +116,6 @@ class ItemEstoqueDao {
 
             try {
                 ItemEstoque.findOne(obj, function (err, data) {
-                    console.log('data', data)
                     if (err) {
                         reject();
                     }
@@ -275,7 +273,6 @@ class ItemEstoqueDao {
                         resolve(jsonSucess);
                     })
                     .catch((error) => {
-                        console.log('erro', error);
                         reject(
                             Exceptions.generateException(
                                 500,
@@ -284,7 +281,6 @@ class ItemEstoqueDao {
                         );
                     });
             } catch (error) {
-                console.log('ERROZAO', error);
                 reject(error);
             }
         });
@@ -296,8 +292,6 @@ class ItemEstoqueDao {
                 ItemEstoque.findOneAndDelete({ _id: codItem })
                     .then((result) => {
                         try {
-                            console.log(result);
-
                             // registro de movimentacao do estoque
                             var today = new DateClass().getCurrentDate();
 
