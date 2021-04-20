@@ -13,20 +13,10 @@ const postTest = { //cadastro padrao
     registro: "1888-10-10"
 }
 
-const patchTest = {
-    id: "0",
-    loteId: "0",
-    nome: "teste_update_estoque",
-    valor: "10,89",
-    validade: "2021-12-01",
-    fabricacao: "1888-10-10",
-    registro: "1888-10-10"
-}
-
 const mesMaiorTest = { //data com mes maior que 12
     id: "3",
     loteId: "3",
-    nome: "teste_data_errada",
+    nome: "teste_mes",
     valor: "09,99",
     validade: "2021-14-01",
     fabricacao: "1888-10-10",
@@ -37,11 +27,31 @@ const mesMaiorTest = { //data com mes maior que 12
 const diaMaiorTest = { //data com dia maior que o limite do mes
     id: "4",
     loteId: "4",
-    nome: "teste_data_extrapolada",
+    nome: "teste_dia",
     valor: "19,99",
     validade: "2021-03-40",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
+}
+
+const marcadorTest = { //data com barra no lugar do hifen
+  id: "9",
+  loteId: "4",
+  nome: "teste_marcador",
+  valor: "39,99",
+  validade: "13/03/2021",
+  fabricacao: "1888-10-10",
+  registro: "1888-10-10"
+}
+
+const formatoTest = { //data com formato errado
+  id: "10",
+  loteId: "4",
+  nome: "teste_formato",
+  valor: "10,00",
+  validade: "14-02-2021",
+  fabricacao: "1888-10-10",
+  registro: "1888-10-10"
 }
 
 const valorNegativoTest = { //valor do item negativo
@@ -127,6 +137,42 @@ describe('Estoque', () => {
             headers: {'content-type': 'application/json'},
             url: `${baseUrl}`,
             body: JSON.stringify(diaMaiorTest)
+          },
+          (error, response, body) => {
+           
+            const obj = JSON.parse(response.body);
+  
+            expect(response.statusCode).to.equal(400);
+            expect(obj.message).to.equal('Cadastro falhou! Campo com erro.');
+            done();
+          }
+        );
+      });
+
+      it('Deveria retornar erro ao cadastrar um item com data no formato errado, e status 400', done => {
+        request.post(
+          {
+            headers: {'content-type': 'application/json'},
+            url: `${baseUrl}`,
+            body: JSON.stringify(formatoTest)
+          },
+          (error, response, body) => {
+           
+            const obj = JSON.parse(response.body);
+  
+            expect(response.statusCode).to.equal(400);
+            expect(obj.message).to.equal('Cadastro falhou! Campo com erro.');
+            done();
+          }
+        );
+      });
+
+      it('Deveria retornar erro ao cadastrar um item com data usando marcador errado, e status 400', done => {
+        request.post(
+          {
+            headers: {'content-type': 'application/json'},
+            url: `${baseUrl}`,
+            body: JSON.stringify(marcadorTest)
           },
           (error, response, body) => {
            

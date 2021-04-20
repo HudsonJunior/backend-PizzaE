@@ -26,7 +26,7 @@ class ItemEstoqueService {
                 }
                 else if(valor > 10000){
                     reject(Exceptions.generateException(400, "Cadastro falhou!", "Valor do item maior que o maximo permitido."))
-                }else if(isNaN(validade)){
+                }else if(validade == ""){
                     reject(Exceptions.generateException(400, "Cadastro falhou! Campo com erro."))
                 }
                 else{

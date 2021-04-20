@@ -150,9 +150,12 @@ class Date {
     converteDate(stringDate) {
         if(stringDate == ""){
             return null
+        }else if(moment(stringDate, "YYYY-MM-DD", true).isValid()){
+            const newDate = moment(stringDate).toDate();
+            return newDate;
+        }else{
+            return ""
         }
-        const newDate = moment(stringDate).toDate();
-        return newDate;
     }
 }
 
