@@ -68,7 +68,7 @@ PedidoSchema.plugin(mongooseStringQuery);
 Pedido = mongoose.model('pedidos', PedidoSchema);
 /* */
 class PedidoDao {
-    constructor() { }
+    constructor() {}
 
     create(PedidoModel) {
         return new Promise(function (resolve, reject) {
@@ -152,7 +152,7 @@ class PedidoDao {
     findOne(PedidoModel) {
         return new Promise(function (resolve, reject) {
             let obj = new Object();
-            obj._id = PedidoModel.id
+            obj._id = PedidoModel.id;
 
             try {
                 Pedido.findOne(obj, function (err, data) {
@@ -177,8 +177,8 @@ class PedidoDao {
                 Pedido.find(
                     {
                         data: {
-                            $gte: new Date(dataI),
-                            $lte: new Date(dataF),
+                            $gte: new Date(dataI + 'T00:00:00.000Z'),
+                            $lte: new Date(dataF + 'T00:00:00.000Z'),
                         },
                     },
                     function (err, data) {
@@ -222,7 +222,6 @@ class PedidoDao {
     update(PedidoModel) {
         return new Promise(function (resolve, reject) {
             try {
-
                 let obj = new Object();
 
                 obj._id = PedidoModel.id;
