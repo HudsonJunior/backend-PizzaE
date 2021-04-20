@@ -72,7 +72,6 @@ class ClientesDal {
 
                 })
                 .catch(error => {
-                    console.log("Erro dentro do catch do DAO", error)
                     reject(Exceptions.clientesException(500, 'erro', 'erro'))
                 })
 

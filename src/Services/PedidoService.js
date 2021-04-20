@@ -48,7 +48,6 @@ class PedidoService {
                         reject(error);
                     });
             } catch (error) {
-                console.log('caí', error);
                 reject(error);
             }
         });
@@ -377,7 +376,6 @@ class PedidoService {
                 } else {
                     pedidoDao.findOne(PedidoModel).then(pedido => {
                         if (pedido) {
-                            console.log(PedidoModel.observacoes != pedido.observacoes, PedidoModel.produtos.toString() != pedido.produtos.toString())
                             if (
                                 (PedidoModel.observacoes != pedido.observacoes || PedidoModel.produtos.toString() != pedido.produtos.toString()) &&
                                 (PedidoModel.statusPedido === 'preparando' ||

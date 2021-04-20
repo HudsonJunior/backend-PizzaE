@@ -18,8 +18,6 @@ class RelatorioSatisfacaoService {
     }
 
     async create(RelatorioSatisfacaoModel) {
-        console.log("estou no service");
-        console.log(RelatorioSatisfacaoModel);
         return new Promise(async function (resolve, reject) {
             try {
 
@@ -76,7 +74,6 @@ class RelatorioSatisfacaoService {
     }
 
     getFromPedido(cpf) {
-        console.log(cpf)
         return new Promise(function (resolve, reject) {
             try {
                 relatorioSatisfacaoDao.getFromPedido(cpf)

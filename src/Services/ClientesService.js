@@ -18,7 +18,6 @@ class ClientesService {
     }
 
     async create(ClientesModel) {
-        //console.log(ClientesModel);
         return new Promise(async function (resolve, reject) {
             try {
                 if (validateCpf(ClientesModel.cpf)) {
@@ -99,8 +98,6 @@ class ClientesService {
     getCliente(cpfClientes) {
         return new Promise(function (resolve, reject) {
             try {
-                console.log("to em buscar cliente cpf eh:")
-                console.log(cpfClientes)
                 clientesDao.getCliente(cpfClientes)
                     .then(result => {
 
@@ -139,19 +136,15 @@ class ClientesService {
     update(ClientesModel) {
         return new Promise(function (resolve, reject) {
             try {
-                console.log("to na update");
                 let cliente;
 
                 clientesDao.findOne(ClientesModel)
                     .then(result => {
                         cliente = result;
                         if (cliente.cpf != ClientesModel.cpf) {
-                            console.log(cliente)
                             reject(Exceptions.generateException(400, "Alteração do cpf/cnpj de um cliente não é permitido", "Não é possível realizar a alteração do cpf de um cliente"))
                         }
                         else {
-                            console.log("to no else")
-                            console.log(cliente)
 
                             // Verificar se os campos pra atualizar sao nulos
                             if (ClientesModel.endereco == null) {

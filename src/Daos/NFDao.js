@@ -23,7 +23,6 @@ class NFDal {
     }
 
     create(NFModel) {
-        console.log("to no DAO de cadastro")
         return new Promise(function (resolve, reject) {
 
             const nf = new NF(NFModel)
@@ -40,13 +39,13 @@ class NFDal {
 
                 })
                 .catch(error => {
-                    reject(Exceptions.generateException(500, 'erro', error));    
+                    reject(Exceptions.generateException(500, 'erro', error));
                 })
-                
+
         })
     }
-    
-    
+
+
 
 
     getNFSchema() {
@@ -57,22 +56,22 @@ class NFDal {
                     required: true,
                     select: true,
                 },
-                cpf:{
-                    type:String,
-                    required:false,
+                cpf: {
+                    type: String,
+                    required: false,
                 },
-                data:{
-                    type:Date,
-                    required:false,
+                data: {
+                    type: Date,
+                    required: false,
                 }
 
-                
+
             },
         );
 
         return NFSchema
     }
-    
+
 }
 
 module.exports = NFDal

@@ -31,7 +31,6 @@ class RelatorioSatisfacaoDao {
             RelatorioSatisfacao.dataSatisfacao = dataNova
 
             const relatorioSatisfacao = new RelatorioSatisfacao(RelatorioSatisfacaoModel)
-            console.log("model no DAO", relatorioSatisfacao)
             relatorioSatisfacao.save()
                 .then(data => {
                     try {
@@ -52,12 +51,9 @@ class RelatorioSatisfacaoDao {
 
 
     getFromData(dataRelatorio) {
-        console.log("to no dao")
-        console.log(dataRelatorio)
         return new Promise(function (resolve, reject) {
 
             const newData = new Date(dataRelatorio);
-            console.log(newData)
 
             let obj = new Object(); // Representa um pedido
             obj.dataSatisfacao = newData;
@@ -67,7 +63,6 @@ class RelatorioSatisfacaoDao {
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(201, data);
-                            //console.log(data)
                             resolve(data)
                         }
                         catch (error) {
@@ -86,7 +81,6 @@ class RelatorioSatisfacaoDao {
     }
 
     getFromPedido(cpf) {
-        console.log(cpf)
         return new Promise(function (resolve, reject) {
             let obj = new Object(); // Representa um pedido
             obj.cpfCliente = cpf;
@@ -96,7 +90,6 @@ class RelatorioSatisfacaoDao {
                     .then(data => {
                         try {
                             const jsonSucess = Sucess.generateJsonSucess(201, data);
-                            //console.log(data)
                             resolve(data)
                         }
                         catch (error) {
@@ -120,8 +113,6 @@ class RelatorioSatisfacaoDao {
                 RelatorioSatisfacao.find({})
                     .then(data => {
                         try {
-                            //const jsonSucess = Sucess.generateJsonSucess(200, data);
-                            console.log(data)
                             resolve(data)
                         }
                         catch (error) {

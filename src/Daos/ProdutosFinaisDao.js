@@ -82,7 +82,6 @@ class ProdutosFinaisDao {
 
             let obj = new Object();
             obj.nome = nome;
-            console.log('entrou 4', obj);
 
             try {
                 ProdutosFinais.findOne(obj, function (err, data) {
@@ -111,7 +110,6 @@ class ProdutosFinaisDao {
             obj.nome = nome;
             codigo ? (obj._id = codigo) : null;
 
-            console.log('entrou 4', obj);
 
             try {
                 ProdutosFinais.findOne(obj, function (err, data) {
@@ -143,10 +141,8 @@ class ProdutosFinaisDao {
                         }
 
                         if (data != null && !R.isEmpty(data)) {
-                            console.log(data);
                             resolve(data);
                         } else {
-                            console.log(data);
                             resolve(false);
                         }
                     }
@@ -184,10 +180,8 @@ class ProdutosFinaisDao {
         return new Promise(function (resolve, reject) {
             let obj = new Object()
             if (ativado == true) obj.ativado = true
-            console.log('obj', obj)
             try {
                 ProdutosFinais.find({ ...obj }, function (err, data) {
-                    console.log('data', data)
                     if (err) {
                         reject();
                     }

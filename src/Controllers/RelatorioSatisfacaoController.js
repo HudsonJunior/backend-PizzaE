@@ -8,7 +8,6 @@ const RelatorioSatisfacaoService = require('../Services/RelatorioSatisfacaoServi
 module.exports = function (server) {
 
     server.post('/relatorio_satisfacao', function (req, res, next) {
-        console.log("estou no controler do relatorio");
         try {
             let data = req.body || {}
 
@@ -17,7 +16,6 @@ module.exports = function (server) {
             relatorioSatisfacaoModel = new RelatorioSatisfacaoModel(data);
 
             const relatorioSatisfacaoService = new RelatorioSatisfacaoService();
-            console.log(relatorioSatisfacaoModel)
             relatorioSatisfacaoService.create(relatorioSatisfacaoModel)
                 .then(jsonSuccess => {
                     const code = jsonSuccess.code
@@ -46,7 +44,6 @@ module.exports = function (server) {
         try {
             const relatorioSatisfacaoService = new RelatorioSatisfacaoService();
             const dataRelatorio = req.params.data || null;
-            console.log("to no get pela dataSatisfacao")
             relatorioSatisfacaoService.getFromData(dataRelatorio)
                 .then(jsonSuccess => {
                     //const code = jsonSuccess.code
@@ -76,7 +73,6 @@ module.exports = function (server) {
         try {
             const relatorioSatisfacaoService = new RelatorioSatisfacaoService();
             const cpf = req.params.cpf || null;
-            console.log(cpf)
             relatorioSatisfacaoService.getFromPedido(cpf)
                 .then(jsonSuccess => {
                     //const code = jsonSuccess.code

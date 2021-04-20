@@ -8,7 +8,6 @@ const NFService = require('../Services/NFService')
 module.exports = function (server) {
 
     server.post('/nf', function (req, res, next) {
-        console.log("estou no controler");
         try {
             let data = req.body || {}
 
@@ -44,49 +43,48 @@ module.exports = function (server) {
     server.get('/nf', function (req, res, next) {
 
         try {
-            
+
             const clientesService = new ClientesService();
             const cpfClientes = req.params.cpf
-            if(cpfClientes == null){
+            if (cpfClientes == null) {
                 clientesService.get()
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+                    .then(jsonSuccess => {
+                        const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                        delete jsonSucess.code
 
-                    res.json(code, jsonSuccess)
-                    next()
-                })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                        res.json(code, jsonSuccess)
+                        next()
+                    })
+                    .catch(jsonError => {
+                        const code = jsonError.code
 
-                    delete jsonError.code
+                        delete jsonError.code
 
-                    res.json(code, jsonError)
-                    next()
-                })
-            }else{
-                console.log(cpfClientes)
+                        res.json(code, jsonError)
+                        next()
+                    })
+            } else {
                 clientesService.getCliente(cpfClientes)
-                .then(jsonSuccess => {
-                    const code = jsonSuccess.code
+                    .then(jsonSuccess => {
+                        const code = jsonSuccess.code
 
-                    delete jsonSucess.code
+                        delete jsonSucess.code
 
-                    res.json(code, jsonSuccess)
-                    next()
-                })
-                .catch(jsonError => {
-                    const code = jsonError.code
+                        res.json(code, jsonSuccess)
+                        next()
+                    })
+                    .catch(jsonError => {
+                        const code = jsonError.code
 
-                    delete jsonError.code
+                        delete jsonError.code
 
-                    res.json(code, jsonError)
-                    next()
-                })
+                        res.json(code, jsonError)
+                        next()
+                    })
             }
 
-            
+
         }
         catch (error) {
             console.log(error)

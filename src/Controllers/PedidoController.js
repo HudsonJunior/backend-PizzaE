@@ -11,7 +11,6 @@ module.exports = function (server) {
 
             let pedidoModel = new PedidoModel(data);
 
-            console.log('pedido model', pedidoModel);
 
             const pedidoService = new PedidoService();
 
@@ -133,7 +132,6 @@ module.exports = function (server) {
 
     server.patch('/pedido', function (req, res, next) {
         try {
-            console.log('entrou');
             let data = req.body || {};
 
             let pedidoModel;

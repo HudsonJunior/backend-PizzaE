@@ -88,7 +88,6 @@ describe('Gerenciar Clientes', () => {
                 (error, response, body) => {
 
                     const obj = JSON.parse(response.body);
-                    //console.log("objeto retornado", obj)
                     postClienteCpfCerto['id'] = obj.id;
                     expect(response.statusCode).to.equal(201);
 
@@ -235,8 +234,6 @@ describe('Gerenciar Clientes', () => {
 
                     const obj = JSON.parse(response.body);
                     postClienteCpfCerto['id'] = obj.id;
-                    console.log(response.statusCode)
-                    console.log(obj.data)
                     expect(response.statusCode).to.equal(201);
 
                     expect(obj.data).to.equal('Cadastro realizado com sucesso')
@@ -256,8 +253,6 @@ describe('Gerenciar Clientes', () => {
 
                     const obj = JSON.parse(response.body);
                     postClienteCpfCerto['id'] = obj.id;
-                    console.log(response.statusCode)
-                    console.log(obj.data)
                     expect(response.statusCode).to.equal(201);
 
                     expect(obj.data).to.equal('Cadastro realizado com sucesso')

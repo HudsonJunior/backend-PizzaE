@@ -11,7 +11,6 @@ module.exports = function (server) {
     server.post('/clientes', function (req, res, next) {
 
         try {
-            console.log("teste de save")
             let data = req.body || {}
 
             let clientesModel;
@@ -21,7 +20,6 @@ module.exports = function (server) {
 
             clientesService.create(clientesModel)
                 .then(jsonSuccess => {
-                    console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
@@ -31,7 +29,6 @@ module.exports = function (server) {
                 })
                 .catch(jsonError => {
 
-                    console.log("------------", jsonError)
                     res.json(500, jsonError)
                     next()
                 })
@@ -66,7 +63,6 @@ module.exports = function (server) {
                         next()
                     })
             } else {
-                console.log(cpfClientes)
                 clientesService.getCliente(cpfClientes)
                     .then(jsonSuccess => {
 
@@ -134,7 +130,6 @@ module.exports = function (server) {
 
             const clientesService = new ClientesService();
 
-            console.log(clientesModel)
 
             clientesService.update(clientesModel)
                 .then(jsonSuccess => {

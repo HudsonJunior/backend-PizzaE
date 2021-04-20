@@ -12,7 +12,6 @@ module.exports = function (server) {
 
             generalService.login(data)
                 .then(jsonSuccess => {
-                    console.log('cucu', jsonSuccess)
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
@@ -21,7 +20,6 @@ module.exports = function (server) {
                     next()
                 })
                 .catch(jsonError => {
-                    console.log('kaak', jsonError)
 
                     const code = jsonError.code
 

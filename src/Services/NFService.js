@@ -17,13 +17,11 @@ class NFService {
     }
 
     async create(NFModel) {
-        console.log("estou no service");
-        console.log(NFModel);
         return new Promise(async function (resolve, reject) {
             try {
- 
+
                 nfDao.create(NFModel)
-                    
+
                     .then(result => {
                         result.cash_token = AuthValue.cash_token
 
@@ -32,8 +30,8 @@ class NFService {
                     .catch(error => {
                         reject(error)
                     })
-     
-                
+
+
             }
             catch (error) {
                 reject(error)
@@ -41,7 +39,7 @@ class NFService {
         })
     }
 
-    
+
 
 }
 
