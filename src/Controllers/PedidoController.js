@@ -11,7 +11,7 @@ module.exports = function (server) {
 
             let pedidoModel = new PedidoModel(data);
 
-            console.log('pedido model', pedidoModel)
+            console.log('pedido model', pedidoModel);
 
             const pedidoService = new PedidoService();
 
@@ -22,7 +22,7 @@ module.exports = function (server) {
                     next();
                 })
                 .catch((jsonError) => {
-                    res.json(500, jsonError);
+                    res.json(400, jsonError);
                     next();
                 });
         } catch (error) {
@@ -123,7 +123,7 @@ module.exports = function (server) {
 
                     delete jsonError.code;
 
-                    res.json(code, jsonError);
+                    res.json(400, jsonError);
                     next();
                 });
         } catch (error) {

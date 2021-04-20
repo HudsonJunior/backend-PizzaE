@@ -1,15 +1,13 @@
 /* imports */
 const Cpf = require('../Common/Cpf');
 const string = require('../Common/String');
-const Date = require('../Common/Date');
+const DateClass = require('../Common/Date');
 const ClientesService = require('./ClientesService');
-PedidoDao = require('../Daos/PedidoDao');
+const PedidoDao = require('../Daos/PedidoDao');
 const exceptionsClass = require('../Models/Responses/Exceptions');
 const successClass = require('../Models/Responses/Sucess');
 const PedidoResponse = require('../Models/Responses/PedidoResponse');
-const ProdutosFinaisService = require('./ProdutosFinaisService');
 const Helper = require('../Common/Helper');
-ProdutosFinaisDao = require('../Daos/ProdutosFinaisDao');
 /* Global variables*/
 const Exceptions = new exceptionsClass();
 const Success = new successClass();
@@ -21,22 +19,14 @@ class PedidoService {
     constructor() {
         pedidoService = this;
         pedidoDao = new PedidoDao();
-        produtosFinaisDao = new ProdutosFinaisDao();
     }
 
     async create(pedidoModel) {
         return new Promise(async function (resolve, reject) {
             try {
-                /* const validatePagamento = await pedidoService.validatePagamento(
+                const validatePagamento = await pedidoService.validatePagamento(
                     pedidoModel.formaPagamento
                 );
-                const validateExpedicao = await pedidoService.validateExpedicao(
-                    pedidoModel.formaExpedicao
-                ); */
-                /* const validateClient = await pedidoService.validateClient(
-                    pedidoModel.formaExpedicao,
-                    pedidoModel.cpfCliente
-                ); */
 
                 const validadeCpfClient = await pedidoService.validateCpfCliente(
                     pedidoModel.cpfCliente
@@ -44,20 +34,10 @@ class PedidoService {
                 const validadeCpfNF = await pedidoService.validateCpfNF(
                     pedidoModel.cpfNF
                 );
-                /* const validateStatusPedido = await pedidoService.validateStatusPedido(
-                    pedidoModel.statusPedido
-                );
-                const validateValor = await pedidoService.validateValor(
-                    pedidoModel.valor
-                );
-                const validateStatusPagamento = await pedidoService.validateStatusPagamento(
-                    pedidoModel.statusPagamento
-                );
 
-                pedidoModel.cpfCliente = string.getOnlyNumbers(
-                    pedidoModel.cpfCliente
+                const validadeHora = await pedidoService.validateHora(
+                    pedidoModel.hora
                 );
-                pedidoModel.cpfNF = string.getOnlyNumbers(pedidoModel.cpfNF); */
 
                 pedidoDao
                     .create(pedidoModel)
@@ -68,6 +48,7 @@ class PedidoService {
                         reject(error);
                     });
             } catch (error) {
+                console.log('caí', error);
                 reject(error);
             }
         });
@@ -91,48 +72,6 @@ class PedidoService {
                             PedidoResponse.Details.InvalidPaymentMethod
                         )
                     );
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateExpedicao(formaExpedicao) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if (
-                    string.validateOnlyLetters(formaExpedicao) &&
-                    (formaExpedicao == 'balcao' || formaExpedicao == 'entrega')
-                ) {
-                    resolve();
-                } else {
-                    reject(
-                        Exceptions.generateException(
-                            PedidoResponse.Codes.InvalidField,
-                            PedidoResponse.Messages.RegisterError,
-                            PedidoResponse.Details.InvalidShippingWay
-                        )
-                    );
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateClient(formaExpedicao, cpfCliente) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if (formaExpedicao == 'entrega') {
-                    ClientesService.getCliente(cpfCliente)
-                        .then((result) => {
-                            resolve(result);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            reject('cliente não encontrado');
-                        });
                 }
             } catch (error) {
                 reject(error);
@@ -172,50 +111,28 @@ class PedidoService {
         });
     }
 
-    validateStatusPedido(status) {
+    validateHora(time) {
         return new Promise(function (resolve, reject) {
             try {
+                var [hr, min, sec] = time.split(':');
+                var hora = parseInt(hr);
+                var minutos = parseInt(min);
+                var segundos = parseInt(sec);
                 if (
-                    string.validateOnlyLetters(status) &&
-                    status == 'realizado'
+                    hora < 0 ||
+                    hora > 23 ||
+                    minutos < 0 ||
+                    minutos > 59 ||
+                    segundos < 0 ||
+                    segundos > 59
                 ) {
-                    resolve();
-                } else {
-                    reject('status do pedido inválido');
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateValor(valor) {
-        return new Promise(function (resolve, reject) {
-            try {
-                var regex = /^(\$|)([1-9]\d{0,2}(\,\d{3})*|([1-9]\d*))(\.\d{2})?$/;
-                var passed = valor.match(regex);
-                if (passed != null) {
-                    resolve();
-                } else {
-                    reject('valor do pedido inválido');
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    validateStatusPagamento(status) {
-        return new Promise(function (resolve, reject) {
-            try {
-                if (
-                    string.validateOnlyLetters(status) &&
-                    (status == 'pago' || status == 'nao pago')
-                ) {
-                    resolve();
-                } else {
-                    reject('status do pagamento inválido');
-                }
+                    reject(
+                        Exceptions.generateException(
+                            400,
+                            'Hora do registro do pedido inválido'
+                        )
+                    );
+                } else resolve();
             } catch (error) {
                 reject(error);
             }
@@ -340,74 +257,61 @@ class PedidoService {
     getListFromProduct(nomeProduto) {
         return new Promise(function (resolve, reject) {
             try {
+                var date = new DateClass();
+                var lastMonths = date.getLastMonths(
+                    date.getCurrentMonth(),
+                    date.getCurrentYear(),
+                    date.getCurrentPastYear()
+                );
+                let dataF =
+                    lastMonths[0] +
+                    '-' +
+                    new Date(
+                        date.getCurrentYear(),
+                        date.getCurrentMonth(),
+                        0
+                    ).getDate();
+                let dataI = lastMonths[5] + '-01';
                 pedidoDao
-                    .list()
-                    .then((result) => {
-                        if (result) {
-                            let productsArray = new Array();
-
-                            var date = new Date();
-                            var month = date.getCurrentMonth();
-                            var year = date.getCurrentYear();
-                            var pastYear = date.getCurrentPastYear();
-                            var lastMonths = date.getLastMonths(
-                                month,
-                                year,
-                                pastYear
-                            );
-
+                    .getListReportFromDate(dataI, dataF)
+                    .then((pedidos) => {
+                        if (pedidos) {
+                            var productsArray = new Array();
                             var idProduto = null;
 
                             for (var i = 0; i < 6; i++) {
                                 let obj = new Object();
-
                                 obj['_id'] = idProduto;
                                 obj['nome'] = nomeProduto;
                                 obj['data'] = lastMonths[i];
                                 obj['quantidade'] = 0;
-
                                 productsArray.push(obj);
                             }
 
-                            for (var i = 0; i < result.length; i++) {
-                                var productsList = result[i]['produtos'];
+                            for (var i = 0; i < pedidos.length; i++) {
+                                var productsList = pedidos[i]['produtos'];
 
-                                if (productsList != null) {
-                                    for (
-                                        var j = 0;
-                                        j < productsList.length;
-                                        j++
-                                    ) {
-                                        if (
-                                            productsList[j].nome == nomeProduto
-                                        ) {
-                                            idProduto = productsList[j]._id;
+                                for (var j = 0; j < productsList.length; j++) {
+                                    if (productsList[j].nome == nomeProduto) {
+                                        idProduto = productsList[j]._id;
 
-                                            var dataPedido = result[i].data
-                                                .toISOString()
-                                                .split('T')[0];
-                                            dataPedido = dataPedido.split('-');
+                                        var dataPedido = pedidos[i].data
+                                            .toISOString()
+                                            .split('-');
 
-                                            var mesAnoPedido = dataPedido[0].concat(
-                                                '-'
-                                            );
-                                            mesAnoPedido = mesAnoPedido.concat(
-                                                dataPedido[1]
-                                            );
+                                        var mesAnoPedido =
+                                            dataPedido[0] + '-' + dataPedido[1];
 
-                                            var indexIntervalo = Helper.fieldSearch(
-                                                'data',
-                                                mesAnoPedido,
-                                                productsArray
-                                            );
+                                        var indexIntervalo = Helper.fieldSearch(
+                                            'data',
+                                            mesAnoPedido,
+                                            productsArray
+                                        );
 
-                                            if (indexIntervalo !== false) {
-                                                productsArray[
-                                                    indexIntervalo
-                                                ].quantidade += +productsList[j]
-                                                    .quantidade;
-                                            }
-                                        }
+                                        productsArray[
+                                            indexIntervalo
+                                        ].quantidade +=
+                                            productsList[j].quantidade;
                                     }
                                 }
                             }
@@ -420,16 +324,17 @@ class PedidoService {
                                 reject(
                                     Exceptions.generateException(
                                         400,
-                                        'Não foi encontrado nenhum pedidos'
+                                        'Não foi encontrado nenhum pedido com este produto no intervalo de 6 meses'
                                     )
                                 );
                             }
+
                             resolve(productsArray);
                         } else {
                             reject(
                                 Exceptions.generateException(
                                     400,
-                                    'Não foi encontrado nenhum pedido '
+                                    'Não foi encontrado nenhum pedido'
                                 )
                             );
                         }
