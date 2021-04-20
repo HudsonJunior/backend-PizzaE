@@ -18,14 +18,25 @@ class ItemEstoqueService {
     create(ItemModel) {
         return new Promise(function (resolve, reject) {
             try {
-            
-                itemEstoqueDao.create(ItemModel)
-                .then(result => {
-                    resolve(result)
-                })
-                .catch(erro => {
-                    reject(error)
-                })
+                let valor = parseFloat(ItemModel.valor)
+                let validade = ItemModel.validade
+                if(valor < 0){
+                    reject(Exceptions.generateException(400, "Cadastro falhou!", "Valor do item menor que zero."))
+                }
+                else if(valor > 10000){
+                    reject(Exceptions.generateException(400, "Cadastro falhou!", "Valor do item maior que o maximo permitido."))
+                }else if(validade == ""){
+                    reject(Exceptions.generateException(400, "Cadastro falhou! Campo com erro."))
+                }
+                else{
+                    itemEstoqueDao.create(ItemModel)
+                    .then(result => {
+                        resolve(result)
+                    })
+                    .catch(erro => {
+                        reject(Exceptions.generateException(400, "Cadastro falhou! Campo com erro.", "Não é possível realizar o cadastro."))
+                    })
+                }
             }
             catch (error) {
                 reject(error)
@@ -41,10 +52,18 @@ class ItemEstoqueService {
                 itemEstoqueDao.findOne(ItemModel)
                     .then(result => {
                         itemEstoque = result[0];
+                        let valor = parseFloat(ItemModel.valor);
+                        let validade = ItemModel.validade
                         if (itemEstoque._id != ItemModel.id) {
                             reject(Exceptions.generateException(400, "Alteração de código não é permitido", "Não é possível realizar a alteração do código de um produto"))
+                        }else if(valor < 0){
+                            reject(Exceptions.generateException(400, "Editar falhou!", "Valor do item menor que zero."))
                         }
-                        else {
+                        else if(valor > 10000){
+                            reject(Exceptions.generateException(400, "Editar falhou!", "Valor do item maior que o maximo permitido."))
+                        }else if(validade == ""){
+                            reject(Exceptions.generateException(400, "Editar falhou! Campo com erro."))
+                        }else {
                             itemEstoqueDao.update(ItemModel)
                                 .then(result => {
 

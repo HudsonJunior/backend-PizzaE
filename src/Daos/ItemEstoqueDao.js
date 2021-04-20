@@ -97,10 +97,9 @@ class ItemEstoqueDao {
                     }
                 })
                 .catch((error) => {
-                    console.log(error);
                     reject(
                         Exceptions.generateException(
-                            500,
+                            400,
                             'Erro ao cadastrar item no estoque'
                         )
                     );
@@ -274,7 +273,6 @@ class ItemEstoqueDao {
                         resolve(jsonSucess);
                     })
                     .catch((error) => {
-                        console.log(error);
                         reject(
                             Exceptions.generateException(
                                 500,
@@ -294,8 +292,6 @@ class ItemEstoqueDao {
                 ItemEstoque.findOneAndDelete({ _id: codItem })
                     .then((result) => {
                         try {
-                            console.log(result);
-
                             // registro de movimentacao do estoque
                             var today = new DateClass().getCurrentDate();
 

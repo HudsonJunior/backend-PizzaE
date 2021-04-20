@@ -10,7 +10,7 @@ class ItemEstoqueModel {
         this.valor = data.valor
         this.peso = data.peso
         this.validade = date.converteDate(data.validade)
-        this.fabricacao = data.fabricacao
+        this.fabricacao = data.fabricacao=="" ? null : data.fabricacao  
         this.registro = data.registro
     }
 }

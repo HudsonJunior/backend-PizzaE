@@ -133,10 +133,8 @@ class FuncionarioDao {
                         }
 
                         if (data != null && !R.isEmpty(data)) {
-                            console.log(data);
                             resolve(data);
                         } else {
-                            console.log(data);
                             resolve(false);
                         }
                     }
@@ -151,7 +149,7 @@ class FuncionarioDao {
     list() {
         return new Promise(function (resolve, reject) {
             try {
-                Funcionario.find({ tipo: 'F' }, function (err, data) {
+                Funcionario.find({}, function (err, data) {
 
                     if (err) {
                         reject()
@@ -175,7 +173,6 @@ class FuncionarioDao {
     update(FuncionarioModel) {
         return new Promise(function (resolve, reject) {
             try {
-                console.log('cpf')
                 let cpf = FuncionarioModel.cpf
                 let obj = new Object();
                 obj.cpf = cpf

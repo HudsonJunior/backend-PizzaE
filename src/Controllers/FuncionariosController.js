@@ -12,18 +12,14 @@ module.exports = function (server) {
         try {
             let data = req.body || {}
 
-            console.log("data ", data);
-
             let funcionario;
 
             funcionario = new FuncionariosModel(data);
-            console.log(funcionario)
 
             const funcionarioService = new FuncionariosService();
 
             funcionarioService.create(funcionario)
                 .then(jsonSuccess => {
-                    console.log("jasao deu bom", jsonSuccess)
                     const code = jsonSuccess.code
 
                     delete jsonSuccess.code
@@ -32,7 +28,6 @@ module.exports = function (server) {
                     next()
                 })
                 .catch(jsonError => {
-                    console.log("jasao trollo", jsonError)
                     const code = jsonError.code
 
                     delete jsonError.code
@@ -52,13 +47,10 @@ module.exports = function (server) {
 
             let funcionariosModel;
 
-            console.log(data)
-
             funcionariosModel = new FuncionariosModel(data);
 
             const funcionariosService = new FuncionariosService();
             
-            console.log('service')
             funcionariosService.update(funcionariosModel)
                 .then(jsonSuccess => {
                     res.json(201, jsonSuccess)
