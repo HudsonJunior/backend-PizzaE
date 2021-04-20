@@ -62,7 +62,7 @@ class ClientesDal {
             clientes.save()
                 .then(data => {
                     try {
-                        const jsonSucess = Sucess.clientesSucess(200, data)
+                        const jsonSucess = Sucess.clientesSucess(201, "Cadastro realizado com sucesso")
 
                         resolve(jsonSucess)
                     }

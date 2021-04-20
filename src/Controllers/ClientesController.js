@@ -1,5 +1,6 @@
 /* Imports*/
 
+const { validateCpf } = require('../Common/Cpf')
 const ClientesModel = require('../Models/ClientesModel')
 const ClientesService = require('../Services/ClientesService')
 
@@ -16,8 +17,7 @@ module.exports = function (server) {
             let clientesModel;
 
             clientesModel = new ClientesModel(data);
-
-            const clientesService = new ClientesService();
+            var clientesService = new ClientesService();
 
             clientesService.create(clientesModel)
                 .then(jsonSuccess => {

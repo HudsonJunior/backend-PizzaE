@@ -5,6 +5,8 @@ const exceptionsClass = require('./../Models/Responses/Exceptions')
 const sucessClass = require('./../Models/Responses/Sucess')
 /* Global variables*/
 const R = require('ramda')
+const DateClass = require('../Common/Date');
+const DateCommon = require('../Common/Date');
 
 const Exceptions = new exceptionsClass()
 const Sucess = new sucessClass()
@@ -25,8 +27,11 @@ class RelatorioSatisfacaoDao {
 
         return new Promise(function (resolve, reject) {
 
+            const dataNova = new Date(RelatorioSatisfacaoModel.dataSatisfacao)
+            RelatorioSatisfacao.dataSatisfacao = dataNova
+
             const relatorioSatisfacao = new RelatorioSatisfacao(RelatorioSatisfacaoModel)
-            console.log("estou no Dao de relatorio")
+            console.log("model no DAO", relatorioSatisfacao)
             relatorioSatisfacao.save()
                 .then(data => {
                     try {
@@ -47,31 +52,37 @@ class RelatorioSatisfacaoDao {
 
 
     getFromData(dataRelatorio) {
-
+        console.log("to no dao")
+        console.log(dataRelatorio)
         return new Promise(function (resolve, reject) {
+
+            const newData = new Date(dataRelatorio);
+            console.log(newData)
+
+            let obj = new Object(); // Representa um pedido
+            obj.dataSatisfacao = newData;
+
             try {
-                RelatorioSatisfacao.find(
-                    {
-                        data: new Date(dataRelatorio)
-                    }
-                    ,
-                    function (err, data) {
-                        if (err) {
-                            reject();
+                RelatorioSatisfacao.find(obj)
+                    .then(data => {
+                        try {
+                            const jsonSucess = Sucess.generateJsonSucess(201, data);
+                            //console.log(data)
+                            resolve(data)
                         }
-
-                        if (data != null && !R.isEmpty(data)) {
-                            resolve(data);
-                        } else {
-                            resolve(false);
+                        catch (error) {
+                            console.log(error)
                         }
-                    });
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(Exceptions.generateException(500, 'Erro', 'Erro'))
+                    })
+            } catch (error) {
+                reject(error);
+            }
 
-            }
-            catch (error) {
-                reject(error)
-            }
-        })
+        });
     }
 
     getFromPedido(cpf) {
@@ -192,7 +203,7 @@ class RelatorioSatisfacaoDao {
                     required: true,
                     //select: true,
                 },
-                data: {
+                dataSatisfacao: {
                     type: Date,
                     //required: true,
                 },
