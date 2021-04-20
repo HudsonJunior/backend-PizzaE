@@ -1,57 +1,54 @@
 
 module.exports = {
 
-    getOnlyNumbers(string){
+    getOnlyNumbers(string) {
         string = string.replace(/\D/g, '')
-    
+
         return string
     },
 
-    validateOnlyLetters(string){
-        try{
+    validateOnlyLetters(string) {
+        try {
             var regex = /^[A-Za-z ]+$/
 
             const result = regex.test(string)
 
-            if(result){
+            if (result) {
                 return string
-            }else{
-                return falsa
+            } else {
+                return false
             }
-            
         }
-        catch(error){
-            
+        catch (error) {
             return false
         }
-        
     },
 
-    validateUser(string){
-        try{
+    validateUser(string) {
+        try {
             var regex = /^[a-zA-Z0-9\\)(_\\-\\[\]]{4,}/g
 
-                const result = regex.test(string)
-        
-                return result
+            const result = regex.test(string)
+
+            return result
         }
-        catch(error){
+        catch (error) {
             return false
-        } 
+        }
     },
 
-    validatePassword(string){
-        try{
+    validatePassword(string) {
+        try {
             var regex = /^[a-zA-Z0-9\\)(_\\-\\[\]]{6,}/g
 
             const result = regex.test(string)
 
             return result
         }
-        catch(error){
+        catch (error) {
             return false
         }
-        
+
     }
 }
 

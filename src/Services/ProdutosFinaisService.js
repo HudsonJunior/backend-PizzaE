@@ -31,17 +31,72 @@ class ProdutosFinaisService {
                                 )
                             );
                         else {
-                            produtosFinaisDao
-                                .create(ProdutoModel)
-                                .then((result) => {
-                                    resolve(result);
-                                })
-                                .catch(error => {
-                                    console.log(error)
+                            if (ProdutoModel.fim_promo < ProdutoModel.inicio_promo) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Data final menor que data inicial',
+                                        'A data inicial da promoção deve ser menor que a data final'
+                                    )
+                                );
+                            }
+                            else if (ProdutoModel.inicio_promo && ProdutoModel.inicio_promo != "" && new Date(ProdutoModel.inicio_promo) < new Date()) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Data inicial menor que dia atual',
+                                        'A data inicial deve ser superior ou igual ao dia atual'
+                                    )
+                                );
+                            }
+                            if (ProdutoModel.valor < 0) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Valor do produto com valor negativo',
+                                        'Só é permitido valores positivos'
+                                    )
+                                );
+                            }
+                            else if (ProdutoModel.peso != null && ProdutoModel.peso < 0) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Peso do produto com valor negativo',
+                                        'Só é permitido pesos positivos'
+                                    )
+                                );
+                            }
+                            else if (ProdutoModel.valor < 1 || ProdutoModel.valor > 1000) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Valor fora do intervalo definido',
+                                        'O valor informado não está no intervalo definido de [1,00, 1.000]'
+                                    )
+                                );
+                            }
+                            else if (ProdutoModel.peso != null && (ProdutoModel.peso < 1 || ProdutoModel.peso > 15000)) {
+                                reject(
+                                    Exceptions.generateException(
+                                        400,
+                                        'Peso fora do intervalo definido',
+                                        'O peso informado não está no intervalo definido de [1, 1000]'
+                                    )
+                                );
+                            }
+                            else {
+                                produtosFinaisDao
+                                    .create(ProdutoModel)
+                                    .then((result) => {
+                                        resolve(result);
+                                    })
+                                    .catch(error => {
+                                        console.log(error)
 
-                                    reject(error)
-                                })
-
+                                        reject(error)
+                                    })
+                            }
                         }
                     })
                     .catch(error => {
@@ -69,16 +124,73 @@ class ProdutosFinaisService {
                                 reject(Exceptions.generateException(400, "Alteração de nome do produto não é permitido", "Não é possível realizar a alteração do código ou nome de um produto"))
                             }
                             else {
-                                produtosFinaisDao.update(ProdutoModel)
-                                    .then(result => {
-                                        resolve(result)
-                                    })
-                                    .catch(error => {
-                                        reject(error)
-                                    })
-                                    .catch((error) => {
-                                        reject(error);
-                                    });
+
+                                if (ProdutoModel.fim_promo < ProdutoModel.inicio_promo) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            400,
+                                            'Data final menor que data inicial',
+                                            'A data inicial da promoção deve ser menor que a data final'
+                                        )
+                                    );
+                                }
+                                else if (ProdutoModel.inicio_promo && ProdutoModel.inicio_promo != "" && new Date(ProdutoModel.inicio_promo) < new Date()) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            400,
+                                            'Data inicial menor que dia atual',
+                                            'A data inicial deve ser superior ou igual ao dia atual'
+                                        )
+                                    );
+                                }
+                                if (ProdutoModel.valor < 0) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            400,
+                                            'Valor do produto com valor negativo',
+                                            'Só é permitido valores positivos'
+                                        )
+                                    );
+                                }
+                                else if (ProdutoModel.peso != null && ProdutoModel.peso < 0) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            400,
+                                            'Peso do produto com valor negativo',
+                                            'Só é permitido pesos positivos'
+                                        )
+                                    );
+                                }
+                                else if (ProdutoModel.valor < 1 || ProdutoModel.valor > 1000) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            400,
+                                            'Valor fora do intervalo definido',
+                                            'O valor informado não está no intervalo definido de [1,00, 1.000]'
+                                        )
+                                    );
+                                }
+                                else if (ProdutoModel.peso != null && (ProdutoModel.peso < 1 || ProdutoModel.peso > 15000)) {
+                                    reject(
+                                        Exceptions.generateException(
+                                            400,
+                                            'Peso fora do intervalo definido',
+                                            'O peso informado não está no intervalo definido de [1, 1000]'
+                                        )
+                                    );
+                                }
+                                else {
+                                    produtosFinaisDao.update(ProdutoModel)
+                                        .then(result => {
+                                            resolve(result)
+                                        })
+                                        .catch(error => {
+                                            reject(error)
+                                        })
+                                        .catch((error) => {
+                                            reject(error);
+                                        });
+                                }
                             }
                         } else {
                             reject(

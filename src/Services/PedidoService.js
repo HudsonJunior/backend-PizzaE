@@ -524,7 +524,6 @@ class PedidoService {
                     PedidoModel.cancelar &&
                     PedidoModel.statusPedido !== 'realizado'
                 ) {
-                    console.log('HDOASOHDHASIOD')
                     reject(
                         Exceptions.generateException(
                             PedidoResponse.Codes.InvalidField,
@@ -533,9 +532,7 @@ class PedidoService {
                         )
                     );
                 } else {
-                    console.log('pedido', PedidoModel)
                     pedidoDao.findOne(PedidoModel).then(pedido => {
-                        console.log('parte 1', pedido)
                         if (pedido) {
                             console.log(PedidoModel.observacoes != pedido.observacoes, PedidoModel.produtos.toString() != pedido.produtos.toString())
                             if (
