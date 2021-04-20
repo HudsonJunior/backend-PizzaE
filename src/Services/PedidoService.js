@@ -452,7 +452,8 @@ class PedidoService {
                                     'Ocorreu um problema ao editar o pedido. Pedido não encontrado'
                                 );
                             }
-                        })
+                        }
+                    })
                         .catch((error) => {
                             reject(error);
                         });
