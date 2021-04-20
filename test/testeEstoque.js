@@ -8,6 +8,7 @@ const postTest = { //cadastro padrao
     loteId: "0",
     nome: "teste_cadastro_estoque",
     valor: "10,89",
+    peso: "10",
     validade: "2021-12-01",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
@@ -18,6 +19,7 @@ const mesMaiorTest = { //data com mes maior que 12
     loteId: "3",
     nome: "teste_mes",
     valor: "09,99",
+    peso: "10",
     validade: "2021-14-01",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
@@ -29,6 +31,7 @@ const diaMaiorTest = { //data com dia maior que o limite do mes
     loteId: "4",
     nome: "teste_dia",
     valor: "19,99",
+    peso: "10",
     validade: "2021-03-40",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
@@ -39,6 +42,7 @@ const marcadorTest = { //data com barra no lugar do hifen
   loteId: "4",
   nome: "teste_marcador",
   valor: "39,99",
+  peso: "10",
   validade: "13/03/2021",
   fabricacao: "1888-10-10",
   registro: "1888-10-10"
@@ -49,6 +53,7 @@ const formatoTest = { //data com formato errado
   loteId: "4",
   nome: "teste_formato",
   valor: "10,00",
+  peso: "10",
   validade: "14-02-2021",
   fabricacao: "1888-10-10",
   registro: "1888-10-10"
@@ -59,6 +64,7 @@ const valorNegativoTest = { //valor do item negativo
     loteId: "5",
     nome: "teste_negativo_estoque",
     valor: "-50,00",
+    peso: "10",
     validade: "2021-12-01",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
@@ -70,6 +76,7 @@ const valorLimiteTest = { //valor do item extrapola limite de 10.000
     loteId: "6",
     nome: "teste_limite_estoque",
     valor: "10001,00",
+    peso: "10",
     validade: "2021-12-01",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
@@ -80,6 +87,7 @@ const intervalo1Test = { //valor do item esta no intervalo permitido
     loteId: "7",
     nome: "teste_intervalo1_estoque",
     valor: "0,00",
+    peso: "10",
     validade: "2021-12-01",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
@@ -90,6 +98,7 @@ const intervalo2Test = { //valor do item esta no intervalo permitido
     loteId: "8",
     nome: "teste_intervalo2_estoque",
     valor: "10000,00",
+    peso: "10",
     validade: "2021-12-01",
     fabricacao: "1888-10-10",
     registro: "1888-10-10"
